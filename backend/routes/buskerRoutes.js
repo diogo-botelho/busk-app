@@ -6,10 +6,10 @@ const db = require("../db");
 const router = new express.Router();
 
 
-/** GET /events: get list of events */
+/** GET /events: get list of buskers */
 router.get("/", function (req, res, next) {
-    // return res.send("Buskers will go here");
-    return res.json(db.Busker.all());
+    return res.send("Buskers will go here");
+    // return res.json(db.Busker.all());
 });
 
 /** DELETE /events/[id]: delete event, return {message: Deleted} */

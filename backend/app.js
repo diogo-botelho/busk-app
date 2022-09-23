@@ -10,6 +10,8 @@ const axios = require("axios");
 const { NotFoundError } = require("./expressError");
 const buskerRoutes = require("./routes/buskerRoutes");
 const eventRoutes = require("./routes/eventRoutes");
+const userRoutes = require("./routes/userRoutes");
+
 
 const app = express();
 
@@ -25,8 +27,10 @@ nunjucks.configure("templates", {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/routes/buskers", buskerRoutes);
-app.use("/routes/events", eventRoutes);
+app.use("/buskers", buskerRoutes);
+app.use("/events", eventRoutes);
+app.use("/users", userRoutes);
+
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res, next) {

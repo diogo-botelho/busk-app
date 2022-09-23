@@ -2,9 +2,8 @@
 
 const express = require("express");
 
-// const db = require("./fakeDb");
+const db = require("../db");
 const router = new express.Router();
-
 
 /** GET /events: get list of events */
 router.get("/", function (req, res, next) {

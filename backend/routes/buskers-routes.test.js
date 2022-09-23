@@ -1,7 +1,7 @@
 const request = require("supertest");
 
 const app = require("../app");
-let db = require("./fakeDb");
+let db = require("../db");
 
 let diogo = { artist: "Diogo" };
 

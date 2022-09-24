@@ -19,7 +19,7 @@ router.get("/", async function (req, res, next) {
 /** Get event, return event */
 router.get("/:id", async function (req, res, next) {
   const results = await db.query(
-    `SELECT id, busker_id, title, type
+    `SELECT id,busker_id, title, type
          FROM events
          WHERE id = $1`,
          [req.params.id],

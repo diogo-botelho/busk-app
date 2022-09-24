@@ -1,7 +1,8 @@
 \echo 'Delete and recreate busk_app db?'
 \prompt 'Return for yes or control-C to cancel > ' foo
 
-/* BUSK_APP
+/* 
+** BUSK_APP
 */
 
 DROP DATABASE IF EXISTS busk_app;
@@ -11,16 +12,18 @@ CREATE DATABASE busk_app;
 /* USERS TABLE */
 CREATE TABLE users(
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE
+  username TEXT NOT NULL UNIQUE,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL
   -- https://www.youtube.com/watch?v=hpgNx89B8Y4
   -- type TEXT NOT NULL DEFAULT 'user'
 );
 
-INSERT INTO users (name)
-VALUES ('Diogo Botelho');
+INSERT INTO users (username, first_name, last_name)
+VALUES ('diogobotelho','Diogo', 'Botelho');
 
-INSERT INTO users (name)
-VALUES ('Mirjam van Esch');
+INSERT INTO users (username, first_name, last_name)
+VALUES ('mirjamvanesch', 'Mirjam', 'van Esch');
 
 
 /* BUSKERS TABLE */
@@ -38,15 +41,16 @@ VALUES (1, 'musician');
 
 CREATE TABLE events(
   id SERIAL PRIMARY KEY,
-  buskerId INTEGER NOT NULL REFERENCES buskers,
+  busker_id INTEGER NOT NULL REFERENCES buskers,
   title TEXT NOT NULL,
   type TEXT NOT NULL UNIQUE
 );
 
-INSERT INTO events (buskerId, title, type)
+INSERT INTO events (busker_id, title, type)
 VALUES (1, 'Diogo rocks in Central Park', 'concert');
 
-/* BUSK_APP_TEST
+/* 
+** BUSK_APP_TEST
 */
 
 \echo 'Delete and recreate users_test db?'
@@ -58,8 +62,9 @@ CREATE DATABASE busk_app_test;
 
 CREATE TABLE users(
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
-  type TEXT NOT NULL DEFAULT 'user'
+  username TEXT NOT NULL UNIQUE,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL
 );
 
 CREATE TABLE buskers (
@@ -70,7 +75,7 @@ CREATE TABLE buskers (
 
   CREATE TABLE events(
   id SERIAL PRIMARY KEY,
-  buskerId INTEGER NOT NULL REFERENCES buskers,
+  busker_id INTEGER NOT NULL REFERENCES buskers,
   title TEXT NOT NULL,
   type TEXT NOT NULL UNIQUE
 );

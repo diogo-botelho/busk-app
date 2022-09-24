@@ -7,25 +7,34 @@ const db = require("../db");
 
 const { NotFoundError } = require("../expressError");
 
-let testUser;
-
 beforeEach(async function () {
     await db.query("DELETE FROM users");
-    let result = await db.query(`
-    INSERT INTO users (name)
-    VALUES ('testUser')
-    RETURNING id, name`);
-    testUser = result.rows[0];
-}); ``
+    await db.query("SELECT setval('users_id_seq', 1, false)");
+    await db.query(`
+        INSERT INTO users (username, first_name, last_name)
+        VALUES  ('TestUser1', 'TestFirstName1', 'TestLastName1'),
+                ('TestUser2', 'TestFirstName2', 'TestLastName2')`);
+});
 
 /** GET /users - returns `{users: [user, ...]}` */
 
 describe("GET /users", function () {
-    test("Gets a list of 1 user", async function () {
+    test("Gets a list of 2 users", async function () {
         const resp = await request(app).get(`/users`);
-        expect(resp.body).toEqual({
-            users: [testUser],
-        });
+        expect(resp.body).toEqual([
+            {
+                id: 1,
+                username: "TestUser1",
+                first_name: "TestFirstName1",
+                last_name: "TestLastName1"
+            },
+            {
+                id: 2,
+                username: "TestUser2",
+                first_name: "TestFirstName2",
+                last_name: "TestLastName2"
+            }
+        ]);
     });
 });
 
@@ -33,8 +42,13 @@ describe("GET /users", function () {
 
 describe("GET /users/:id", function () {
     test("Gets single user", async function () {
-        const resp = await request(app).get(`/users/${testUser.id}`);
-        expect(resp.body).toEqual({ user: testUser });
+        const resp = await request(app).get(`/users/1`);
+        expect(resp.body).toEqual({
+            id: 1,
+            username: "TestUser1",
+            first_name: "TestFirstName1",
+            last_name: "TestLastName1"
+        });
     });
 
     // test("Respond with 404 if not found", async function () {
@@ -49,11 +63,21 @@ describe("POST /users", function () {
     test("Create new user", async function () {
         const resp = await request(app)
             .post(`/users`)
-            .send({ name: "Ezra" });
+            .send({
+                username: "TestUser3",
+                firstName: "TestFirstName3",
+                lastName: "TestLastName3"
+            });
         expect(resp.statusCode).toEqual(201);
         expect(resp.body).toEqual({
-            user: { id: expect.any(Number), name: "Ezra" },
+            id: 3,
+            username: "TestUser3",
+            first_name: "TestFirstName3",
+            last_name: "TestLastName3"
         });
+
+        const results = await db.query("SELECT COUNT(*) FROM users");
+        expect(results.rows[0].count).toEqual("3");
     });
 });
 
@@ -62,11 +86,11 @@ describe("POST /users", function () {
 describe("PATCH /users/:id", function () {
     test("Update a single user", async function () {
         const resp = await request(app)
-            .patch(`/users/${testUser.id}`)
-            .send({ name: "Troll" });
+            .patch(`/users/1`)
+            .send({ firstName: "Troll" });
         expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
-            user: { id: testUser.id, name: "Troll" },
+            user: { id: 1, first_name: "Troll" },
         });
     });
 
@@ -82,13 +106,16 @@ describe("PATCH /users/:id", function () {
 describe("DELETE /users/:id", function () {
     test("Delete single a user", async function () {
         const resp = await request(app)
-            .delete(`/users/${testUser.id}`);
-        expect(resp.statusCode).toEqual(200);
-        expect(resp.body).toEqual({ message: "user deleted" });
+            .delete(`/users/1`);
+        // expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({ message: "User 1 deleted." });
+
+        const results = await db.query("SELECT COUNT(*) FROM users");
+        expect(results.rows[0].count).toEqual("1");
     });
 });
 
-afterAll(async function () {
+afterAll(function () {
     // close db connection --- if you forget this, Jest will hang
-    await db.end();
+    db.end();
   });

@@ -55,7 +55,7 @@ router.patch("/:id", async function (req, res, next) {
   );
 
   // if(!result.rows[0]) throw new NotFoundError();
-  
+
   const user = result.rows[0];
   if (!user) return res.status(404);
   return res.json({ user });
@@ -65,7 +65,7 @@ router.patch("/:id", async function (req, res, next) {
 
 router.delete("/:id", async function (req, res, next) {
   await User.remove(req.params.id);
-  return res.json({message: `User ${req.params.id} deleted.` });
+  return res.json({ message: `User ${req.params.id} deleted.` });
 });
 
 module.exports = router;

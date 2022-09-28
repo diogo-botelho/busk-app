@@ -118,4 +118,4 @@ describe("DELETE /users/:id", function () {
 afterAll(function () {
     // close db connection --- if you forget this, Jest will hang
     db.end();
-  });
+});

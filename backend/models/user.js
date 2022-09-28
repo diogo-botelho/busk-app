@@ -15,14 +15,16 @@ class User {
 
     static async getAll() {
         const result = await db.query(
-            "SELECT id, username, first_name, last_name FROM users");
+            `SELECT id, username, first_name, last_name
+             FROM users
+             ORDER BY id`);
         return result.rows;
     }
 
     /** get user by id: returns {username, first_name, last_name} */
 
     static async getById(id) {
-        const result  = await db.query(
+        const result = await db.query(
             `SELECT id, username, first_name, last_name
             FROM users
             WHERE id = $1`, [id]);
@@ -54,10 +56,10 @@ class User {
             FROM users
             WHERE id = $1
             RETURNING id`, [id]);
-        
+
         const user = result.rows[0];
-        
-        if(!user) throw new NotFoundError(`No such cat: ${1}`);
+
+        if (!user) throw new NotFoundError(`No such cat: ${1}`);
     }
 
     /** Update user */

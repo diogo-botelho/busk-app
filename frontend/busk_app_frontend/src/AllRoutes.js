@@ -1,8 +1,9 @@
 // import { useContext } from 'react';
 import { Route, Routes, Navigate } from "react-router-dom";
-import HomePage from "./HomePage";
+import Home from "./Home";
 import UserList from "./UserList";
 import User from "./User";
+// import LoginForm from "./LoginForm";
 // import AddUserForm from './AddUserForm'
 
 /**Renders Routes
@@ -22,18 +23,12 @@ function AllRoutes() {
     // const user = useContext(CurrUserContext);
     // const token = localStorage.getItem("token");
     return (
-        <Routes>
-            <Route exact path="/">
-                <HomePage />
-            </Route>
-            <Route exact path="/users">
-                <UserList />
-            </Route>
-            <Route exact path="/users/:id">
-                <User />
-            </Route>
-            <Navigate to="/" />
-        </Routes>
+            <Routes>
+                <Route path="/" element={<Home />}/>
+                <Route path="/users" element={<UserList />}/>
+                <Route path="/users/:id" element={<User />}/>
+                {/* <Navigate to="/" /> */}
+            </Routes>
     );
 }
 

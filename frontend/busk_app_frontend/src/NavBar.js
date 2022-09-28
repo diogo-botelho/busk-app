@@ -17,12 +17,12 @@ function NavBar() {
       <div className="container-fluid">
         <ul className="navbar-nav ms-auto">
           <li className="nav-item me-4">
-            <NavLink className="nav-link" exact to="/">
+            <NavLink className="nav-link" to="/">
               Busk!
             </NavLink>
           </li>
           <li className="nav-item me-4">
-            <NavLink className="nav-link" exact to="/users">
+            <NavLink className="nav-link" to="/users">
               Users
             </NavLink>
           </li>

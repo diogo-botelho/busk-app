@@ -1,19 +1,20 @@
-/** Renders errors from backend
- *
- * props: errors
- * state: none
- *
- * {JobList, CompanyDetail, CompanyList} -> Errors
- */
+import "./Error.css";
 
- function Error({ errors }) {
+/** Renders an error message
+ * 
+ * State:
+ *  - none
+ * 
+ * Props:
+ *  - Array of errror messages
+ * 
+ */
+function Error({ messages }) {
     return (
-      <div className="Error">
-        {errors.map((err, idx) => (
-          <h1 key={idx}>{err}</h1>
-        ))}
-      </div>
+        <div className="Error">
+            {messages.map((message, idx) => <p key={idx}>{message}</p>)}
+        </div>
     );
-  }
-  export default Error;
-  
+}
+
+export default Error;

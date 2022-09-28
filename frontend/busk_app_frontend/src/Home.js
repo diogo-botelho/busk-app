@@ -7,7 +7,7 @@
  * Routes --> HomePage
  */
 
-function HomePage() {
+function Home() {
     return (
         <div className="Homepage">
             <div className="container text-center">
@@ -18,4 +18,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default Home;

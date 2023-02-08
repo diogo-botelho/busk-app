@@ -1,10 +1,10 @@
+import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import './App.css';
+import "./App.css";
 import AllRoutes from "./AllRoutes";
 import NavBar from "./NavBar";
 // import Homepage from "./Homepage";
 // import { useState } from "react";
-
 
 /** Renders Sharebnb App
  *
@@ -25,6 +25,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
-};
+}
 
 export default App;

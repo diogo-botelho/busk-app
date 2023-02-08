@@ -10,7 +10,12 @@ import "./Error.css";
  *  - Array of errror messages
  *
  */
-function Error({ messages }) {
+
+interface ErrorMessageParams {
+  messages: string[];
+}
+
+function Error({ messages }: ErrorMessageParams) {
   return (
     <div className="Error">
       {messages.map((message, idx) => (

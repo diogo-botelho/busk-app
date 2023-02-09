@@ -1,11 +1,8 @@
 /** Express app for Busk. */
+import express from "express";
+import bodyParser from "body-parser";
 
-const express = require("express");
-const nunjucks = require("nunjucks");
-const bodyParser = require("body-parser");
-// const axios = require("axios");
-
-const { NotFoundError } = require("./expressError");
+const { NotFoundError, ExpressError } = require("./expressError");
 const buskerRoutes = require("./routes/buskerRoutes");
 const eventRoutes = require("./routes/eventRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -14,11 +11,6 @@ const app = express();
 
 // Parse body for urlencoded (non-JSON) data
 app.use(bodyParser.urlencoded({ extended: false }));
-
-nunjucks.configure("templates", {
-  autoescape: true,
-  express: app,
-});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,7 +25,7 @@ app.use(function (req, res, next) {
 });
 
 /** Error handler: logs stacktrace and returns JSON error message. */
-app.use(function (err, req, res, next) {
+app.use(function (err: ExpressError, req: express.Request, res: express.Response, next:express.NextFunction) {
   const status = err.status || 500;
   const message = err.message;
   if (process.env.NODE_ENV !== "test") console.error(status, err.stack);

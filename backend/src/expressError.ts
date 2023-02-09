@@ -4,8 +4,11 @@
  *  The error-handling middleware will return this.
  */
 
+
 class ExpressError extends Error {
-  constructor(message, status) {
+  status: number
+
+  constructor(message: string, status: number) {
     super();
     this.message = message;
     this.status = status;

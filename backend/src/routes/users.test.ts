@@ -5,8 +5,6 @@ const request = require("supertest");
 const app = require("../app");
 const db = require("../db");
 
-const { NotFoundError } = require("../expressError");
-
 beforeEach(async function () {
     await db.query("DELETE FROM users");
     await db.query("SELECT setval('users_id_seq', 1, false)");

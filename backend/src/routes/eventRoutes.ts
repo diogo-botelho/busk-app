@@ -3,8 +3,6 @@ const express = require("express");
 const db = require("../db");
 const router = new express.Router();
 
-const { NotFoundError } = require("../expressError");
-
 /** Get events: [event, event, event] */
 router.get("/", async function (req, res, next) {
   const results = await db.query(

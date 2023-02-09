@@ -4,8 +4,11 @@
  *
  **/
 
-const db = require("../db");
-const { NotFoundError } = require("../expressError");
+import db from "../db"
+import NotFoundError from "../expressError"
+
+// const db = require("../db");
+// const { NotFoundError } = require("../expressError");
 
 class User {
     /** get all users: returns [{id, username, first_name, last_name }, ...] */

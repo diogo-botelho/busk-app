@@ -1,5 +1,3 @@
-"use strict";
-
 /** Express app for Busk. */
 
 const express = require("express");

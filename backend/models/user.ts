@@ -1,5 +1,3 @@
-"use strict";
-
 /** User model.
  *
  * User model
@@ -10,7 +8,6 @@ const db = require("../db");
 const { NotFoundError } = require("../expressError");
 
 class User {
-
     /** get all users: returns [{id, username, first_name, last_name }, ...] */
 
     static async getAll() {

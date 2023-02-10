@@ -4,7 +4,7 @@
  *
  **/
 
-import { db } from "../db"
+import db from "../db"
 import { NotFoundError } from "../expressError"
 
 // const db = require("../db");
@@ -61,11 +61,4 @@ export class User {
 
         if (!user) throw new NotFoundError(`No such cat: ${1}`);
     }
-
-    /** Update user */
-
-    // static async update(?) {
-    // }
 }
-
-// module.exports = User;

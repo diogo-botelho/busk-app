@@ -12,4 +12,5 @@ let db = new Client({
 
 db.connect();
 
-module.exports = db;
+export { db };
+// module.exports = db;

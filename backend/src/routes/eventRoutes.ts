@@ -1,10 +1,10 @@
-const express = require("express");
+import express from "express";
 
-const db = require("../db");
-const router = new express.Router();
+import db from "../db";
+const router = express.Router();
 
 /** Get events: [event, event, event] */
-router.get("/", async function (req, res, next) {
+router.get("/", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   const results = await db.query(
     `SELECT id, busker_id, title, type
            FROM events`);
@@ -13,7 +13,7 @@ router.get("/", async function (req, res, next) {
 });
 
 /** Get event, return event */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   const results = await db.query(
     `SELECT id,busker_id, title, type
          FROM events
@@ -27,8 +27,8 @@ router.get("/:id", async function (req, res, next) {
 
 /** Create new event, return event */
 
-router.post("/", async function (req, res, next) {
-  const { title, type } = req.body;
+router.post("/", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
+  const { busker_id, title, type } = req.body;
 
   const result = await db.query(
     `INSERT INTO events (busker_id, title, type)
@@ -42,7 +42,7 @@ router.post("/", async function (req, res, next) {
 
 /** Update event, returning event */
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/:id", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   const { title, type } = req.body;
 
   const result = await db.query(
@@ -61,7 +61,7 @@ router.patch("/:id", async function (req, res, next) {
 
 /** Delete event, returning {message: "Deleted"} */
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   await db.query(
     "DELETE FROM events WHERE id = $1",
     [req.params.id],
@@ -69,4 +69,4 @@ router.delete("/:id", async function (req, res, next) {
   return res.json({ message: "event deleted" });
 });
 
-module.exports = router;
+export { router };

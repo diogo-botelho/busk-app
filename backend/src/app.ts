@@ -2,10 +2,11 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-const { NotFoundError, ExpressError } = require("./expressError");
-const buskerRoutes = require("./routes/buskerRoutes");
-const eventRoutes = require("./routes/eventRoutes");
-const userRoutes = require("./routes/userRoutes");
+import { NotFoundError, ExpressError } from "./expressError";
+
+import { router as buskerRoutes } from "./routes/buskerRoutes";
+import { router as eventRoutes } from "./routes/eventRoutes";
+import { router as userRoutes } from "./routes/userRoutes";
 
 const app = express();
 

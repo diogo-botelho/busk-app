@@ -27,6 +27,8 @@ interface DataToUpdate {
 
 interface JsToSql {
   [key: string]: string;
+  // firstName: string;
+  // lastName: string;
 }
 
 export function sqlForPartialUpdate(

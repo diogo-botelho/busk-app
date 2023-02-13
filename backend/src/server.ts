@@ -1,6 +1,4 @@
-"use strict";
-
-const app = require("./app");
+import app from "./app";
 
 app.listen(3000, function () {
   console.log("Started http://localhost:3000/");

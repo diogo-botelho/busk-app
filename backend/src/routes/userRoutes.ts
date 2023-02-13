@@ -1,27 +1,25 @@
-"use strict";
+import express from "express";
+import db from "../db";
 
-const express = require("express");
-const db = require("../db");
+import { User } from "../models/user";
 
-const User = require("../models/user");
-
-const router = new express.Router();
+const router = express.Router();
 
 /** Get users: [user, user, user] */
-router.get("/", async function (req, res, next) {
+router.get("/", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   const users = await User.getAll();
   return res.json(users);
 });
 
 /** Get user, return user */
-router.get("/:id", async function (req, res, next) {
-  const user = await User.getById(req.params.id);
+router.get("/:id", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
+  const user = await User.getById(+req.params.id);
   return res.json(user);
 });
 
 /** Create new user, return user */
 
-router.post("/", async function (req, res, next) {
+router.post("/", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   const user = await User.create(
     req.body.username,
     req.body.firstName,
@@ -43,7 +41,7 @@ router.post("/", async function (req, res, next) {
 
 /** Update user, returning user */
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/:id", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
   const { firstName } = req.body;
 
   const result = await db.query(
@@ -63,9 +61,9 @@ router.patch("/:id", async function (req, res, next) {
 
 /** Delete user, returning {message: "Deleted"} */
 
-router.delete("/:id", async function (req, res, next) {
-  await User.remove(req.params.id);
+router.delete("/:id", async function (req: express.Request, res: express.Response, next:express.NextFunction) {
+  await User.remove(+req.params.id);
   return res.json({ message: `User ${req.params.id} deleted.` });
 });
 
-module.exports = router;
+export { router };

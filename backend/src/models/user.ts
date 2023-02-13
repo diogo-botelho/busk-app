@@ -1,16 +1,16 @@
-"use strict";
-
 /** User model.
  *
  * User model
  *
  **/
 
-const db = require("../db");
-const { NotFoundError } = require("../expressError");
+import db from "../db"
+import { NotFoundError } from "../expressError"
 
-class User {
+// const db = require("../db");
+// const { NotFoundError } = require("../expressError");
 
+export class User {
     /** get all users: returns [{id, username, first_name, last_name }, ...] */
 
     static async getAll() {
@@ -23,7 +23,7 @@ class User {
 
     /** get user by id: returns {username, first_name, last_name} */
 
-    static async getById(id) {
+    static async getById(id: number) {
         const result = await db.query(
             `SELECT id, username, first_name, last_name
             FROM users
@@ -36,7 +36,7 @@ class User {
 
     /** create a user: returns { username, first_name, last_name } */
 
-    static async create(username, firstName, lastName) {
+    static async create(username: string, firstName: string, lastName: string) {
         const result = await db.query(
             `INSERT INTO users (username, first_name, last_name)
             VALUES ($1, $2, $3)
@@ -50,7 +50,7 @@ class User {
 
     /** delete user given id */
 
-    static async remove(id) {
+    static async remove(id: number) {
         const result = await db.query(
             `DELETE
             FROM users
@@ -61,11 +61,4 @@ class User {
 
         if (!user) throw new NotFoundError(`No such cat: ${1}`);
     }
-
-    /** Update user */
-
-    // static async update(?) {
-    // }
 }
-
-module.exports = User;

@@ -1,5 +1,3 @@
-"use strict";
-
 /** Database for Busk */
 
 const { Client } = require("pg");
@@ -14,4 +12,5 @@ let db = new Client({
 
 db.connect();
 
-module.exports = db;
+export default db;
+// module.exports = db;

@@ -14,16 +14,18 @@ CREATE TABLE users(
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
   first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL
+  last_name TEXT NOT NULL,
+  phone TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE
   -- https://www.youtube.com/watch?v=hpgNx89B8Y4
   -- type TEXT NOT NULL DEFAULT 'user'
 );
 
-INSERT INTO users (username, first_name, last_name)
-VALUES ('diogobotelho','Diogo', 'Botelho');
+INSERT INTO users (username, first_name, last_name, phone, email)
+VALUES ('diogobotelho','Diogo', 'Botelho', '1234567890', 'test@email.com' );
 
-INSERT INTO users (username, first_name, last_name)
-VALUES ('mirjamvanesch', 'Mirjam', 'van Esch');
+INSERT INTO users (username, first_name, last_name, phone, email)
+VALUES ('samau', 'Sammy', 'Au', '11111111', 'test2@email.com');
 
 
 /* BUSKERS TABLE */

@@ -23,18 +23,18 @@ export class User {
 
   static async getAll() {
     const result = await db.query(
-      `SELECT id, username, first_name, last_name
+      `SELECT id, username, first_name, last_name, phone, email
              FROM users
              ORDER BY id`
     );
     return result.rows;
   }
 
-  /** get user by id: returns {username, first_name, last_name} */
+  /** get user by id: returns {username, first_name, last_name, phone, email } */
 
   static async getById(id: number) {
     const result = await db.query(
-      `SELECT id, username, first_name, last_name
+      `SELECT id, username, first_name, last_name, phone, email
             FROM users
             WHERE id = $1`,
       [id]
@@ -66,7 +66,9 @@ export class User {
     return user;
   }
 
-  static async update(username: string, data: UserData) {
+  /** Update a user: returns { username, first_name, last_name, phone, email } */
+
+  static async update(username: string, data: UserData): Promise <UserData> {
     const { setCols, values } = sqlForPartialUpdate(data, {
       firstName: "first_name",
       lastName: "last_name",

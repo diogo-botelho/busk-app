@@ -65,27 +65,16 @@ router.post(
 /** Update user, returning user */
 
 router.patch(
-  "/:id",
+  "/:username",
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { firstName } = req.body;
 
-    const result = await db.query(
-      `UPDATE users
-             SET first_name = $1
-             WHERE id = $2
-             RETURNING id, first_name`,
-      [firstName, req.params.id]
-    );
+   const user = await User.update(req.params.username, req.body);
 
-    // if(!result.rows[0]) throw new NotFoundError();
-
-    const user = result.rows[0];
-    if (!user) return res.status(404);
-    return res.json({ user });
+   return res.json({ user });
   }
 );
 

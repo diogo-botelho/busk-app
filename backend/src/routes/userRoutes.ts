@@ -26,7 +26,8 @@ router.get(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const user = await User.getById(+req.params.id);
+    const { id } = req.params;
+    const user = await User.getById(+id);
     return res.json(user);
   }
 );
@@ -40,13 +41,9 @@ router.post(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const user = await User.create(
-      req.body.username,
-      req.body.firstName,
-      req.body.lastName,
-      req.body.phone,
-      req.body.email
-    );
+    const { username, firstName, lastName, phone, email } = req.body;
+
+    const user = await User.create(username, firstName, lastName, phone, email);
     return res.status(201).json(user);
 
     // const { name } = req.body;
@@ -71,10 +68,11 @@ router.patch(
     res: express.Response,
     next: express.NextFunction
   ) {
+    const { username } = req.params;
 
-   const user = await User.update(req.params.username, req.body);
+    const user = await User.update(username, req.body);
 
-   return res.json({ user });
+    return res.json({ user });
   }
 );
 
@@ -87,7 +85,9 @@ router.delete(
     res: express.Response,
     next: express.NextFunction
   ) {
-    await User.remove(+req.params.id);
+    const { id } = req.params;
+
+    await User.remove(+id);
     return res.json({ message: `User ${req.params.id} deleted.` });
   }
 );

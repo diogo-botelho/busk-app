@@ -42,7 +42,7 @@ export class User {
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No such user: ${id}`);
-    return result.rows[0];
+    return user;
   }
 
   /** create a user: returns { username, first_name, last_name } */
@@ -68,7 +68,7 @@ export class User {
 
   /** Update a user: returns { username, first_name, last_name, phone, email } */
 
-  static async update(username: string, data: UserData): Promise <UserData> {
+  static async update(username: string, data: UserData): Promise<UserData> {
     const { setCols, values } = sqlForPartialUpdate(data, {
       firstName: "first_name",
       lastName: "last_name",
@@ -101,6 +101,6 @@ export class User {
 
     const user = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No such cat: ${1}`);
+    if (!user) throw new NotFoundError(`No such user: ${1}`);
   }
 }

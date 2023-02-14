@@ -17,8 +17,13 @@ import { BadRequestError } from "../expressError";
  *     values: ['Aliya', 32] }
  */
 
-interface DataToUpdate {
-  username?: string;
+interface EventData {
+  buskerId?: string;
+  title?: string;
+  type?: string;
+}
+
+interface UserData {
   firstName?: string;
   lastName?: string;
   phone?: string;
@@ -32,7 +37,7 @@ interface JsToSql {
 }
 
 export function sqlForPartialUpdate(
-  dataToUpdate: DataToUpdate,
+  dataToUpdate: UserData | EventData,
   jsToSql: JsToSql
 ) {
   const keys = Object.keys(dataToUpdate);

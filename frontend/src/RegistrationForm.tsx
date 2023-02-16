@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import Error from "./Error";
-
+import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 /**Renders a login form
  *
  * Props:
@@ -17,14 +17,7 @@ import Error from "./Error";
 // }
 
 interface RegisterFormParams {
-    register: (name: RegistrationFormData) => void;
-}
-interface RegistrationFormData {
-  username: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
+  register: (name: RegistrationFormData) => void;
 }
 
 function RegistrationForm({ register }: RegisterFormParams) {
@@ -33,7 +26,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
     firstName: "",
     lastName: "",
     phone: "",
-    email: ""
+    email: "",
   });
   const [errors, setErrors] = useState<string[] | []>([]);
 
@@ -54,7 +47,9 @@ function RegistrationForm({ register }: RegisterFormParams) {
   return (
     <div className="background-form">
       <div className="row RegistrationForm generalForm">
-        <h1 className="pt-3 RegistrationForm-title generalForm-title">Log In</h1>
+        <h1 className="pt-3 RegistrationForm-title generalForm-title">
+          Log In
+        </h1>
         <form onSubmit={handleSubmit}>
           <div className="col-6 offset-3 pt-3">
             <div className="RegistrationForm-username">

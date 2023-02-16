@@ -4,6 +4,8 @@ import "./App.css";
 import AllRoutes from "./AllRoutes";
 import NavBar from "./NavBar";
 import BuskApi from "./api";
+import { LoginFormData } from "./interfaces/LoginFormData";
+import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 // import Homepage from "./Homepage";
 // import { useState } from "react";
 
@@ -15,18 +17,6 @@ import BuskApi from "./api";
  * App -> {AllRoutes, Navbar}
  */
 
-interface LoginFormData {
-  username: string;
-}
-
-interface RegisterData {
-  username: string,
-  firstName: string,
-  lastName: string,
-  phone: string,
-  email: string
-}
-
 function App() {
   // const [errors, setErrors] = useState([]);
 
@@ -37,23 +27,30 @@ function App() {
     console.log(token + "was successfully logged in");
   }
 
-  
-  async function register({ username, firstName, lastName, phone, email }: RegisterData) {
-    const token = await BuskApi.register(
-      { username, firstName, lastName, phone, email });
+  async function register({
+    username,
+    firstName,
+    lastName,
+    phone,
+    email,
+  }: RegistrationFormData) {
+    const token = await BuskApi.register({
+      username,
+      firstName,
+      lastName,
+      phone,
+      email,
+    });
     // localStorage.setItem("token", token);
     // setToken(token);
-  console.log(token + "was successfully registered");
+    console.log(token + "was successfully registered");
   }
 
   return (
     <div className="App">
       <BrowserRouter>
         <NavBar />
-        <AllRoutes 
-          login={login}
-          register={register}
-        />
+        <AllRoutes login={login} register={register} />
       </BrowserRouter>
     </div>
   );

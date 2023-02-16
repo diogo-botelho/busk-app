@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import Error from "./Error";
-
+import { LoginFormData } from "./interfaces/LoginFormData";
 /**Renders a login form
  *
  * Props:
@@ -17,13 +17,9 @@ interface LoginFormParams {
   login: (username: LoginFormData) => void;
 }
 
-interface LoginFormData {
-  username: string;
-}
-
-function LoginForm( {login}: LoginFormParams) {
+function LoginForm({ login }: LoginFormParams) {
   const [formData, setFormData] = useState<LoginFormData>({
-    username: ""
+    username: "",
   });
   const [errors, setErrors] = useState<string[] | []>([]);
 

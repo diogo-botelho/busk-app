@@ -24,7 +24,7 @@ function App() {
     const token = await BuskApi.login(username);
     // localStorage.setItem("token", token);
     // setToken(token);
-    console.log(token + "was successfully logged in");
+    console.log(token.username + " was successfully logged in");
   }
 
   async function register({
@@ -43,7 +43,7 @@ function App() {
     });
     // localStorage.setItem("token", token);
     // setToken(token);
-    console.log(token + "was successfully registered");
+    console.log(token.username + " was successfully registered");
   }
 
   return (

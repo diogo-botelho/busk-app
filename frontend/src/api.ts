@@ -18,7 +18,6 @@ class BuskApi {
   // // static token = null;
   static async request(endpoint: string, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
-
     const url = `${BASE_URL}/${endpoint}`;
     const params = method === "get" ? data : {};
 
@@ -70,12 +69,7 @@ class BuskApi {
   /** function to log in a user, takes an object {username, password}
    * returns token */
   static async login(username: LoginFormData) {
-    const res = await this.request(
-      "login", //WARNING: this could be a source of error in the future, might need a /
-      { username },
-      "post"
-    );
-
+    const res = (await this.request("auth/login", username, "post")).user;
     //   this.token = res.token;
     return res;
   }
@@ -92,7 +86,7 @@ class BuskApi {
   }: RegistrationFormData) {
     // console.log("Api newUserData:", { newUserData });
     const res = await this.request(
-      "register",
+      "auth/register",
       { username, firstName, lastName, phone, email },
       "post"
     );

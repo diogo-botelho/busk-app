@@ -3,6 +3,11 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./Home";
 import UserList from "./UserList";
 import User from "./User";
+import LoginForm from "./LoginForm";
+import RegistrationForm from "./RegistrationForm";
+import { LoginFormData } from "./interfaces/LoginFormData";
+import { RegistrationFormData } from "./interfaces/RegistrationFormData";
+
 // import LoginForm from "./LoginForm";
 // import AddUserForm from './AddUserForm'
 
@@ -19,17 +24,28 @@ import User from "./User";
  *              AddUserForm
  *          }
  */
-function AllRoutes() {
-    // const user = useContext(CurrUserContext);
-    // const token = localStorage.getItem("token");
-    return (
-            <Routes>
-                <Route path="/" element={<Home />}/>
-                <Route path="/users" element={<UserList />}/>
-                <Route path="/users/:id" element={<User />}/>
-                {/* <Navigate to="/" /> */}
-            </Routes>
-    );
+
+interface AllRoutesParams {
+  login: (user: LoginFormData) => void;
+  register: (user: RegistrationFormData) => void;
+}
+
+function AllRoutes({ login, register }: AllRoutesParams) {
+  // const user = useContext(CurrUserContext);
+  // const token = localStorage.getItem("token");
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/users" element={<UserList />} />
+      <Route path="/users/:id" element={<User />} />
+      <Route path="/login" element={<LoginForm login={login} />} />
+      <Route
+        path="/register"
+        element={<RegistrationForm register={register} />}
+      />
+      ;{/* <Navigate to="/" /> */}
+    </Routes>
+  );
 }
 
 export default AllRoutes;

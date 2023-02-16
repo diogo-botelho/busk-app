@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import Error from "./Error";
-
+import { LoginFormData } from "./interfaces/LoginFormData";
 /**Renders a login form
  *
  * Props:
@@ -14,18 +14,12 @@ import Error from "./Error";
  * */
 
 interface LoginFormParams {
-  login: (user: LoginFormData) => void;
-}
-
-interface LoginFormData {
-  username: string;
-  password: string;
+  login: (username: LoginFormData) => void;
 }
 
 function LoginForm({ login }: LoginFormParams) {
   const [formData, setFormData] = useState<LoginFormData>({
     username: "",
-    password: "",
   });
   const [errors, setErrors] = useState<string[] | []>([]);
 
@@ -59,7 +53,7 @@ function LoginForm({ login }: LoginFormParams) {
                 onChange={handleChange}
               />
             </div>
-            <div className="LoginForm-password">
+            {/* <div className="LoginForm-password">
               <label htmlFor="password">Password</label>
               <input
                 className="form-control"
@@ -69,7 +63,7 @@ function LoginForm({ login }: LoginFormParams) {
                 value={formData.password}
                 onChange={handleChange}
               />
-            </div>
+            </div> */}
             {errors.length > 0 && <Error messages={errors} />}
             <div className="LoginForm-button">
               <button className="btn btn-primary mt-2">Submit</button>

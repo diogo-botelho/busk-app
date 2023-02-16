@@ -32,33 +32,6 @@ router.get(
   }
 );
 
-/** Create new user, return user */
-
-router.post(
-  "/",
-  async function (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) {
-    const { username, firstName, lastName, phone, email } = req.body;
-
-    const user = await User.create(username, firstName, lastName, phone, email);
-    return res.status(201).json(user);
-
-    // const { name } = req.body;
-
-    //   const result = await db.query(
-    //     `INSERT INTO users (name)
-    //            VALUES ($1, $2)
-    //            RETURNING id, name`,
-    //     [name],
-    //   );
-    //   const user = result.rows[0];
-    //   return res.status(201).json({ user });
-  }
-);
-
 /** Update user, returning user */
 
 router.patch(

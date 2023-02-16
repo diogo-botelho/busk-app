@@ -19,6 +19,33 @@ interface UserData {
 }
 
 export class User {
+  static async authenticate(username: string) {
+    // try to find the user first
+    const result = await db.query(
+      `SELECT username,
+                  first_name AS "firstName",
+                  last_name AS "lastName",
+                  email,
+                  phone
+           FROM users
+           WHERE username = $1`,
+      [username]
+    );
+
+    const user = result.rows[0];
+    // if (user) {
+    //   // compare hashed password to a new hash from password
+    //   const isValid = await bcrypt.compare(password, user.password);
+    //   if (isValid === true) {
+    //     delete user.password;
+    //     return user;
+    //   }
+    // }
+
+    return user;
+    // throw new UnauthorizedError("Invalid username/password");
+  }
+
   /** get all users: returns [{id, username, first_name, last_name }, ...] */
 
   static async getAll() {
@@ -47,7 +74,7 @@ export class User {
 
   /** create a user: returns { username, first_name, last_name } */
 
-  static async create(
+  static async register(
     username: string,
     firstName: string,
     lastName: string,

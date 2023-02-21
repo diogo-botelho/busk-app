@@ -33,6 +33,7 @@ interface AllRoutesParams {
 function AllRoutes({ login, register }: AllRoutesParams) {
   // const user = useContext(CurrUserContext);
   // const token = localStorage.getItem("token");
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

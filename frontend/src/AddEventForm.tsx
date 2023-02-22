@@ -31,7 +31,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
     try {
       evt.preventDefault();
       console.log("Submitting event form");
-      submitEvent();
+      submitEvent(formData);
     } catch (err) {
       setErrors(["Something went wrong"]);
     }

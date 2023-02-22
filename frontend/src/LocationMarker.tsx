@@ -1,5 +1,7 @@
 import { Marker, Popup, useMapEvents } from "react-leaflet";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import LocationContext from "./LocationContext";
+
 
 // const center = {
 //     lat: 51.505,
@@ -11,12 +13,20 @@ interface Coordinates {
   lng: number;
 }
 
+interface LocationContextType {
+  position: Coordinates | null;
+}
+
 export function LocationMarker() {
-  const [position, setPosition] = useState<Coordinates | null>(null);
+  let { position, setLocation } = useContext<LocationContextType|null>(LocationContext);
+
+  // const { position, setPosition } = useContext<Coordinates | null>(LocationContext);
+  // const [position, setPosition] = useState<Coordinates | null>(null);
 
   useMapEvents({
     click(e) {
-      setPosition(e.latlng);
+      setLocation(e.latlng);
+      // position = e.latlng;
     },
   });
 

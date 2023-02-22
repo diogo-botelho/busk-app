@@ -2,12 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import Error from "./Error";
 
 interface AddEventFormParams {
-  submitEvent: () => void;
-}
-
-interface Coordinates {
-  lat: number;
-  lng: number;
+  submitEvent: (formData:AddEventFormData) => void;
 }
 
 interface AddEventFormData {

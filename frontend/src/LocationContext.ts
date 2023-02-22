@@ -2,18 +2,18 @@ import React from "react";
 
 
 interface Coordinates {
-    lat: number;
-    lng: number;
+    lat: number|null;
+    lng: number|null;
   }
   
   interface LocationContextType {
-    position: Coordinates | null;
+    coordinates: Coordinates | null;
   }
   
   const LocationContext = React.createContext<LocationContextType | null>({
-    position: {
-      lat:0,
-      lng:0
+    coordinates: {
+      lat:null,
+      lng:null
     }
   });
 

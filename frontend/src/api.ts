@@ -6,14 +6,14 @@ import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
 interface Coordinates {
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
 }
 
 interface EventDetails {
   title: string;
   type: string;
-  // coordinates: Coordinates;
+  coordinates: Coordinates | null;
 }
 
 /** API Class.

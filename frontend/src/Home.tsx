@@ -43,6 +43,7 @@ function Home() {
     const eventDetails = {
       title: formData.title,
       type: formData.type,
+      coordinates, // may need to unpack further before sending to API
     };
 
     await BuskApi.createEvent(eventDetails);

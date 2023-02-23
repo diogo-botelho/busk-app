@@ -1,7 +1,6 @@
-import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "./Map.css";
 import { LocationMarker } from "./LocationMarker";
-import LocationContext from "./Home"
 
 interface MapParams {
   isAddingEvent: boolean;

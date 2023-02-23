@@ -11,9 +11,9 @@ interface Coordinates {
 }
 
 interface EventDetails {
-  title: string,
-  type: string,
-  coordinates: Coordinates
+  title: string;
+  type: string;
+  // coordinates: Coordinates;
 }
 
 /** API Class.
@@ -72,11 +72,12 @@ class BuskApi {
   }
 
   /**
-   * function to create a new event, takes an object 
+   * function to create a new event, takes an object
    * eventDetails { title, type, coordinates }
    * Returns string "Event added." */
   static async createEvent(eventDetails: EventDetails) {
-    const res = (await this.request("events/create", eventDetails, "post"));
+    console.log(eventDetails);
+    // const res = (await this.request("events/create", eventDetails, "post"));
     return "Event added.";
   }
 }

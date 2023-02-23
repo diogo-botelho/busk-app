@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext } from "react";
+import { createContext } from "react";
 
 interface Coordinates {
   lat: number | null;

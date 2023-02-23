@@ -1,13 +1,11 @@
-import { useState, useContext } from "react";
-import React from "react";
+import { useState } from "react";
 
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
 import "./Home.css";
+import { LocationContext } from "./LocationContext";
 
 import BuskApi from "./api";
-
-import { LocationContext } from "./LocationContext";
 
 /** Renders HomePage
  *

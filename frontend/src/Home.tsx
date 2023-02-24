@@ -21,7 +21,7 @@ function Home() {
   // have a user context
   // have a state that checks if user is an artist to conditionally show add event button
   const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
+  const [coordinates, setCoordinates] = useState<Coordinates | undefined>(undefined);
 
   function addEvent() {
     setIsAddingEvent(true);
@@ -34,6 +34,7 @@ function Home() {
   async function submitEvent(formData: AddEventFormData) {
     console.log("submitEvent", formData, coordinates);
     const eventDetails = {
+      buskerId: 1,
       title: formData.title,
       type: formData.type,
       coordinates: {
@@ -49,7 +50,7 @@ function Home() {
     };
     
     setIsAddingEvent(false);
-    setCoordinates(null);
+    setCoordinates(undefined);
   }
 
   return (

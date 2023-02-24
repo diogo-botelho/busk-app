@@ -1,4 +1,4 @@
 export interface Coordinates {
-    lat: number | null | undefined;
-    lng: number | null | undefined;
+    lat: number | undefined;
+    lng: number | undefined;
   };

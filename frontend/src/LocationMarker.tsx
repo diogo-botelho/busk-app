@@ -20,7 +20,7 @@ export function LocationMarker() {
     },
   });
 
-  return coordinates === null ? null : (
+  return coordinates === undefined ? null : (
     <Marker position={coordinates}>
       <Popup>`${coordinates.lat}`</Popup>
     </Marker>

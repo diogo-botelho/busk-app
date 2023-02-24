@@ -35,16 +35,17 @@ router.get(
 /** Create new event, return event */
 
 router.post(
-  "/",
+  "/create",
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { buskerId, title, type } = req.body;
+    const eventDetails = req.body;
 
-    const event = await Event.create(buskerId, title, type);
+    const event = await Event.create(eventDetails);
     return res.status(201).json({ event });
+    // return("this worked");
   }
 );
 

@@ -1,28 +1,28 @@
 import { Marker, Popup, useMapEvents } from "react-leaflet";
-import { useState } from "react";
+import { useContext } from "react";
+import { LocationContext } from "./LocationContext";
+import { Coordinates } from "./interfaces/Coordinates";
 
-// const center = {
-//     lat: 51.505,
-//     lng: -0.09,
-//   }
 
-interface Coordinates {
-  lat: number;
-  lng: number;
+interface LocationContextType {
+  coordinates: Coordinates | null;
+  updateCoordinates: (coordinates: Coordinates) => void;
 }
 
 export function LocationMarker() {
-  const [position, setPosition] = useState<Coordinates | null>(null);
+  let { coordinates, updateCoordinates } = useContext<any | null>(
+    LocationContext
+  );
 
   useMapEvents({
     click(e) {
-      setPosition(e.latlng);
+      updateCoordinates(e.latlng);
     },
   });
 
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>`${position.lat}`</Popup>
+  return coordinates === undefined ? null : (
+    <Marker position={coordinates}>
+      <Popup>`${coordinates.lat}`</Popup>
     </Marker>
   );
 }

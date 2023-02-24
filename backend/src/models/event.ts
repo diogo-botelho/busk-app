@@ -6,10 +6,16 @@ import db from "../db";
 import { NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
 
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
 interface EventData {
-  buskerId?: string;
-  title?: string;
-  type?: string;
+  buskerId: string;
+  title: string;
+  type: string;
+  coordinates: Coordinates;
 }
 
 export class Event {
@@ -43,12 +49,16 @@ export class Event {
   }
 
   /** create an event: returns { id, bukserId, title, type } */
-  static async create(buskerId: string, title: string, type: string) {
+  static async create(eventData:EventData) {
+    
+    const { buskerId, title, type } = eventData;
+    const coordinates = JSON.stringify(eventData.coordinates);
+
     const result = await db.query(
-      `INSERT INTO events (busker_id, title, type)
-        VALUES ($1, $2, $3)
-        RETURNING id, busker_id as "buskerId", title, type`,
-      [buskerId, title, type]
+      `INSERT INTO events (busker_id, title, type, coordinates)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, busker_id as "buskerId", title, type, coordinates`,
+      [buskerId, title, type, coordinates]
     );
 
     const event = result.rows[0];

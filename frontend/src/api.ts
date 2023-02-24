@@ -6,9 +6,10 @@ import { Coordinates } from "./interfaces/Coordinates";
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 
 interface EventDetails {
+  buskerId: number | undefined;
   title: string;
   type: string;
-  coordinates: Coordinates | undefined;
+  coordinates: Coordinates;
 }
 
 /** API Class.
@@ -71,7 +72,8 @@ class BuskApi {
    * Returns string "Event added." */
   static async createEvent(eventDetails: EventDetails) {
     console.log("api call", eventDetails);
-    // const res = (await this.request("events/create", eventDetails, "post"));
+
+    const res = (await this.request("events/create", eventDetails, "post"));
     return "Event added.";
   }
 }

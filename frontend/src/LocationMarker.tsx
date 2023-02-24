@@ -1,11 +1,8 @@
 import { Marker, Popup, useMapEvents } from "react-leaflet";
 import { useContext } from "react";
 import { LocationContext } from "./LocationContext";
+import { Coordinates } from "./interfaces/Coordinates";
 
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
 
 interface LocationContextType {
   coordinates: Coordinates | null;
@@ -20,8 +17,6 @@ export function LocationMarker() {
   useMapEvents({
     click(e) {
       updateCoordinates(e.latlng);
-
-      console.log(coordinates, e.latlng);
     },
   });
 

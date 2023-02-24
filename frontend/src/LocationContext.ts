@@ -1,9 +1,5 @@
 import { createContext } from "react";
-
-interface Coordinates {
-  lat: number | null;
-  lng: number | null;
-}
+import { Coordinates } from "./interfaces/Coordinates";
 
 interface LocationContextType {
   coordinates: Coordinates | null;

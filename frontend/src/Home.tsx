@@ -4,6 +4,8 @@ import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
 import "./Home.css";
 import { LocationContext } from "./LocationContext";
+import { Coordinates } from "./interfaces/Coordinates";
+import { AddEventFormData } from "./interfaces/AddEventFormData";
 
 import BuskApi from "./api";
 
@@ -14,15 +16,6 @@ import BuskApi from "./api";
  *
  * Routes --> HomePage
  */
-interface AddEventFormData {
-  title: string;
-  type: string;
-}
-
-interface Coordinates {
-  lat: number | null;
-  lng: number | null;
-}
 
 function Home() {
   // have a user context
@@ -43,10 +36,18 @@ function Home() {
     const eventDetails = {
       title: formData.title,
       type: formData.type,
-      coordinates, // may need to unpack further before sending to API
+      coordinates: {
+        lat: coordinates?.lat,
+        lng: coordinates?.lng
+      }
     };
-
-    await BuskApi.createEvent(eventDetails);
+    
+    if (!coordinates) { 
+    console.log ("Please select a location");
+    } else {
+      await BuskApi.createEvent(eventDetails);
+    };
+    
     setIsAddingEvent(false);
     setCoordinates(null);
   }

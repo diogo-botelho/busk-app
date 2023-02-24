@@ -2,18 +2,13 @@ import axios from "axios";
 
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-
+import { Coordinates } from "./interfaces/Coordinates";
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
-
-interface Coordinates {
-  lat: number | null;
-  lng: number | null;
-}
 
 interface EventDetails {
   title: string;
   type: string;
-  coordinates: Coordinates | null;
+  coordinates: Coordinates | undefined;
 }
 
 /** API Class.
@@ -60,7 +55,6 @@ class BuskApi {
     phone,
     email,
   }: RegistrationFormData) {
-    // console.log("Api newUserData:", { newUserData });
     const res = await this.request(
       "auth/register",
       { username, firstName, lastName, phone, email },
@@ -76,7 +70,7 @@ class BuskApi {
    * eventDetails { title, type, coordinates }
    * Returns string "Event added." */
   static async createEvent(eventDetails: EventDetails) {
-    console.log(eventDetails);
+    console.log("api call", eventDetails);
     // const res = (await this.request("events/create", eventDetails, "post"));
     return "Event added.";
   }

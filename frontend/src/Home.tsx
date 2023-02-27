@@ -4,21 +4,12 @@ import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
 import "./Home.css";
 import { LocationContext } from "./LocationContext";
+
 import { Coordinates } from "./interfaces/Coordinates";
 import { AddEventFormData } from "./interfaces/AddEventFormData";
+import { Event } from "./interfaces/Event";
 
 import BuskApi from "./api";
-
-interface Events {
-  events: Event[];
-}
-
-interface Event {
-  buskerId: number;
-  title: string,
-  type: string,
-  coordinates: Coordinates;
-};
 
 /** Renders HomePage
  *
@@ -29,33 +20,33 @@ interface Event {
  */
 
 function Home() {
-  // have a user context
-  // have a state that checks if user is an artist to conditionally show add event button
   const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const [coordinates, setCoordinates] = useState<Coordinates | undefined>(undefined);
+  const [coordinates, setCoordinates] = useState<Coordinates | undefined>(
+    undefined
+  );
   const [events, setEvents] = useState<Event[]>([]);
   const [needsEvents, setNeedsEvents] = useState(true);
 
-  useEffect(function fetchEventsOnLoad() {
-
+  useEffect(
+    function fetchEventsOnLoad() {
       async function getEventsfromApi() {
-          try {
-              const events = await BuskApi.getEvents();
-              console.log("called api",events);
-              setEvents(events);
-              setNeedsEvents(false);
-          }
-          catch (err) {
-            console.log("Errors on getting Events.");
-              // setErrors(previousErrors => [...previousErrors, ...err]);
-          };
-      };
+        try {
+          const events = await BuskApi.getEvents();
+          console.log("called api", events);
+          setEvents(events);
+          setNeedsEvents(false);
+        } catch (err) {
+          console.log("Errors on getting Events.");
+          // setErrors(previousErrors => [...previousErrors, ...err]);
+        }
+      }
       // console.log("right before calling getJobsFromApi");  //wrap API call in
 
       getEventsfromApi();
-
-  }, [needsEvents]);
-    // await BuskApi.getEvents();
+    },
+    [needsEvents]
+  );
+  // await BuskApi.getEvents();
 
   function addEvent() {
     setIsAddingEvent(true);
@@ -73,26 +64,23 @@ function Home() {
       type: formData.type,
       coordinates: {
         lat: coordinates?.lat,
-        lng: coordinates?.lng
-      }
+        lng: coordinates?.lng,
+      },
     };
-    
-    if (!coordinates) { 
-    console.log ("Please select a location");
+
+    if (!coordinates) {
+      console.log("Please select a location");
     } else {
       await BuskApi.createEvent(eventDetails);
-      setEvents(previousData => ([
-        ...previousData,
-        eventDetails
-      ]))
-    };
+      setEvents((previousData) => [...previousData, eventDetails]);
+    }
     setIsAddingEvent(false);
     setCoordinates(undefined);
   }
 
   if (needsEvents) {
     return <h1>Loading...</h1>;
-  } 
+  }
 
   return (
     <div className="Homepage">

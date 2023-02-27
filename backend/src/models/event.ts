@@ -49,8 +49,7 @@ export class Event {
   }
 
   /** create an event: returns { id, bukserId, title, type } */
-  static async create(eventData:EventData) {
-    
+  static async create(eventData: EventData) {
     const { buskerId, title, type } = eventData;
     const coordinates = JSON.stringify(eventData.coordinates);
 

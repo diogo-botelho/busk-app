@@ -1,18 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import Error from "./Error";
+import { AddEventFormData } from "./interfaces/AddEventFormData";
 
 interface AddEventFormParams {
-  submitEvent: () => void;
-}
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-interface AddEventFormData {
-  title: string;
-  type: string;
+  submitEvent: (formData:AddEventFormData) => void;
 }
 
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
@@ -30,8 +21,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     try {
       evt.preventDefault();
-      console.log("Submitting event form");
-      submitEvent();
+      submitEvent(formData);
     } catch (err) {
       setErrors(["Something went wrong"]);
     }

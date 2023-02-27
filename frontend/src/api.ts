@@ -2,8 +2,15 @@ import axios from "axios";
 
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-
+import { Coordinates } from "./interfaces/Coordinates";
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+
+interface EventDetails {
+  buskerId: number | undefined;
+  title: string;
+  type: string;
+  coordinates: Coordinates;
+}
 
 /** API Class.
  *
@@ -31,41 +38,6 @@ class BuskApi {
     }
   }
 
-  // Individual API routes
-
-  // /** Get details on a company by handle.
-  //  * returns { handle, name, description, numEmployees, logoUrl, jobs }
-  //  * where jobs is [{ id, title, salary, equity }, ...]
-  //  */
-
-  // static async getCompany(handle) {
-  //   const res = await this.request(`companies/${handle}`);
-  //   return res.company;
-  // }
-
-  // /** get an array of companies with/without searchTerm
-  //  * returns [{handle, name, description, numEmployees logoUrl},...]
-  // */
-
-  // static async getCompanies(searchTerm) {
-  //   const searchFilters = searchTerm ? { name: searchTerm } : null;
-  //   const res = await this.request("companies", searchFilters);
-  //   return res.companies;
-  // }
-
-  // /** get an array of jobs with/without searchTerm
-  //  * returns [{id, title, salary, equity, companyHandle, companyName},...]
-  // */
-  // static async getJobs(searchTerm) {
-  //   // console.log("api.js - getJobs:", searchTerm);
-
-  //   const searchFilters = searchTerm ? { title: searchTerm } : null;
-  //   // console.log("searchFilters:", { searchFilters });
-
-  //   const res = await this.request("jobs", searchFilters);
-  //   return res.jobs;
-  // }
-
   /** function to log in a user, takes an object {username, password}
    * returns token */
   static async login(username: LoginFormData) {
@@ -84,7 +56,6 @@ class BuskApi {
     phone,
     email,
   }: RegistrationFormData) {
-    // console.log("Api newUserData:", { newUserData });
     const res = await this.request(
       "auth/register",
       { username, firstName, lastName, phone, email },
@@ -95,52 +66,16 @@ class BuskApi {
     return res;
   }
 
-  // /** function that updates a user's information,
-  //  * takes an object { username, firstName, lastName, email }
-  //  * returns user: { username, firstName, lastName, email, isAdmin }
-  //  */
-  // static async updateUser({ username, firstName, lastName, email }) {
-  //   const patchData = { firstName, lastName, email };
+  /**
+   * function to create a new event, takes an object
+   * eventDetails { title, type, coordinates }
+   * Returns string "Event added." */
+  static async createEvent(eventDetails: EventDetails) {
+    console.log("api call", eventDetails);
 
-  //   const res = await this.request(
-  //     `users/${username}`,
-  //     patchData,
-  //     "patch");
-
-  //   return res.user;
-  // }
-
-  // /**function that gets the information for one user
-  //  * takes username,
-  //  * returns { username, firstName, lastName, isAdmin, jobs }
-  //  * where jobs is { id, title, companyHandle, companyName, state }
-  //  * */
-
-  // static async getUser(username) {
-  //   // console.log('get user', this.token)
-  //   const res = await this.request(`users/${username}`);
-  //   return res.user;
-  // }
-
-  // /**function that applies a job for a user,
-  //  * takes username and jobId,
-  //  * returns jobId
-  //  */
-
-  // static async applyForJob(username, jobId) {
-  //   const res = await this.request(`users/${username}/jobs/${jobId}`, {}, "post");
-  //   return res.applied;
-  // }
-
-  /**function that gets a job,
-   * takes jobId,
-   * returns job
-   */
-  // static async getJob(jobId) {
-  //   const res = await this.request(`jobs/${jobId}`);
-  //   return res.job;
-  // }
-  // obviously, you'll add a lot here ...
+    const res = (await this.request("events/create", eventDetails, "post"));
+    return "Event added.";
+  }
 }
 
 export default BuskApi;

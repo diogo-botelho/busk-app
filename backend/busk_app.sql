@@ -50,7 +50,7 @@ CREATE TABLE events(
 );
 
 INSERT INTO events (busker_id, title, type,coordinates)
-VALUES (1, 'Diogo rocks in Central Park', 'concert','{"lat":40.77848305406739,"lng":73.96902361328482}');
+VALUES (1, 'Diogo rocks in Central Park', 'concert','{"lat":40.77848305406739,"lng":-73.96902361328482}');
 
 /* 
 ** BUSK_APP_TEST

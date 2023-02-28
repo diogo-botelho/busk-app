@@ -1,14 +1,16 @@
 import { Marker, Popup } from "react-leaflet";
-import { Coordinates } from "./interfaces/Coordinates";
+import { Event } from "./interfaces/Event";
 
 interface LocationMarkerParams {
   key: string;
-  location: Coordinates;
+  event: Event;
 }
 
-export function EventMarker({ key, location }: LocationMarkerParams) {
-  const lat = location.lat;
-  const lng = location.lng;
+export function EventMarker({ key, event }: LocationMarkerParams) {
+  const { title, type } = event;
+  const { lat, lng } = event.coordinates;
+  // const lat = event.coordinates.lat;
+  // const lng = event.coordinates.lng;
 
   const position = [];
   if (lat && lng) {
@@ -18,7 +20,10 @@ export function EventMarker({ key, location }: LocationMarkerParams) {
 
   return lat && lng ? (
     <Marker key={key} position={[lat, lng]}>
-      <Popup>`${position[0]}`</Popup>
+      <Popup>
+        Title: {title} <br />
+        Type: {type} <br />
+      </Popup>
     </Marker>
   ) : null;
 }

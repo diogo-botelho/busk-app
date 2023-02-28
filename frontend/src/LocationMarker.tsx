@@ -25,7 +25,6 @@ export function LocationMarker() {
 
   return coordinates === undefined ? null : (
     <Marker position={coordinates}>
-      <Popup>`${coordinates.lat}`</Popup>
     </Marker>
   );
 }

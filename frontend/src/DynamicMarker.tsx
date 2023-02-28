@@ -1,30 +1,29 @@
 import { Marker, useMapEvents } from "react-leaflet";
 import { useContext } from "react";
-import { TemporaryCoordinatesContext } from "./TemporaryCoordinatesContext";
-import { Coordinates } from "./interfaces/Coordinates";
+import { NewCoordinatesContext } from "./NewCoordinatesContext";
 
-// interface TemporaryCoordinatesContextType {
-//   temporaryCoordinates: Coordinates | null;
-//   updatetemporaryCoordinates: (coordinates: Coordinates) => void;
+// interface NewCoordinatesContextType {
+//   NewCoordinates: Coordinates | null;
+//   updateNewCoordinates: (coordinates: Coordinates) => void;
 // }
 
 // interface DynamicMarkerParams {
 //   key: string | null;
-//   temporaryCoordinates: Coordinates | undefined;
+//   NewCoordinates: Coordinates | undefined;
 // }
 
 export function DynamicMarker() {
-  let { temporaryCoordinates, updateTemporaryCoordinates } = useContext<
-    any | null
-  >(TemporaryCoordinatesContext);
+  let { newCoordinates, updateNewCoordinates } = useContext<any | null>(
+    NewCoordinatesContext
+  );
 
   useMapEvents({
     click(e) {
-      updateTemporaryCoordinates(e.latlng);
+      updateNewCoordinates(e.latlng);
     },
   });
 
-  return temporaryCoordinates === undefined ? null : (
-    <Marker position={temporaryCoordinates}></Marker>
+  return newCoordinates === undefined ? null : (
+    <Marker position={newCoordinates}></Marker>
   );
 }

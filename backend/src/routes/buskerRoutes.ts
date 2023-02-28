@@ -16,17 +16,17 @@ router.get(
   }
 );
 
-/** DELETE /events/[id]: delete event, return {message: Deleted} */
-router.delete(
-  "/:id",
-  function (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) {
-    db.Busker.delete(req.params.id);
-    return res.json({ message: "Deleted" });
-  }
-);
+// /** DELETE /events/[id]: delete event, return {message: Deleted} */
+// router.delete(
+//   "/:id",
+//   function (
+//     req: express.Request,
+//     res: express.Response,
+//     next: express.NextFunction
+//   ) {
+//     db.Busker.delete(req.params.id);
+//     return res.json({ message: "Deleted" });
+//   }
+// );
 
 export { router };

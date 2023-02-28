@@ -1,19 +1,11 @@
 /** Database for Busk */
+import { DB_URI } from "./config";
+import { Client } from "pg";
 
-const { Client } = require("pg");
-
-const DB_URI =
-  process.env.NODE_ENV === "test"
-    ? // ? "postgresql://diogobotelho:password@localhost/busk_app_test"
-      // : "postgresql://diogobotelho:password@localhost/busk_app";
-      "busk_app_test"
-    : "busk_app";
-
-let db = new Client({
+const db = new Client({
   connectionString: DB_URI,
 });
 
 db.connect();
 
 export default db;
-// module.exports = db;

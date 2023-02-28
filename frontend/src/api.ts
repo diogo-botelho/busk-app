@@ -3,7 +3,7 @@ import axios from "axios";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 import { Coordinates } from "./interfaces/Coordinates";
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+import { BACKEND_BASE_URL } from "./config";
 
 interface EventDetails {
   buskerId: number | undefined;
@@ -25,7 +25,7 @@ class BuskApi {
   // // static token = null;
   static async request(endpoint: string, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
-    const url = `${BASE_URL}/${endpoint}`;
+    const url = `${BACKEND_BASE_URL}/${endpoint}`;
     const params = method === "get" ? data : {};
 
     try {

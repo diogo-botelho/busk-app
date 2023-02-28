@@ -24,7 +24,7 @@ export function Map({ events, isAddingEvent }: MapParams) {
       />
 
       {events.map((event) => (
-        <EventMarker key={event.title} location={event.coordinates} />
+        <EventMarker key={event.title} event={event} />
       ))}
       {isAddingEvent ? <LocationMarker /> : undefined}
     </MapContainer>

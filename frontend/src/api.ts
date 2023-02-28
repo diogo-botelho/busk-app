@@ -73,8 +73,16 @@ class BuskApi {
   static async createEvent(eventDetails: EventDetails) {
     console.log("api call", eventDetails);
 
-    const res = (await this.request("events/create", eventDetails, "post"));
+    const res = await this.request("events/create", eventDetails, "post");
     return "Event added.";
+  }
+
+  /**
+   * function to get all events. Returns [event, event,event] */
+  static async getEvents() {
+    const res = await this.request("events/");
+
+    return res;
   }
 }
 

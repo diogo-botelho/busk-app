@@ -3,7 +3,7 @@ import Error from "./Error";
 import { AddEventFormData } from "./interfaces/AddEventFormData";
 
 interface AddEventFormParams {
-  submitEvent: (formData:AddEventFormData) => void;
+  submitEvent: (formData: AddEventFormData) => void;
 }
 
 export function AddEventForm({ submitEvent }: AddEventFormParams) {

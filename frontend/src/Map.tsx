@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import "./Map.css";
-import { LocationMarker } from "./LocationMarker";
-import { EventMarker } from "./EventMarker";
+import { DynamicMarker } from "./DynamicMarker";
+import { StaticMarker } from "./StaticMarker";
 
 import { Event } from "./interfaces/Event";
 
@@ -24,9 +24,9 @@ export function Map({ events, isAddingEvent }: MapParams) {
       />
 
       {events.map((event) => (
-        <EventMarker key={event.title} event={event} />
+        <StaticMarker key={event.title} event={event} />
       ))}
-      {isAddingEvent ? <LocationMarker /> : undefined}
+      {isAddingEvent ? <DynamicMarker /> : undefined}
     </MapContainer>
   );
 }

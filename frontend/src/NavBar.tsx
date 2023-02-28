@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import "./NavBar.css";
 
 import Nav from "react-bootstrap/Nav";
@@ -18,44 +17,23 @@ import Container from "react-bootstrap/Container";
 
 function NavBar() {
   return (
-    <Navbar bg="light" expand="lg">
-      <Container>
-        <Navbar.Brand href="/">Busk!</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar className="position-relative" sticky="top" bg="light" expand="xl">
+      <Navbar.Brand className="position-absolute top-0 start-50 translate-middle-x" href="/">Busk!</Navbar.Brand>
+      <Container className="position-absolute top-100 end-0">
+        {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="/users">Users</Nav.Link>
-            <Nav.Link href="/login">Login</Nav.Link>
-            <Nav.Link href="/register">Register</Nav.Link>
+          <Nav className="position-absolute end-0">
+            <Nav.Item>
+              <Nav.Link href="/users">Users</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link href="/login">Login</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link href="/register">Register</Nav.Link>
+            </Nav.Item>
           </Nav>
         </Navbar.Collapse>
-
-        {/* <nav className="NavBar navbar navbar-expand-md">
-        <div className="container-fluid">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item me-4">
-              <NavLink className="nav-link" to="/">
-                Busk!
-              </NavLink>
-            </li>
-            <li className="nav-item me-4">
-              <NavLink className="nav-link" to="/users">
-                Users
-              </NavLink>
-            </li>
-            <li className="nav-item me-4">
-              <NavLink className="nav-link" to="/login">
-                Login
-              </NavLink>
-            </li>
-            <li className="nav-item me-4">
-              <NavLink className="nav-link" to="/register">
-                Register
-              </NavLink>
-            </li>
-          </ul>
-        </div>
-      </nav> */}
       </Container>
     </Navbar>
   );

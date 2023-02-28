@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
 import "./Home.css";
-import { LocationContext } from "./LocationContext";
+import { NewCoordinatesContext } from "./NewCoordinatesContext";
 
 import { Coordinates } from "./interfaces/Coordinates";
 import { AddEventFormData } from "./interfaces/AddEventFormData";
@@ -21,7 +21,7 @@ import BuskApi from "./api";
 
 function Home() {
   const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const [coordinates, setCoordinates] = useState<Coordinates | undefined>(
+  const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
     undefined
   );
   const [events, setEvents] = useState<Event[]>([]);
@@ -52,30 +52,30 @@ function Home() {
     setIsAddingEvent(true);
   }
 
-  function updateCoordinates(mapLocation: Coordinates) {
-    setCoordinates(mapLocation);
+  function updateNewCoordinates(mapCoordinates: Coordinates) {
+    setNewCoordinates(mapCoordinates);
   }
 
   async function submitEvent(formData: AddEventFormData) {
-    console.log("submitEvent", formData, coordinates);
+    console.log("submitEvent", formData, newCoordinates);
     const eventDetails = {
       buskerId: 1,
       title: formData.title,
       type: formData.type,
       coordinates: {
-        lat: coordinates?.lat,
-        lng: coordinates?.lng,
+        lat: newCoordinates?.lat,
+        lng: newCoordinates?.lng,
       },
     };
 
-    if (!coordinates) {
+    if (!newCoordinates) {
       console.log("Please select a location");
     } else {
       await BuskApi.createEvent(eventDetails);
       setEvents((previousData) => [...previousData, eventDetails]);
     }
     setIsAddingEvent(false);
-    setCoordinates(undefined);
+    setNewCoordinates(undefined);
   }
 
   if (needsEvents) {
@@ -87,9 +87,11 @@ function Home() {
       <div className="container text-center">
         <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
         <p className="lead">Placeholder!</p>
-        <LocationContext.Provider value={{ coordinates, updateCoordinates }}>
+        <NewCoordinatesContext.Provider
+          value={{ newCoordinates, updateNewCoordinates }}
+        >
           <Map events={events} isAddingEvent={isAddingEvent} />
-        </LocationContext.Provider>
+        </NewCoordinatesContext.Provider>
         <button onClick={addEvent}>Add Event</button>
         {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
       </div>

@@ -25,7 +25,7 @@ export class Event {
    */
   static async getAll() {
     const result = await db.query(
-      `SELECT id, busker_id, title, type
+      `SELECT busker_id, title, type, coordinates
           FROM events`
     );
 
@@ -49,8 +49,7 @@ export class Event {
   }
 
   /** create an event: returns { id, bukserId, title, type } */
-  static async create(eventData:EventData) {
-    
+  static async create(eventData: EventData) {
     const { buskerId, title, type } = eventData;
     const coordinates = JSON.stringify(eventData.coordinates);
 

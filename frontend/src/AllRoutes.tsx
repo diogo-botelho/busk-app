@@ -8,9 +8,6 @@ import RegistrationForm from "./RegistrationForm";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 
-// import LoginForm from "./LoginForm";
-// import AddUserForm from './AddUserForm'
-
 /**Renders Routes
  *
  * Props: none
@@ -31,9 +28,6 @@ interface AllRoutesParams {
 }
 
 function AllRoutes({ login, register }: AllRoutesParams) {
-  // const user = useContext(CurrUserContext);
-  // const token = localStorage.getItem("token");
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />

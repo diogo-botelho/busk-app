@@ -6,8 +6,6 @@ import NavBar from "./NavBar";
 import BuskApi from "./api";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-// import Homepage from "./Homepage";
-// import { useState } from "react";
 
 /** Renders Sharebnb App
  *

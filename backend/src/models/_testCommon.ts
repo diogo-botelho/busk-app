@@ -13,16 +13,13 @@ export async function commonBeforeAll() {
 
   await db.query(`
     INSERT INTO events(buskerId, title, type, coordinates)
-    VALUES ('b1', 'e1', E1, '[0,0]',
-           ('b2', 'e2', E2, '[0,1]',
-           ('b3', 'e3', E3, '[1,0]'`);
+    VALUES ('b1', 'e1', 'E1', '[0,0]',
+           ('b2', 'e2', 'E2', '[0,1]',`);
 
   await db.query(`
     INSERT INTO users (username firstName, lastName, phone, email)
     VALUES ('u1','u1F', u1L, '111222333', 'u1@email.com'),
            ('u2','u2F', u2L, '999888777', 'u2@email.com'),
-           ('u3','u3F', u3L, '000000000', 'u3@email.com'),
-           ('u4','u4F', u4L, NULL, NULL)
     RETURNING firstName`);
 }
 

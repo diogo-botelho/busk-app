@@ -55,9 +55,9 @@ describe("register", function () {
   });
 });
 
-/************************************** findAll */
+/************************************** getAll */
 
-describe("findAll", function () {
+describe("getAll", function () {
   test("works", async function () {
     const users = await User.getAll();
     expect(users).toEqual([
@@ -79,9 +79,9 @@ describe("findAll", function () {
   });
 });
 
-/************************************** get */
+/************************************** getById */
 
-describe("get", function () {
+describe("getById", function () {
   test("works", async function () {
     let user = await User.getById(1);
     expect(user).toEqual({

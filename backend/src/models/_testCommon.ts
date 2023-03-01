@@ -18,11 +18,11 @@ export async function commonBeforeAll() {
            ('b3', 'e3', E3, '[1,0]'`);
 
   await db.query(`
-    INSERT INTO users (firstName, lastName, phone, email)
-    VALUES ('u1F', u1L, '111222333', 'u1@email.com'),
-           ('u2F', u2L, '999888777', 'c1'),
-           ('u3F', u3L, '000000000', 'c1'),
-           ('u4F', u4L, NULL, NULL)
+    INSERT INTO users (username firstName, lastName, phone, email)
+    VALUES ('u1','u1F', u1L, '111222333', 'u1@email.com'),
+           ('u2','u2F', u2L, '999888777', 'u2@email.com'),
+           ('u3','u3F', u3L, '000000000', 'u3@email.com'),
+           ('u4','u4F', u4L, NULL, NULL)
     RETURNING firstName`);
 }
 

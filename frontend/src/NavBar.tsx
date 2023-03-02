@@ -1,8 +1,5 @@
-import "./NavBar.css";
-
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Container from "react-bootstrap/Container";
+import { Link } from "react-router-dom";
+// import "./NavBar.css";
 
 // import { useContext } from "react";
 // import "./NavBar.css";
@@ -17,25 +14,43 @@ import Container from "react-bootstrap/Container";
 
 function NavBar() {
   return (
-    <Navbar className="position-relative" sticky="top" bg="light" expand="xl">
-      <Navbar.Brand className="position-absolute top-0 start-50 translate-middle-x" href="/">Busk!</Navbar.Brand>
-      <Container className="position-absolute top-100 end-0">
-        {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="position-absolute end-0">
-            <Nav.Item>
-              <Nav.Link href="/users">Users</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link href="/login">Login</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link href="/register">Register</Nav.Link>
-            </Nav.Item>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
+      <div className="container-fluid">
+        <a className="navbar-brand me-auto" href="/">
+          Busk!
+        </a>
+        <button // need an onClick to toggle
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navItems"
+          aria-controls="navItems"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse " id="navItems">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link active" aria-current="page" to="/">
+                Users
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/login">
+                Login
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/register">
+                Register
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
   );
 }
 

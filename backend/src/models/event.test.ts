@@ -61,13 +61,13 @@ describe("getAll", function () {
         buskerId: "b1",
         title: "e1",
         type: "E1",
-        coordinates: {lat:0,lng:0},
+        coordinates: { lat: 0, lng: 0 },
       },
       {
         buskerId: "b1",
         title: "U1F",
         type: "U1L",
-        coordinates: {lat:0,lng:1},
+        coordinates: { lat: 0, lng: 1 },
       },
     ]);
   });
@@ -82,7 +82,7 @@ describe("get", function () {
       buskerId: "b1",
       title: "e1",
       type: "E1",
-      coordinates:{lat:0,lng:0};
+      coordinates: { lat: 0, lng: 0 },
     });
   });
 
@@ -104,7 +104,7 @@ describe("update", function () {
     buskerId: "b1",
     title: "newTitle",
     type: "NewType",
-    coordinates: {lat:45,lng:45}
+    coordinates: { lat: 45, lng: 45 },
   };
 
   test("works", async function () {
@@ -119,7 +119,7 @@ describe("update", function () {
   test("not found if no such job", async function () {
     try {
       await Event.update(0, {
-        title: "test",
+        ...updateData,
       });
       fail();
     } catch (err) {
@@ -129,13 +129,13 @@ describe("update", function () {
 
   test("bad request with no data", async function () {
     try {
-      await Job.update(testJobIds[0], {});
+      await Event.update(1, null);
       fail();
     } catch (err) {
       // expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
-  });
+});
 
 /************************************** remove */
 

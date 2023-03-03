@@ -48,7 +48,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
     <div className="background-form">
       <div className="row RegistrationForm generalForm">
         <h1 className="pt-3 RegistrationForm-title generalForm-title">
-          Log In
+          Register
         </h1>
         <form onSubmit={handleSubmit}>
           <div className="col-6 offset-3 pt-3">

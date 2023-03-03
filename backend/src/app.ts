@@ -9,6 +9,9 @@ import { router as buskerRoutes } from "./routes/buskerRoutes";
 import { router as eventRoutes } from "./routes/eventRoutes";
 import { router as userRoutes } from "./routes/userRoutes";
 import { router as authRoutes } from "./routes/authRoutes";
+
+const morgan = require("morgan");
+
 const app = express();
 
 app.use(cors());

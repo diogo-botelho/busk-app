@@ -12,10 +12,10 @@ interface Coordinates {
 }
 
 interface EventData {
-  buskerId: string;
-  title: string;
-  type: string;
-  coordinates: Coordinates;
+  buskerId: string | null;
+  title: string | null;
+  type: string | null;
+  coordinates: Coordinates | null;
 }
 
 export class Event {
@@ -49,9 +49,10 @@ export class Event {
   }
 
   /** create an event: returns { id, bukserId, title, type } */
-  static async create(eventData: EventData) {
-    const { buskerId, title, type } = eventData;
-    const coordinates = JSON.stringify(eventData.coordinates);
+  static async create(eventData: EventData | null) {
+    if (eventData) {
+      const { buskerId, title, type } = eventData;
+      const coordinates = JSON.stringify(eventData.coordinates);
 
     const result = await db.query(
       `INSERT INTO events (busker_id, title, type, coordinates)
@@ -62,6 +63,8 @@ export class Event {
 
     const event = result.rows[0];
     return event;
+    }
+    else return "Invalid data."
   }
 
   /** Update an event: returns { id, buskerId, title, type } */

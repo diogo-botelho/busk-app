@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 // import "./NavBar.css";
 
 // import { useContext } from "react";
@@ -13,13 +14,18 @@ import { Link } from "react-router-dom";
  */
 
 function NavBar() {
+  const [toggled, setToggle] = useState(false);
+
+  const toggle = () => setToggle(toggled => !toggled);
+
   return (
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand me-auto" href="/">
           Busk!
         </a>
-        <button // need an onClick to toggle
+        <button
+          onClick={toggle} // need an onClick to toggle
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
@@ -30,20 +36,20 @@ function NavBar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse " id="navItems">
+        <div id="navItems" className={`navbar-collapse ${!toggled ? "collapse" : ""}`}>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/">
-                Users
+                Events
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/login">
+              <Link className="nav-link" to="/login" onClick={toggle}>
                 Login
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/register">
+              <Link className="nav-link" to="/register" onClick={toggle}>
                 Register
               </Link>
             </li>

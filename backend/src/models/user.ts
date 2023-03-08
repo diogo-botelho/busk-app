@@ -5,125 +5,195 @@
  **/
 
 import db from "../db";
-import { NotFoundError } from "../expressError";
+import bcrypt from "bcrypt";
+
 import { sqlForPartialUpdate } from "../helpers/sql";
-
-// const db = require("../db");
-// const { NotFoundError } = require("../expressError");
-
-interface UserData {
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  email?: string;
-}
+import {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} from "../expressError";
+import { BCRYPT_WORK_FACTOR } from "../config";
+import { UserData } from "../interfaces/UserData";
 
 export class User {
-  static async authenticate(username: string) {
+  /** authenticate user with username, password.
+   *
+   * Returns { username, first_name, last_name, email, is_admin }
+   *
+   * Throws UnauthorizedError is user not found or wrong password.
+   **/
+
+  static async authenticate(username: string, password: string) {
     // try to find the user first
     const result = await db.query(
       `SELECT username,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  phone
+              password,
+              first_name AS "firstName",
+              last_name AS "lastName",
+              email,
+              phone
            FROM users
            WHERE username = $1`,
       [username]
     );
 
     const user = result.rows[0];
-    // if (user) {
-    //   // compare hashed password to a new hash from password
-    //   const isValid = await bcrypt.compare(password, user.password);
-    //   if (isValid === true) {
-    //     delete user.password;
-    //     return user;
-    //   }
-    // }
+    if (user) {
+      const isValid = await bcrypt.compare(password, user.password);
+      if (isValid === true) {
+        delete user.password;
+        return user;
+      }
+    }
 
-    return user;
-    // throw new UnauthorizedError("Invalid username/password");
+    throw new UnauthorizedError("Invalid username/password");
   }
 
-  /** get all users: returns [{id, username, first_name, last_name }, ...] */
+  /** Register user with data.
+   *
+   * Returns { username, firstName, lastName, email, phone, isAdmin }
+   *
+   * Throws BadRequestError on duplicates.
+   **/
+
+  static async register(userData: UserData) {
+    const { username, password, firstName, lastName, email, phone, isAdmin } =
+      userData;
+    const duplicateCheck = await db.query(
+      `SELECT username
+       FROM users
+       WHERE username = $1`,
+      [username]
+    );
+
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Duplicate username: ${username}`);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+
+    const result = await db.query(
+      `INSERT INTO users (
+        username,
+        password, 
+        first_name,
+        last_name,
+        phone,
+        email,
+        is_admin)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, username, first_name AS "firstName", last_name AS "lastName", phone, email, is_admin as "isAdmin`,
+      [username, hashedPassword, firstName, lastName, phone, email, isAdmin]
+    );
+
+    const user = result.rows[0];
+
+    return user;
+  }
+
+  /** Get all users.
+   *
+   *  Returns [{username, first_name, last_name }, ...]
+   * */
 
   static async getAll() {
     const result = await db.query(
-      `SELECT id, username, first_name, last_name, phone, email
+      `SELECT username, 
+              first_name as "firstName", 
+              last_name as "lastName", 
+              phone, 
+              email,
+              is_admin as "isAdmin"
              FROM users
              ORDER BY id`
     );
     return result.rows;
   }
 
-  /** get user by id: returns {username, first_name, last_name, phone, email } */
+  /** Get user by username.
+   *
+   *  Returns {username, first_name, last_name, phone, email, isAdmin }
+   * */
 
-  static async getById(id: number) {
+  static async get(username: string) {
     const result = await db.query(
-      `SELECT id, username, first_name, last_name, phone, email
+      `SELECT username, 
+              first_name as "firstName", 
+              last_name as "lastName", 
+              phone, 
+              email,
+              is_admin as "isAdmin"
             FROM users
-            WHERE id = $1`,
-      [id]
-    );
-    const user = result.rows[0];
-
-    if (!user) throw new NotFoundError(`No such user: ${id}`);
-    return user;
-  }
-
-  /** create a user: returns { username, first_name, last_name } */
-
-  static async register(
-    username: string,
-    firstName: string,
-    lastName: string,
-    phone: string,
-    email: string
-  ) {
-    const result = await db.query(
-      `INSERT INTO users (username, first_name, last_name, phone, email)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING id, username, first_name AS "firstName", last_name AS "lastName", phone, email`,
-      [username, firstName, lastName, phone, email]
+            WHERE username = $1`,
+      [username]
     );
 
     const user = result.rows[0];
 
+    if (!user) throw new NotFoundError(`No such user: ${username}`);
+
     return user;
   }
 
-  /** Update a user: returns { username, first_name, last_name, phone, email } */
+  /** Update user data with `data`.
+   *
+   * This is a "partial update" --- it's fine if data doesn't contain
+   * all the fields; this only changes provided ones.
+   *
+   * Data can include:
+   *   { username, firstName, lastName, password, email, phone }
+   *
+   * Returns { username, first_name, last_name, phone, email, phone }
+   *
+   * Throws NotFoundError if not found.
+   *
+   * WARNING: this function can set a new password or make a user an admin.
+   * Callers of this function must be certain they have validated inputs to this
+   * or a serious security risks are opened.
+   * */
 
   static async update(username: string, data: UserData): Promise<UserData> {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+    }
+
     const { setCols, values } = sqlForPartialUpdate(data, {
       firstName: "first_name",
       lastName: "last_name",
+      isAdmin: "is_admin",
     });
-    const usernameVarIdx = "$" + (values.length + 1);
+    const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users
             SET ${setCols} 
-            WHERE username = ${usernameVarIdx} 
-            RETURNING id, username, first_name as "firstName", last_name AS "lastName", phone, email`;
+            WHERE id = ${idVarIdx} 
+            RETURNING username, 
+                      first_name as "firstName",
+                      last_name AS "lastName", 
+                      phone, 
+                      email,
+                      is_admin AS "isAdmin"`;
 
     const result = await db.query(querySql, [...values, username]);
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
+    delete user.password;
     return user;
   }
 
-  /** delete user given id */
+  /** Delete user from database given id; returns undefined.
+   */
 
-  static async remove(id: number) {
+  static async remove(username: string) {
     const result = await db.query(
       `DELETE
             FROM users
-            WHERE id = $1
-            RETURNING id`,
-      [id]
+            WHERE username = $1
+            RETURNING username`,
+      [username]
     );
 
     const user = result.rows[0];

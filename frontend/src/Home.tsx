@@ -84,14 +84,19 @@ function Home() {
 
   return (
     <div className="Homepage">
-      <div className="container text-center">
-        <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
+      <div className="container text-center ">
+        <div className="p-5 mb-4 bg-light border rounded-3">
+          <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
+          <h6 className="fs-4">Find local artists around your location!</h6>
+        </div>
         <NewCoordinatesContext.Provider
           value={{ newCoordinates, updateNewCoordinates }}
         >
           <Map events={events} isAddingEvent={isAddingEvent} />
         </NewCoordinatesContext.Provider>
-        <button onClick={addEvent}>Add Event</button>
+        <button className="mt-3 btn btn-primary btn-lg" onClick={addEvent}>
+          Add Event
+        </button>
         {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
       </div>
     </div>

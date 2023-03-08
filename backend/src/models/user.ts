@@ -14,15 +14,7 @@ import {
   UnauthorizedError,
 } from "../expressError";
 import { BCRYPT_WORK_FACTOR } from "../config";
-
-interface UserData {
-  username: string;
-  password: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  email?: string;
-}
+import { UserData } from "../interfaces/UserData";
 
 export class User {
   /** authenticate user with username, password.
@@ -65,15 +57,9 @@ export class User {
    * Throws BadRequestError on duplicates.
    **/
 
-  static async register(
-    username: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    phone: string,
-    email: string,
-    isAdmin: boolean
-  ) {
+  static async register(userData: UserData) {
+    const { username, password, firstName, lastName, email, phone, isAdmin } =
+      userData;
     const duplicateCheck = await db.query(
       `SELECT username
        FROM users
@@ -108,13 +94,12 @@ export class User {
 
   /** Get all users.
    *
-   *  Returns [{id, username, first_name, last_name }, ...]
+   *  Returns [{username, first_name, last_name }, ...]
    * */
 
   static async getAll() {
     const result = await db.query(
-      `SELECT id,
-              username, 
+      `SELECT username, 
               first_name as "firstName", 
               last_name as "lastName", 
               phone, 
@@ -126,28 +111,27 @@ export class User {
     return result.rows;
   }
 
-  /** Get user by id.
+  /** Get user by username.
    *
-   *  Returns {id, username, first_name, last_name, phone, email, isAdmin }
+   *  Returns {username, first_name, last_name, phone, email, isAdmin }
    * */
 
-  static async getById(id: number) {
+  static async get(username: string) {
     const result = await db.query(
-      `SELECT id,
-              username, 
+      `SELECT username, 
               first_name as "firstName", 
               last_name as "lastName", 
               phone, 
               email,
               is_admin as "isAdmin"
             FROM users
-            WHERE id = $1`,
-      [id]
+            WHERE username = $1`,
+      [username]
     );
 
     const user = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No such user: ${id}`);
+    if (!user) throw new NotFoundError(`No such user: ${username}`);
 
     return user;
   }
@@ -158,9 +142,9 @@ export class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { username, firstName, lastName, password, email, isAdmin }
+   *   { username, firstName, lastName, password, email, phone }
    *
-   * Returns { id, username, first_name, last_name, phone, email, isAdmin }
+   * Returns { username, first_name, last_name, phone, email, phone }
    *
    * Throws NotFoundError if not found.
    *
@@ -184,8 +168,7 @@ export class User {
     const querySql = `UPDATE users
             SET ${setCols} 
             WHERE id = ${idVarIdx} 
-            RETURNING id, 
-                      username, 
+            RETURNING username, 
                       first_name as "firstName",
                       last_name AS "lastName", 
                       phone, 
@@ -204,13 +187,13 @@ export class User {
   /** Delete user from database given id; returns undefined.
    */
 
-  static async remove(id: number) {
+  static async remove(username: string) {
     const result = await db.query(
       `DELETE
             FROM users
-            WHERE id = $1
-            RETURNING id`,
-      [id]
+            WHERE username = $1
+            RETURNING username`,
+      [username]
     );
 
     const user = result.rows[0];

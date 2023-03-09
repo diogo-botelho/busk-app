@@ -22,7 +22,8 @@ interface EventDetails {
 
 class BuskApi {
   // static token = localStorage.getItem("token");
-  // // static token = null;
+  static token: string | null;
+
   static async request(endpoint: string, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
     const url = `${BACKEND_BASE_URL}/${endpoint}`;
@@ -40,10 +41,10 @@ class BuskApi {
 
   /** function to log in a user, takes an object {username, password}
    * returns token */
-  static async login(username: LoginFormData) {
-    const res = (await this.request("auth/login", username, "post")).user;
-    //   this.token = res.token;
-    return res;
+  static async login(loginData: LoginFormData) {
+    const res = await this.request("auth/login", loginData, "post");
+    // this.token = res.token;
+    return res.token;
   }
 
   /** function to register a new user
@@ -51,6 +52,7 @@ class BuskApi {
    * returns token */
   static async register({
     username,
+    password,
     firstName,
     lastName,
     phone,
@@ -58,7 +60,7 @@ class BuskApi {
   }: RegistrationFormData) {
     const res = await this.request(
       "auth/register",
-      { username, firstName, lastName, phone, email },
+      { username, password, firstName, lastName, phone, email },
       "post"
     );
 

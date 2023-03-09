@@ -4,6 +4,7 @@ import db from "../db";
 import { User } from "../models/user";
 export const router = express.Router();
 import { UserData } from "../interfaces/UserData";
+import { createToken } from "../helpers/tokens";
 
 /** Logs in a user, return user */
 router.post(
@@ -21,8 +22,8 @@ router.post(
 
     const { username, password } = req.body;
     const user = await User.authenticate(username, password);
-    // const token = createToken(user);
-    return res.json({ user });
+    const token = createToken(user);
+    return res.json({ token });
   }
 );
 
@@ -36,7 +37,8 @@ router.post(
   ) {
     const newUserData: UserData = req.body;
 
-    const user = await User.register(newUserData);
+    const user = await User.register({ ...newUserData, isAdmin: false });
+    delete user.isAdmin;
     return res.status(201).json(user);
   }
 );

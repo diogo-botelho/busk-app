@@ -10,16 +10,18 @@ import { router as eventRoutes } from "./routes/eventRoutes";
 import { router as userRoutes } from "./routes/userRoutes";
 import { router as authRoutes } from "./routes/authRoutes";
 
-const morgan = require("morgan");
+import { authenticateJWT } from "./middleware/auth";
+import morgan from "morgan";
 
 const app = express();
 
 app.use(cors());
 // Parse body for urlencoded (non-JSON) data
-app.use(bodyParser.urlencoded({ extended: false }));
-
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(morgan("tiny"));
+app.use(authenticateJWT);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 app.use("/auth", authRoutes);
 app.use("/buskers", buskerRoutes);

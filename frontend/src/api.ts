@@ -21,16 +21,16 @@ interface EventDetails {
  */
 
 class BuskApi {
-  // static token = localStorage.getItem("token");
-  static token: string | null;
+  static token: string | undefined;
 
   static async request(endpoint: string, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
     const url = `${BACKEND_BASE_URL}/${endpoint}`;
+    const headers = { Authorization: `Bearer ${BuskApi.token}` };
     const params = method === "get" ? data : {};
 
     try {
-      return (await axios({ url, method, data, params })).data;
+      return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       console.log("error");
       // console.error("API Error:", err.response);
@@ -39,11 +39,19 @@ class BuskApi {
     }
   }
 
+  // Individual API routes
+
+  /** Get the current user. */
+
+  static async getCurrentUser(username: string) {
+    let res = await this.request(`users/${username}`);
+    return res;
+  }
+
   /** function to log in a user, takes an object {username, password}
    * returns token */
   static async login(loginData: LoginFormData) {
     const res = await this.request("auth/login", loginData, "post");
-    // this.token = res.token;
     return res.token;
   }
 
@@ -63,8 +71,6 @@ class BuskApi {
       { username, password, firstName, lastName, phone, email },
       "post"
     );
-
-    //   this.token = res.token;
     return res;
   }
 
@@ -73,8 +79,6 @@ class BuskApi {
    * eventDetails { title, type, coordinates }
    * Returns string "Event added." */
   static async createEvent(eventDetails: EventDetails) {
-    console.log("api call", eventDetails);
-
     const res = await this.request("events/create", eventDetails, "post");
     return "Event added.";
   }

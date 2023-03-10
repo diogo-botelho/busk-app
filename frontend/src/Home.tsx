@@ -32,7 +32,6 @@ function Home() {
       async function getEventsfromApi() {
         try {
           const events = await BuskApi.getEvents();
-          console.log("called api", events);
           setEvents(events);
           setNeedsEvents(false);
         } catch (err) {
@@ -40,7 +39,6 @@ function Home() {
           // setErrors(previousErrors => [...previousErrors, ...err]);
         }
       }
-      // console.log("right before calling getJobsFromApi");  //wrap API call in
 
       getEventsfromApi();
     },
@@ -57,7 +55,6 @@ function Home() {
   }
 
   async function submitEvent(formData: AddEventFormData) {
-    console.log("submitEvent", formData, newCoordinates);
     const eventDetails = {
       buskerId: 1,
       title: formData.title,

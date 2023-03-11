@@ -21,7 +21,6 @@ const TOKEN_STORAGE_ID = "busk-app-token";
 function App() {
   // const [errors, setErrors] = useState([]);
   const [infoLoaded, setInfoLoaded] = useState(false);
-  const [goRedirect, setGoRedirect] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"||TOKEN_STORAGE_ID));
 
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -44,7 +43,6 @@ function App() {
             let currentUser = await BuskApi.getCurrentUser(decodedUsername);
             setCurrentUser(currentUser);
             // setApplicationIds(new Set(currentUser.applications));
-            setGoRedirect(false);
           } catch (err) {
             console.error("App loadUserInfo: problem loading", err);
             setCurrentUser(undefined);
@@ -67,19 +65,12 @@ function App() {
 
     localStorage.setItem("token", token);
     setToken(token);
-    setGoRedirect(true);
   }
 
   async function register(registerData: RegistrationFormData) {
     const token = await BuskApi.register(registerData);
-    // localStorage.setItem("token", token);
-    // setToken(token);
-    console.log("After register: ",{token,localStorage});
     localStorage.setItem("token", token);
-    console.log("After adding to localStorage: ",{token,localStorage});
     setToken(token);
-    console.log("After setToken: ",{token,localStorage});
-    setGoRedirect(true);
     console.log(token.username + " was successfully registered");
   }
 

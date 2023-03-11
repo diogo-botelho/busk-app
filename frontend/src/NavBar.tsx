@@ -14,7 +14,11 @@ import { UserContext } from "./UserContext";
  * App -> NavBar
  */
 
-function NavBar() {
+interface Logout {
+  logout: () => void;
+}
+
+function NavBar({ logout }: Logout) {
   const [toggled, setToggle] = useState(false);
 
   const toggle = () => setToggle((toggled) => !toggled);
@@ -30,14 +34,21 @@ function NavBar() {
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link active" aria-current="page" to="/logout">
-            Logout
-          </Link>
+          {currentUser ? (
+            <Link
+              className="nav-link active"
+              aria-current="page"
+              to="/"
+              onClick={logout}
+            >
+              Logout {currentUser.firstName || currentUser.username}
+            </Link>
+          ) : null}
         </li>
       </ul>
     );
   }
-  
+
   function loggedOutNav() {
     return (
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">

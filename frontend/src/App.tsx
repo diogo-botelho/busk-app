@@ -22,7 +22,6 @@ function App() {
   // const [errors, setErrors] = useState([]);
   const [infoLoaded, setInfoLoaded] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token"||TOKEN_STORAGE_ID));
-
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(
@@ -50,7 +49,6 @@ function App() {
         }
         // setInfoLoaded(true);
       }
-
       // set infoLoaded to false while async getCurrentUser runs; once the
       // data is fetched (or even if an error happens!), this will be set back
       // to false to control the spinner.
@@ -60,6 +58,13 @@ function App() {
     [token]
   );
 
+  /** Handles site-wide login.
+   *
+   * Logs in a user, adds token to localStorage and adds current user to
+   * CurrentUser context.
+   *
+   * Make sure you await this function to see if any error happens.
+   */
   async function login(loginData: LoginFormData) {
     const token = await BuskApi.login(loginData);
 
@@ -67,6 +72,13 @@ function App() {
     setToken(token);
   }
 
+  /** Handles site-wide new user registration.
+   *
+   * Automatically logs them in (set token) upon signup and adds current user to
+   * CurrentUser context.
+   *
+   * Make sure you await this function to see if any error happens.
+   */
   async function register(registerData: RegistrationFormData) {
     const token = await BuskApi.register(registerData);
     localStorage.setItem("token", token);
@@ -74,10 +86,16 @@ function App() {
     console.log(token.username + " was successfully registered");
   }
 
+  /** Handles site-wide logout. */
+  function logout() {
+    setCurrentUser(undefined);
+    setToken(null);
+  }
+
   return (
     <div className="App">
       <UserContext.Provider value={currentUser}>
-        <NavBar />
+        <NavBar logout={logout}/>
         <AllRoutes login={login} register={register} />
       </UserContext.Provider>
     </div>

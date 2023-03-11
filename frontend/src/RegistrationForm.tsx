@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Error from "./Error";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 /**Renders a login form
@@ -16,19 +17,24 @@ import { RegistrationFormData } from "./interfaces/RegistrationFormData";
 // interface RegistrationFormParams {
 // }
 
+const INITIAL_FORM_DATA = {
+  username: "",
+  password: "",
+  firstName: "",
+  lastName: "",
+  phone: "",
+  email: "",
+};
+
 interface RegisterFormParams {
   register: (name: RegistrationFormData) => void;
 }
 
 function RegistrationForm({ register }: RegisterFormParams) {
-  const [formData, setFormData] = useState<RegistrationFormData>({
-    username: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    email: "",
-  });
+  const [formData, setFormData] =
+    useState<RegistrationFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<string[] | []>([]);
+  const navigate = useNavigate();
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
@@ -39,6 +45,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
     try {
       evt.preventDefault();
       await register(formData);
+      return navigate("/", { replace: true });
     } catch (err) {
       setErrors(["Something went wrong"]);
     }
@@ -59,6 +66,17 @@ function RegistrationForm({ register }: RegisterFormParams) {
                 id="username"
                 name="username"
                 value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="RegistrationForm-password">
+              <label htmlFor="password">Password</label>
+              <input
+                className="form-control"
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
                 onChange={handleChange}
               />
             </div>

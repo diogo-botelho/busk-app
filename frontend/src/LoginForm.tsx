@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Error from "./Error";
 import { LoginFormData } from "./interfaces/LoginFormData";
 /**Renders a login form
@@ -13,15 +14,19 @@ import { LoginFormData } from "./interfaces/LoginFormData";
  * Routes -> LoginForm
  * */
 
+const INITIAL_FORM_DATA = {
+  username: "",
+  password: "",
+};
+
 interface LoginFormParams {
   login: (username: LoginFormData) => void;
 }
 
 function LoginForm({ login }: LoginFormParams) {
-  const [formData, setFormData] = useState<LoginFormData>({
-    username: "",
-  });
+  const [formData, setFormData] = useState<LoginFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<string[] | []>([]);
+  const navigate = useNavigate();
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
@@ -29,9 +34,10 @@ function LoginForm({ login }: LoginFormParams) {
   }
 
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
     try {
-      evt.preventDefault();
       await login(formData);
+      return navigate("/", { replace: true });
     } catch (err) {
       setErrors(["Something went wrong"]);
     }
@@ -53,7 +59,7 @@ function LoginForm({ login }: LoginFormParams) {
                 onChange={handleChange}
               />
             </div>
-            {/* <div className="LoginForm-password">
+            <div className="LoginForm-password">
               <label htmlFor="password">Password</label>
               <input
                 className="form-control"
@@ -63,7 +69,7 @@ function LoginForm({ login }: LoginFormParams) {
                 value={formData.password}
                 onChange={handleChange}
               />
-            </div> */}
+            </div>
             {errors.length > 0 && <Error messages={errors} />}
             <div className="LoginForm-button">
               <button className="btn btn-primary mt-2">Submit</button>

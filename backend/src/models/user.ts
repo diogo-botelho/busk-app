@@ -32,7 +32,8 @@ export class User {
               first_name AS "firstName",
               last_name AS "lastName",
               email,
-              phone
+              phone,
+              is_admin AS "isAdmin"
            FROM users
            WHERE username = $1`,
       [username]
@@ -72,7 +73,6 @@ export class User {
     }
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
-
     const result = await db.query(
       `INSERT INTO users (
         username,
@@ -82,8 +82,8 @@ export class User {
         phone,
         email,
         is_admin)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING id, username, first_name AS "firstName", last_name AS "lastName", phone, email, is_admin as "isAdmin`,
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING id, username, first_name AS "firstName", last_name AS "lastName", phone, email, is_admin as "isAdmin"`,
       [username, hashedPassword, firstName, lastName, phone, email, isAdmin]
     );
 

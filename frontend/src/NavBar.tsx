@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "./UserContext";
 // import "./NavBar.css";
 
 // import { useContext } from "react";
@@ -16,7 +17,9 @@ import { useState } from "react";
 function NavBar() {
   const [toggled, setToggle] = useState(false);
 
-  const toggle = () => setToggle(toggled => !toggled);
+  const toggle = () => setToggle((toggled) => !toggled);
+
+  const currentUser = useContext(UserContext);
 
   return (
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
@@ -36,7 +39,10 @@ function NavBar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div id="navItems" className={`navbar-collapse ${!toggled ? "collapse" : ""}`}>
+        <div
+          id="navItems"
+          className={`navbar-collapse ${!toggled ? "collapse" : ""}`}
+        >
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/">

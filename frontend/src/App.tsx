@@ -69,24 +69,12 @@ function App() {
     setGoRedirect(true);
   }
 
-  async function register({
-    username,
-    password,
-    firstName,
-    lastName,
-    phone,
-    email,
-  }: RegistrationFormData) {
-    const token = await BuskApi.register({
-      username,
-      password,
-      firstName,
-      lastName,
-      phone,
-      email,
-    });
+  async function register(registerData: RegistrationFormData) {
+    const token = await BuskApi.register(registerData);
     // localStorage.setItem("token", token);
     // setToken(token);
+    setToken(token);
+    setGoRedirect(true);
     console.log(token.username + " was successfully registered");
   }
 

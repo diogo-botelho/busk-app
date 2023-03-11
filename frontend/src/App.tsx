@@ -73,7 +73,11 @@ function App() {
     const token = await BuskApi.register(registerData);
     // localStorage.setItem("token", token);
     // setToken(token);
+    console.log("After register: ",{token,localStorage});
+    localStorage.setItem("token", token);
+    console.log("After adding to localStorage: ",{token,localStorage});
     setToken(token);
+    console.log("After setToken: ",{token,localStorage});
     setGoRedirect(true);
     console.log(token.username + " was successfully registered");
   }

@@ -62,12 +62,8 @@ class BuskApi {
     // const { username, password, firstName, lastName, phone, email } =
     //   registerData;
 
-    const res = await this.request(
-      "auth/register",
-      registerData,
-      "post"
-    );
-    return res;
+    const res = await this.request("auth/register", registerData, "post");
+    return res.token;
   }
 
   /**

@@ -37,8 +37,9 @@ router.post(
   ) {
     const newUserData: UserData = req.body;
 
-    const user = await User.register({ ...newUserData, isAdmin: false });
-    delete user.isAdmin;
-    return res.status(201).json(user);
+    const newUser = await User.register({ ...newUserData, isAdmin: false });
+    delete newUser.isAdmin;
+    const token = createToken(newUser);
+    return res.status(201).json({token});
   }
 );

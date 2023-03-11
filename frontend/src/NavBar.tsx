@@ -14,12 +14,62 @@ import { UserContext } from "./UserContext";
  * App -> NavBar
  */
 
-function NavBar() {
+interface Logout {
+  logout: () => void;
+}
+
+function NavBar({ logout }: Logout) {
   const [toggled, setToggle] = useState(false);
 
   const toggle = () => setToggle((toggled) => !toggled);
 
   const currentUser = useContext(UserContext);
+
+  function loggedInNav() {
+    return (
+      <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li className="nav-item">
+          <Link className="nav-link active" aria-current="page" to="/">
+            Events
+          </Link>
+        </li>
+        <li className="nav-item">
+          {currentUser ? (
+            <Link
+              className="nav-link active"
+              aria-current="page"
+              to="/"
+              onClick={logout}
+            >
+              Logout {currentUser.firstName || currentUser.username}
+            </Link>
+          ) : null}
+        </li>
+      </ul>
+    );
+  }
+
+  function loggedOutNav() {
+    return (
+      <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li className="nav-item">
+          <Link className="nav-link active" aria-current="page" to="/">
+            Events
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/login" onClick={toggle}>
+            Login
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/register" onClick={toggle}>
+            Register
+          </Link>
+        </li>
+      </ul>
+    );
+  }
 
   return (
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
@@ -43,23 +93,7 @@ function NavBar() {
           id="navItems"
           className={`navbar-collapse ${!toggled ? "collapse" : ""}`}
         >
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">
-                Events
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login" onClick={toggle}>
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register" onClick={toggle}>
-                Register
-              </Link>
-            </li>
-          </ul>
+          {currentUser ? loggedInNav() : loggedOutNav()}
         </div>
       </div>
     </nav>

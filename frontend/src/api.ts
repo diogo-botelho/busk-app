@@ -58,20 +58,12 @@ class BuskApi {
   /** function to register a new user
    * takes an object  { username, password, firstName, lastName, email }
    * returns token */
-  static async register({
-    username,
-    password,
-    firstName,
-    lastName,
-    phone,
-    email,
-  }: RegistrationFormData) {
-    const res = await this.request(
-      "auth/register",
-      { username, password, firstName, lastName, phone, email },
-      "post"
-    );
-    return res;
+  static async register(registerData: RegistrationFormData) {
+    // const { username, password, firstName, lastName, phone, email } =
+    //   registerData;
+
+    const res = await this.request("auth/register", registerData, "post");
+    return res.token;
   }
 
   /**

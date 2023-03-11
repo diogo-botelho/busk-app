@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
 import "./Home.css";
 import { NewCoordinatesContext } from "./NewCoordinatesContext";
+import { UserContext } from "./UserContext";
 
 import { Coordinates } from "./interfaces/Coordinates";
 import { AddEventFormData } from "./interfaces/AddEventFormData";
@@ -26,6 +27,7 @@ function Home() {
   );
   const [events, setEvents] = useState<Event[]>([]);
   const [needsEvents, setNeedsEvents] = useState(true);
+  const currentUser = useContext(UserContext);
 
   useEffect(
     function fetchEventsOnLoad() {
@@ -64,8 +66,9 @@ function Home() {
         lng: newCoordinates?.lng,
       },
     };
-
-    if (!newCoordinates) {
+    if (!currentUser) {
+      console.log("Please log in to submit an event.");
+    } else if (!newCoordinates) {
       console.log("Please select a location");
     } else {
       await BuskApi.createEvent(eventDetails);
@@ -91,9 +94,11 @@ function Home() {
         >
           <Map events={events} isAddingEvent={isAddingEvent} />
         </NewCoordinatesContext.Provider>
-        <button className="mt-3 btn btn-primary btn-lg" onClick={addEvent}>
-          Add Event
-        </button>
+        {currentUser ? (
+          <button className="mt-3 btn btn-primary btn-lg" onClick={addEvent}>
+            Add Event
+          </button>
+        ) : undefined}
         {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
       </div>
     </div>

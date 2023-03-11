@@ -5,7 +5,6 @@ import NavBar from "./NavBar";
 import BuskApi from "./api";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-import useLocalStorage from "./useLocalStorage";
 import { UserContext } from "./UserContext";
 import jwt_decode from "jwt-decode";
 

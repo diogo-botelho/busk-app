@@ -43,23 +43,33 @@ function NavBar() {
           id="navItems"
           className={`navbar-collapse ${!toggled ? "collapse" : ""}`}
         >
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">
-                Events
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login" onClick={toggle}>
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register" onClick={toggle}>
-                Register
-              </Link>
-            </li>
-          </ul>
+          {currentUser ? (
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <Link className="nav-link active" aria-current="page" to="/">
+                  Events
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link active" aria-current="page" to="/logout">
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          ) : (
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <Link className="nav-link" to="/login" onClick={toggle}>
+                  Login
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/register" onClick={toggle}>
+                  Register
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </nav>

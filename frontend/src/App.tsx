@@ -22,7 +22,8 @@ function App() {
   // const [errors, setErrors] = useState([]);
   const [infoLoaded, setInfoLoaded] = useState(false);
   const [goRedirect, setGoRedirect] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem(TOKEN_STORAGE_ID));
+  const [token, setToken] = useState(localStorage.getItem("token"||TOKEN_STORAGE_ID));
+
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(

@@ -1,9 +1,12 @@
 .NavBar {
   background-color: white;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.125);
+  /* border-bottom: 2px solid rgba(0, 0, 0, 0.125); */
 }
 
-.nav-link.active {
-  font-weight: bold;
-  color: black;
+.nav-pills .nav-link.active {
+  background-color: red;
+}
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover {
+  background-color: red;
 }

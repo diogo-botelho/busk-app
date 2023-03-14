@@ -3,10 +3,6 @@
   /* border-bottom: 2px solid rgba(0, 0, 0, 0.125); */
 }
 
-.nav-pills .nav-link.active {
-  background-color: red;
-}
-
-.nav-pills > .active > a, .nav-pills > .active > a:hover {
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
   background-color: red;
 }

@@ -1,5 +1,14 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Container,
+  Form,
+  Row,
+  Col,
+  Button,
+  FloatingLabel,
+} from "react-bootstrap";
+
 import Error from "./Error";
 import { LoginFormData } from "./interfaces/LoginFormData";
 /**Renders a login form
@@ -44,40 +53,45 @@ function LoginForm({ login }: LoginFormParams) {
   }
 
   return (
-    <div className="background-form">
-      <div className="row LoginForm generalForm">
-        <h1 className="pt-3 LoginForm-title generalForm-title">Log In</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="col-6 offset-3 pt-3">
-            <div className="LoginForm-username">
-              <label htmlFor="username">Username</label>
-              <input
-                className="form-control"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="LoginForm-password">
-              <label htmlFor="password">Password</label>
-              <input
-                className="form-control"
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
+    <Container className="">
+      <h1 className="text-center">Log In</h1>
+      <Form onSubmit={handleSubmit}>
+        <Row className="justify-content-center">
+          <Col xs={6} className="">
+            <Form.Group className="">
+              <FloatingLabel label="Username" className="mb-3">
+                <Form.Control
+                  className="form-control"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Username"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="Password">
+                <Form.Control
+                  className="form-control"
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                />
+              </FloatingLabel>
+            </Form.Group>
             {errors.length > 0 && <Error messages={errors} />}
-            <div className="LoginForm-button">
-              <button className="btn btn-primary mt-2">Submit</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+
+            <Button type="submit" className="btn-primary mt-2">
+              Submit
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
   );
 }
 

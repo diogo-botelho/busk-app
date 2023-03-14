@@ -33,7 +33,7 @@ function NavBar({ logout }: Logout) {
         <li className="nav-item mx-2">
           {currentUser ? (
             <Link
-              className="nav-link active"
+              className="nav-link"
               aria-current="page"
               to="/"
               onClick={logout}
@@ -50,7 +50,7 @@ function NavBar({ logout }: Logout) {
     return (
       <ul className="nav nav-pills ms-auto mb-2">
         <li className="nav-item mx-2">
-          <Link className="nav-link active" aria-current="page" to="/">
+          <Link className="nav-link" aria-current="page" to="/">
             Events
           </Link>
         </li>

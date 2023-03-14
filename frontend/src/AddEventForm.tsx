@@ -1,4 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import {
+  Button,
+  Container,
+  Form,
+  Row,
+  Col,
+  FloatingLabel,
+} from "react-bootstrap";
+
 import Error from "./Error";
 import { AddEventFormData } from "./interfaces/AddEventFormData";
 
@@ -28,38 +37,40 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   }
 
   return (
-    <div className="background-form">
-      <div className="row AddEventForm generalForm">
-        <h1 className="pt-3 AddEventForm-title generalForm-title">Add Event</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="col-6 offset-3 pt-3">
-            <div className="AddEventForm-title">
-              <label htmlFor="title">Title</label>
-              <input
-                className="form-control"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="AddEventForm-password">
-              <label htmlFor="type">Type</label>
-              <input
-                className="form-control"
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-              />
-            </div>
+    <Container className="AddEventForm">
+      <h1>Add Event</h1>
+      <Form onSubmit={handleSubmit}>
+        <Row className="justify-content-center">
+          <Col xs={8} className="">
+            <Form.Group className="">
+              <FloatingLabel label="Title" className="mb-3">
+                <Form.Control
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="Title"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="Type">
+                <Form.Control
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  placeholder="Type"
+                />
+              </FloatingLabel>
+            </Form.Group>
             {errors.length > 0 && <Error messages={errors} />}
-            <div className="LoginForm-button">
-              <button className="btn btn-primary mt-2">Submit</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+            <Button type="submit" className="btn-primary mt-2">
+              Submit
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
   );
 }

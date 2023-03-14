@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { Button, Container } from "react-bootstrap";
 
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
@@ -83,25 +84,23 @@ function Home() {
   }
 
   return (
-    <div className="Homepage">
-      <div className="container text-center ">
-        <div className="p-5 mb-4 bg-light border rounded-3">
-          <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
-          <h6 className="fs-4">Find local artists around your location!</h6>
-        </div>
-        <NewCoordinatesContext.Provider
-          value={{ newCoordinates, updateNewCoordinates }}
-        >
-          <Map events={events} isAddingEvent={isAddingEvent} />
-        </NewCoordinatesContext.Provider>
-        {currentUser ? (
-          <button className="mt-3 btn btn-primary btn-lg" onClick={addEvent}>
-            Add Event
-          </button>
-        ) : undefined}
-        {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
+    <Container className="text-center ">
+      <div className="p-5 mb-4 bg-light border rounded-3">
+        <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
+        <h6 className="fs-4">Find local artists around your location!</h6>
       </div>
-    </div>
+      <NewCoordinatesContext.Provider
+        value={{ newCoordinates, updateNewCoordinates }}
+      >
+        <Map events={events} isAddingEvent={isAddingEvent} />
+      </NewCoordinatesContext.Provider>
+      {currentUser ? (
+        <Button className="mt-2" type="submit" size="lg" onClick={addEvent}>
+          Add Event
+        </Button>
+      ) : undefined}
+      {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
+    </Container>
   );
 }
 

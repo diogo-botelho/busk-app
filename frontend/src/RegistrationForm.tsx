@@ -1,4 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import {
+  Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Row,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Error from "./Error";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
@@ -52,86 +60,96 @@ function RegistrationForm({ register }: RegisterFormParams) {
   }
 
   return (
-    <div className="background-form">
-      <div className="row RegistrationForm generalForm">
-        <h1 className="pt-3 RegistrationForm-title generalForm-title">
-          Register
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="col-6 offset-3 pt-3">
-            <div className="RegistrationForm-username">
-              <label htmlFor="username">Username</label>
-              <input
-                className="form-control"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="RegistrationForm-password">
-              <label htmlFor="password">Password</label>
-              <input
-                className="form-control"
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="RegistrationForm-firstName">
-              <label htmlFor="firstName">First Name</label>
-              <input
-                className="form-control"
-                type="firstName"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="RegistrationForm-lastName">
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                className="form-control"
-                type="lastName"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="RegistrationForm-phone">
-              <label htmlFor="phone">Phone</label>
-              <input
-                className="form-control"
-                type="phone"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="RegistrationForm-email">
-              <label htmlFor="email">Email</label>
-              <input
-                className="form-control"
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
+    <Container>
+      <h1 className="text-center">Register</h1>
+      <Form onSubmit={handleSubmit}>
+        <Row className="justify-content-center">
+          <Col xs={6}>
+            <Form.Group className="">
+              <FloatingLabel label="Username" className="mb-2">
+                <Form.Control
+                  className="form-control"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Username"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="Password" className="mb-2">
+                <Form.Control
+                  className="form-control"
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="First Name" className="mb-2">
+                <Form.Control
+                  className="form-control"
+                  type="firstName"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="First Name"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="Last Name" className="mb-2">
+                <Form.Control
+                  className="form-control"
+                  type="lastName"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Last Name"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="Phone" className="mb-2">
+                <Form.Control
+                  className="form-control"
+                  type="phone"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Phone"
+                />
+              </FloatingLabel>
+            </Form.Group>
+            <Form.Group className="">
+              <FloatingLabel label="Email" className="mb-2">
+                <Form.Control
+                  className="form-control"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Email"
+                />
+              </FloatingLabel>
+            </Form.Group>
             {errors.length > 0 && <Error messages={errors} />}
-            <div className="RegistrationForm-button">
-              <button className="btn btn-primary mt-2">Submit</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+            <Button type="submit" className="btn btn-primary ">
+              Submit
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
   );
 }
 

@@ -46,7 +46,7 @@ function LoginForm({ login }: LoginFormParams) {
     evt.preventDefault();
     try {
       await login(formData);
-      return navigate("/", { replace: true });
+      return navigate("/events", { replace: true });
     } catch (err) {
       setErrors(["Something went wrong"]);
     }

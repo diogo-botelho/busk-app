@@ -53,7 +53,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
     try {
       evt.preventDefault();
       await register(formData);
-      return navigate("/", { replace: true });
+      return navigate("/events", { replace: true });
     } catch (err) {
       setErrors(["Something went wrong"]);
     }

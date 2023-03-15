@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { icon, solid, regular } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
+
 import "./NavBar.css";
+
 /** Renders NavLinks
  *
  * Props: none
@@ -10,7 +14,6 @@ import "./NavBar.css";
  *
  * App -> NavBar
  */
-
 interface Logout {
   logout: () => void;
 }
@@ -26,7 +29,7 @@ function NavBar({ logout }: Logout) {
     return (
       <ul className="nav nav-pills ms-auto mb-2">
         <li className="nav-item mx-2">
-          <Link className="nav-link active" aria-current="page" to="/events">
+          <Link className="nav-link" aria-current="page" to="/events">
             Events
           </Link>
         </li>
@@ -72,7 +75,8 @@ function NavBar({ logout }: Logout) {
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand me-auto" href="/">
-          Busk!
+        {/* <FontAwesomeIcon icon={icon({name:'guitar', style:'solid'})} /> */}
+        <FontAwesomeIcon icon={solid('guitar')} />
         </a>
         <button
           onClick={toggle} // need an onClick to toggle

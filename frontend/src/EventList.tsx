@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
@@ -83,16 +83,32 @@ function EventList() {
     return <h1>Loading...</h1>;
   }
 
+  let firstFourEvents = events.slice(0, 4);
+
   return (
     <Container className="text-center ">
       <div className="p-5 mb-4 bg-light border rounded-3">
         <h1 className="mb-4 fw-bold">Current events in New York</h1>
       </div>
-      <NewCoordinatesContext.Provider
-        value={{ newCoordinates, updateNewCoordinates }}
-      >
-        <Map events={events} isAddingEvent={isAddingEvent} />
-      </NewCoordinatesContext.Provider>
+      <Container>
+        <Row>
+        <Col className="shownEvents">
+          {firstFourEvents.map((event) => (
+            <div>
+                <div>{event.title}</div>
+                <div>{event.type}</div>
+            </div>
+          ))}
+        </Col>
+        <Col>
+        <NewCoordinatesContext.Provider
+          value={{ newCoordinates, updateNewCoordinates }}
+        >
+          <Map events={events} isAddingEvent={isAddingEvent} />
+        </NewCoordinatesContext.Provider>
+        </Col>
+        </Row>
+      </Container>
       {currentUser ? (
         <Button className="mt-2" type="submit" size="lg" onClick={addEvent}>
           Add Event

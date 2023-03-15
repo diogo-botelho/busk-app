@@ -27,6 +27,18 @@ function Home() {
       <div className="p-5 mb-4 bg-light border rounded-3">
         <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
         <h6 className="fs-4">Find local artists around your location!</h6>
+        <p>
+          <b>busk·er</b> /ˈbəskər/
+        </p>
+        <p>
+          noun: <b>busker</b>; plural noun: <b>buskers</b>
+        </p>
+        <p>
+          <i>
+            "a person who performs music or other entertainment in the street or
+            another public place for monetary donations."
+          </i>
+        </p>
       </div>
     </Container>
   );

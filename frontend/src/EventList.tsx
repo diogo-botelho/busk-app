@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col, ListGroup } from "react-bootstrap";
 
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
@@ -83,7 +83,7 @@ function EventList() {
     return <h1>Loading...</h1>;
   }
 
-  let firstFourEvents = events.slice(0, 4);
+  let firstFourEvents = events.slice(0, 8);
 
   return (
     <Container className="text-center ">
@@ -91,30 +91,41 @@ function EventList() {
         <h1 className="mb-4 fw-bold">Current events in New York</h1>
       </div>
       <Container>
-        <Row>
-        <Col className="shownEvents">
-          {firstFourEvents.map((event) => (
-            <div>
-                <div>{event.title}</div>
-                <div>{event.type}</div>
-            </div>
-          ))}
-        </Col>
-        <Col>
-        <NewCoordinatesContext.Provider
-          value={{ newCoordinates, updateNewCoordinates }}
-        >
-          <Map events={events} isAddingEvent={isAddingEvent} />
-        </NewCoordinatesContext.Provider>
-        </Col>
+        <Row className="justify-content-md-center">
+          <Col xs={4} className="shownEvents">
+            {firstFourEvents.map((event) => (
+              <ListGroup>
+                <ListGroup.Item action variant="info">
+                  Title: {event.title}
+                  <br />
+                  Type: {event.type}
+                </ListGroup.Item>
+                <br />
+              </ListGroup>
+            ))}
+            {currentUser ? (
+              <Button
+                className="mt-2 bottom"
+                type="submit"
+                size="lg"
+                onClick={addEvent}
+              >
+                Add Event
+              </Button>
+            ) : undefined}
+            {isAddingEvent ? (
+              <AddEventForm submitEvent={submitEvent} />
+            ) : undefined}
+          </Col>
+          <Col>
+            <NewCoordinatesContext.Provider
+              value={{ newCoordinates, updateNewCoordinates }}
+            >
+              <Map events={events} isAddingEvent={isAddingEvent} />
+            </NewCoordinatesContext.Provider>
+          </Col>
         </Row>
       </Container>
-      {currentUser ? (
-        <Button className="mt-2" type="submit" size="lg" onClick={addEvent}>
-          Add Event
-        </Button>
-      ) : undefined}
-      {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
     </Container>
   );
 }

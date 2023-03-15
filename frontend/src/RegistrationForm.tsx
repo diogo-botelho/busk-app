@@ -61,7 +61,9 @@ function RegistrationForm({ register }: RegisterFormParams) {
 
   return (
     <Container>
-      <h1 className="text-center">Register</h1>
+      <header className="p-3 mb-4 bg-light border rounded-3">
+        <h1 className="text-center">Register</h1>
+      </header>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
           <Col xs={6}>

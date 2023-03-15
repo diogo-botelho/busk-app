@@ -54,7 +54,9 @@ function LoginForm({ login }: LoginFormParams) {
 
   return (
     <Container className="">
-      <h1 className="text-center">Log In</h1>
+      <header className="p-3 mb-4 bg-light border rounded-3">
+        <h1 className="text-center">Log In</h1>
+      </header>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
           <Col xs={6} className="">

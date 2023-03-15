@@ -38,7 +38,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
 
   return (
     <Container className="AddEventForm">
-      <h1>Add Event</h1>
+      <h5>Select a location on the map</h5>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
           <Col xs={8} className="">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Button, Container, Row, Col, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 import { Map } from "./Map";
 import { AddEventForm } from "./AddEventForm";
@@ -80,42 +81,61 @@ function EventList() {
   }
 
   if (needsEvents) {
-    return <h1>Loading...</h1>;
+    return (
+      <Container className="text-center">
+        <h1>Loading...</h1>
+      </Container>
+    );
   }
 
-  let firstFourEvents = events.slice(0, 8);
+  let firstFourEvents = events.slice(-6,);
+
+  function newEventComponent() {
+    if (!currentUser) {
+      return (
+        <div className="mt-auto">
+          <p>
+            Please <Link to="/login">login</Link> or{" "}
+            <Link to="/register">register</Link> to add an event.
+          </p>
+        </div>
+      );
+    }
+
+    if (isAddingEvent) {
+      return <AddEventForm submitEvent={submitEvent} />;
+    }
+
+    return (
+      <Button
+        className="mt-2 bottom"
+        type="submit"
+        size="lg"
+        onClick={addEvent}
+      >
+        Add Event
+      </Button>
+    );
+  }
 
   return (
     <Container className="text-center ">
-      <div className="p-5 mb-4 bg-light border rounded-3">
-        <h1 className="mb-4 fw-bold">Current events in New York</h1>
-      </div>
+      <header className="p-3 mb-4 bg-light border rounded-3">
+        <h1>Current events in New York</h1>
+      </header>
       <Container>
         <Row className="justify-content-md-center">
           <Col xs={4} className="shownEvents">
+            <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <ListGroup>
-                <ListGroup.Item action variant="info">
-                  Title: {event.title}
-                  <br />
-                  Type: {event.type}
-                </ListGroup.Item>
-                <br />
-              </ListGroup>
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Title>{event.title}</Card.Title>
+                  <Card.Text>{event.type}</Card.Text>
+                </Card.Body>
+              </Card>
             ))}
-            {currentUser ? (
-              <Button
-                className="mt-2 bottom"
-                type="submit"
-                size="lg"
-                onClick={addEvent}
-              >
-                Add Event
-              </Button>
-            ) : undefined}
-            {isAddingEvent ? (
-              <AddEventForm submitEvent={submitEvent} />
-            ) : undefined}
+            {newEventComponent()}
           </Col>
           <Col>
             <NewCoordinatesContext.Provider

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
-// import "./NavBar.css";
 
-// import { useContext } from "react";
-// import "./NavBar.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { icon, solid, regular } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
+
+import "./NavBar.css";
 
 /** Renders NavLinks
  *
@@ -13,7 +14,6 @@ import { UserContext } from "./UserContext";
  *
  * App -> NavBar
  */
-
 interface Logout {
   logout: () => void;
 }
@@ -27,21 +27,21 @@ function NavBar({ logout }: Logout) {
 
   function loggedInNav() {
     return (
-      <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <Link className="nav-link active" aria-current="page" to="/">
+      <ul className="nav nav-pills ms-auto mb-2">
+        <li className="nav-item mx-2">
+          <Link className="nav-link" aria-current="page" to="/events">
             Events
           </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item mx-2">
           {currentUser ? (
             <Link
-              className="nav-link active"
+              className="nav-link"
               aria-current="page"
               to="/"
               onClick={logout}
             >
-              Logout {currentUser.firstName || currentUser.username}
+              Logout
             </Link>
           ) : null}
         </li>
@@ -51,18 +51,18 @@ function NavBar({ logout }: Logout) {
 
   function loggedOutNav() {
     return (
-      <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <Link className="nav-link active" aria-current="page" to="/">
+      <ul className="nav nav-pills ms-auto mb-2">
+        <li className="nav-item mx-2">
+          <Link className="nav-link" aria-current="page" to="/events">
             Events
           </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item mx-2">
           <Link className="nav-link" to="/login" onClick={toggle}>
             Login
           </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item mx-2">
           <Link className="nav-link" to="/register" onClick={toggle}>
             Register
           </Link>
@@ -75,7 +75,8 @@ function NavBar({ logout }: Logout) {
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand me-auto" href="/">
-          Busk!
+        {/* <FontAwesomeIcon icon={icon({name:'guitar', style:'solid'})} /> */}
+        <FontAwesomeIcon icon={solid('guitar')} />
         </a>
         <button
           onClick={toggle} // need an onClick to toggle

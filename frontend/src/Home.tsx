@@ -1,16 +1,6 @@
-import { useState, useEffect, useContext } from "react";
-
-import { Map } from "./Map";
-import { AddEventForm } from "./AddEventForm";
+import { Container } from "react-bootstrap";
 import "./Home.css";
-import { NewCoordinatesContext } from "./NewCoordinatesContext";
-import { UserContext } from "./UserContext";
-
-import { Coordinates } from "./interfaces/Coordinates";
-import { AddEventFormData } from "./interfaces/AddEventFormData";
-import { Event } from "./interfaces/Event";
-
-import BuskApi from "./api";
+import { Link } from "react-router-dom";
 
 /** Renders HomePage
  *
@@ -21,87 +11,36 @@ import BuskApi from "./api";
  */
 
 function Home() {
-  const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
-    undefined
-  );
-  const [events, setEvents] = useState<Event[]>([]);
-  const [needsEvents, setNeedsEvents] = useState(true);
-  const currentUser = useContext(UserContext);
-
-  useEffect(
-    function fetchEventsOnLoad() {
-      async function getEventsfromApi() {
-        try {
-          const events = await BuskApi.getEvents();
-          setEvents(events);
-          setNeedsEvents(false);
-        } catch (err) {
-          console.log("Errors on getting Events.");
-          // setErrors(previousErrors => [...previousErrors, ...err]);
-        }
-      }
-
-      getEventsfromApi();
-    },
-    [needsEvents]
-  );
-  // await BuskApi.getEvents();
-
-  function addEvent() {
-    setIsAddingEvent(true);
-  }
-
-  function updateNewCoordinates(mapCoordinates: Coordinates) {
-    setNewCoordinates(mapCoordinates);
-  }
-
-  async function submitEvent(formData: AddEventFormData) {
-    const eventDetails = {
-      buskerId: 1,
-      title: formData.title,
-      type: formData.type,
-      coordinates: {
-        lat: newCoordinates?.lat,
-        lng: newCoordinates?.lng,
-      },
-    };
-    if (!currentUser) {
-      console.log("Please log in to submit an event.");
-    } else if (!newCoordinates) {
-      console.log("Please select a location");
-    } else {
-      await BuskApi.createEvent(eventDetails);
-      setEvents((previousData) => [...previousData, eventDetails]);
-    }
-    setIsAddingEvent(false);
-    setNewCoordinates(undefined);
-  }
-
-  if (needsEvents) {
-    return <h1>Loading...</h1>;
-  }
-
   return (
-    <div className="Homepage">
-      <div className="container text-center ">
-        <div className="p-5 mb-4 bg-light border rounded-3">
-          <h1 className="mb-4 fw-bold">Welcome To Busk!</h1>
-          <h6 className="fs-4">Find local artists around your location!</h6>
-        </div>
-        <NewCoordinatesContext.Provider
-          value={{ newCoordinates, updateNewCoordinates }}
-        >
-          <Map events={events} isAddingEvent={isAddingEvent} />
-        </NewCoordinatesContext.Provider>
-        {currentUser ? (
-          <button className="mt-3 btn btn-primary btn-lg" onClick={addEvent}>
-            Add Event
-          </button>
-        ) : undefined}
-        {isAddingEvent ? <AddEventForm submitEvent={submitEvent} /> : undefined}
-      </div>
-    </div>
+    <Container className="text-center">
+      <header className="p-3 mb-4 bg-light border rounded-3">
+        <h1>Welcome To Busk!</h1>
+      </header>
+      <h6 className="fs-4">Find local artists around your location!</h6>
+        <p>
+          <b>busk·er</b> /ˈbəskər/
+        </p>
+        <p>
+          noun: <b>busker</b>; plural noun: <b>buskers</b>
+        </p>
+        <p>
+          <i>
+            "a person who performs music or other entertainment in the street or
+            another public place for monetary donations."
+          </i>
+        </p>
+        <img
+          src="https://media.istockphoto.com/id/1006917342/photo/busking-street-musician.jpg?s=612x612&w=0&k=20&c=XKKyNCLiz4Wq7dnJsj3VlDcthFwvzCJSgbyW2oWxt-Q="
+          alt="busker"
+        ></img>
+      <p>
+        Check out the events from our users <Link to="/events">here</Link>.
+      </p>
+      <p>
+        Do you have any feedback and/or feature requests? Please tell us on our{" "}
+        <a href="https://github.com/diogo-botelho/busk-app">Github</a>.
+      </p>
+    </Container>
   );
 }
 

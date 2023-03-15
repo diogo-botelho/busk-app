@@ -21,7 +21,9 @@ const TOKEN_STORAGE_ID = "busk-app-token";
 function App() {
   // const [errors, setErrors] = useState([]);
   const [infoLoaded, setInfoLoaded] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem("token"||TOKEN_STORAGE_ID));
+  const [token, setToken] = useState(
+    localStorage.getItem("token" || TOKEN_STORAGE_ID)
+  );
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(
@@ -88,6 +90,7 @@ function App() {
 
   /** Handles site-wide logout. */
   function logout() {
+    localStorage.removeItem("token");
     setCurrentUser(undefined);
     setToken(null);
   }
@@ -95,7 +98,7 @@ function App() {
   return (
     <div className="App">
       <UserContext.Provider value={currentUser}>
-        <NavBar logout={logout}/>
+        <NavBar logout={logout} />
         <AllRoutes login={login} register={register} />
       </UserContext.Provider>
     </div>

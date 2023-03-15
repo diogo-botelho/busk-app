@@ -14,6 +14,9 @@ export function Map({ events, isAddingEvent }: MapParams) {
   return (
     <MapContainer
       className="map"
+      style={{
+        height: `800px`,
+      }}
       center={[40.7826, -73.9656]}
       zoom={13}
       scrollWheelZoom={false}

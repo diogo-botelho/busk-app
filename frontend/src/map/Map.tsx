@@ -3,7 +3,7 @@ import "./Map.css";
 import { DynamicMarker } from "./DynamicMarker";
 import { StaticMarker } from "./StaticMarker";
 
-import { Event } from "./interfaces/Event";
+import { Event } from "../interfaces/Event";
 
 interface MapParams {
   events: Event[];
@@ -27,7 +27,7 @@ export function Map({ events, isAddingEvent }: MapParams) {
       />
 
       {events.map((event) => (
-        <StaticMarker key={event.title} event={event} />
+        <StaticMarker key={event.id} event={event} />
       ))}
       {isAddingEvent ? <DynamicMarker /> : undefined}
     </MapContainer>

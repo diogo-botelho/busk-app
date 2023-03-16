@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { LoginFormData } from "./interfaces/LoginFormData";
-import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-import { Coordinates } from "./interfaces/Coordinates";
-import { BACKEND_BASE_URL } from "./config";
+import { LoginFormData } from "../interfaces/LoginFormData";
+import { RegistrationFormData } from "../interfaces/RegistrationFormData";
+import { Coordinates } from "../interfaces/Coordinates";
+import { BACKEND_BASE_URL } from "../config";
 
 interface EventDetails {
   buskerId: number | undefined;
@@ -72,13 +72,21 @@ class BuskApi {
    * Returns string "Event added." */
   static async createEvent(eventDetails: EventDetails) {
     const res = await this.request("events/create", eventDetails, "post");
-    return "Event added.";
+    return res.event;
   }
 
   /**
    * function to get all events. Returns [event, event,event] */
   static async getEvents() {
     const res = await this.request("events/");
+
+    return res;
+  }
+
+  /**
+   * function to get all events. Returns [event, event,event] */
+  static async removeEvent(eventId:number) {
+    const res = await this.request(`events/${eventId}`,{},"delete");
 
     return res;
   }

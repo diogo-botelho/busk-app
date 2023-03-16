@@ -2,17 +2,18 @@ import { useState, useEffect, useContext } from "react";
 import { Button, Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { Map } from "./Map";
+import { Map } from "../map/Map";
 import { AddEventForm } from "./AddEventForm";
-// import "./Home.css";
-import { NewCoordinatesContext } from "./NewCoordinatesContext";
-import { UserContext } from "./UserContext";
 
-import { Coordinates } from "./interfaces/Coordinates";
-import { AddEventFormData } from "./interfaces/AddEventFormData";
-import { Event } from "./interfaces/Event";
+import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
+import { UserContext } from "../users/UserContext";
+import { EventCard } from "./EventCard";
 
-import BuskApi from "./api";
+import { Coordinates } from "../interfaces/Coordinates";
+import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { Event } from "../interfaces/Event";
+
+import BuskApi from "../api/api";
 
 /** Renders EventList
  *
@@ -34,6 +35,7 @@ function EventList() {
   useEffect(
     function fetchEventsOnLoad() {
       async function getEventsfromApi() {
+        console.log("get events from api");
         try {
           const events = await BuskApi.getEvents();
           setEvents(events);
@@ -73,8 +75,8 @@ function EventList() {
     } else if (!newCoordinates) {
       console.log("Please select a location");
     } else {
-      await BuskApi.createEvent(eventDetails);
-      setEvents((previousData) => [...previousData, eventDetails]);
+      const newEvent = await BuskApi.createEvent(eventDetails);
+      setEvents((previousData) => [...previousData, newEvent]);
     }
     setIsAddingEvent(false);
     setNewCoordinates(undefined);
@@ -87,8 +89,6 @@ function EventList() {
       </Container>
     );
   }
-
-  let firstFourEvents = events.slice(-6,);
 
   function newEventComponent() {
     if (!currentUser) {
@@ -118,6 +118,14 @@ function EventList() {
     );
   }
 
+  let firstFourEvents = events.slice(-4);
+
+  async function remove(eventId:number) {
+    await BuskApi.removeEvent(eventId);
+    const updatedEvents = events.filter(event => event.id !== eventId);
+    setEvents(updatedEvents);
+  }
+
   return (
     <Container className="text-center ">
       <header className="p-3 mb-4 bg-light border rounded-3">
@@ -128,12 +136,7 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <Card className="mb-3">
-                <Card.Body>
-                  <Card.Title>{event.title}</Card.Title>
-                  <Card.Text>{event.type}</Card.Text>
-                </Card.Body>
-              </Card>
+              <EventCard key={event.id} event = {event} remove={remove}/>
             ))}
             {newEventComponent()}
           </Col>

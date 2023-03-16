@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import AllRoutes from "./AllRoutes";
-import NavBar from "./NavBar";
-import BuskApi from "./api";
+import AllRoutes from "./routes-nav/AllRoutes";
+import NavBar from "./routes-nav/NavBar";
+import BuskApi from "./api/api";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./users/UserContext";
 import jwt_decode from "jwt-decode";
 
 const TOKEN_STORAGE_ID = "busk-app-token";

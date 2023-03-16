@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { useContext } from "react";
-import Home from "../Home";
+import Home from "../homepage/Home";
 import UserList from "../users/UserList";
 import User from "../users/User";
 import EventList from "../events/EventList";

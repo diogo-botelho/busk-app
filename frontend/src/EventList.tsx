@@ -7,6 +7,7 @@ import { AddEventForm } from "./AddEventForm";
 // import "./Home.css";
 import { NewCoordinatesContext } from "./NewCoordinatesContext";
 import { UserContext } from "./UserContext";
+import { EventListCard } from "./EventListCard";
 
 import { Coordinates } from "./interfaces/Coordinates";
 import { AddEventFormData } from "./interfaces/AddEventFormData";
@@ -88,8 +89,6 @@ function EventList() {
     );
   }
 
-  let firstFourEvents = events.slice(-6,);
-
   function newEventComponent() {
     if (!currentUser) {
       return (
@@ -118,6 +117,8 @@ function EventList() {
     );
   }
 
+  let firstFourEvents = events.slice(-6);
+
   return (
     <Container className="text-center ">
       <header className="p-3 mb-4 bg-light border rounded-3">
@@ -128,12 +129,7 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <Card className="mb-3">
-                <Card.Body>
-                  <Card.Title>{event.title}</Card.Title>
-                  <Card.Text>{event.type}</Card.Text>
-                </Card.Body>
-              </Card>
+              <EventListCard event = {event}/>
             ))}
             {newEventComponent()}
           </Col>

@@ -1,10 +1,21 @@
-import { useContext } from "react";
-import { useParams } from "react-router-dom";
-import "./User.css";
-import { UserContext } from "./UserContext";
-import { Container } from "react-bootstrap";
+import { Card } from "react-bootstrap";
+import { Event } from "./interfaces/Event";
 
-function EventCard() {
+interface EventCardParams {
+    event: Event
 }
 
-export default EventCard;
+export function EventListCard({ event } : EventCardParams) {
+  const { title, type } = event;
+
+  return (
+    <Card className="mb-3">
+      <Card.Body>
+        <Card.Title>{title}</Card.Title>
+        <Card.Text>{type}</Card.Text>
+      </Card.Body>
+    </Card>
+  );
+}
+
+// export default EventListCard;

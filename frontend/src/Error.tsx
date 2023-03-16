@@ -1,5 +1,5 @@
 // import "./Error.css";
-
+import { Alert } from "react-bootstrap";
 /** Renders an error message
  *
  * State:
@@ -16,11 +16,12 @@ interface ErrorMessageParams {
 
 function Error({ messages }: ErrorMessageParams) {
   return (
-    <div className="Error">
+    <Alert variant="danger">
+      <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
       {messages.map((message, idx) => (
         <p key={idx}>{message}</p>
       ))}
-    </div>
+    </Alert>
   );
 }
 

@@ -72,7 +72,7 @@ class BuskApi {
    * Returns string "Event added." */
   static async createEvent(eventDetails: EventDetails) {
     const res = await this.request("events/create", eventDetails, "post");
-    return "Event added.";
+    return res.event;
   }
 
   /**

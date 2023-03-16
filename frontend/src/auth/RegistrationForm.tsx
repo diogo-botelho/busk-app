@@ -8,8 +8,8 @@ import {
   Row,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Error from "./Error";
-import { RegistrationFormData } from "./interfaces/RegistrationFormData";
+import Error from "../Error";
+import { RegistrationFormData } from "../interfaces/RegistrationFormData";
 /**Renders a login form
  *
  * Props:

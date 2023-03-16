@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Coordinates } from "./interfaces/Coordinates";
+import { Coordinates } from "../interfaces/Coordinates";
 
 interface NewCoordinatesContextType {
   newCoordinates: Coordinates | undefined;

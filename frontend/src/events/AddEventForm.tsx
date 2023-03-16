@@ -8,8 +8,8 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import Error from "./Error";
-import { AddEventFormData } from "./interfaces/AddEventFormData";
+import Error from "../Error";
+import { AddEventFormData } from "../interfaces/AddEventFormData";
 
 interface AddEventFormParams {
   submitEvent: (formData: AddEventFormData) => void;

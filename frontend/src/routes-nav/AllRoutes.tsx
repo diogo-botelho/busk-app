@@ -1,14 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import { useContext } from "react";
-import Home from "./Home";
-import UserList from "./UserList";
-import User from "./User";
-import EventList from "./EventList";
-import LoginForm from "./LoginForm";
-import RegistrationForm from "./RegistrationForm";
-import { LoginFormData } from "./interfaces/LoginFormData";
-import { RegistrationFormData } from "./interfaces/RegistrationFormData";
-import { UserContext } from "./UserContext";
+import Home from "../Home";
+import UserList from "../users/UserList";
+import User from "../users/User";
+import EventList from "../events/EventList";
+import LoginForm from "../auth/LoginForm";
+import RegistrationForm from "../auth/RegistrationForm";
+import { LoginFormData } from "../interfaces/LoginFormData";
+import { RegistrationFormData } from "../interfaces/RegistrationFormData";
+import { UserContext } from "../users/UserContext";
 
 /**Renders Routes
  *

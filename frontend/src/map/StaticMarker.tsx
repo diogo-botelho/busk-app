@@ -1,5 +1,5 @@
 import { Marker, Popup } from "react-leaflet";
-import { Event } from "./interfaces/Event";
+import { Event } from "../interfaces/Event";
 
 interface StaticMarkerParams {
   key: string;

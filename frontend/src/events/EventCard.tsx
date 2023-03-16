@@ -1,5 +1,5 @@
 import { Card } from "react-bootstrap";
-import { Event } from "./interfaces/Event";
+import { Event } from "../interfaces/Event";
 
 interface EventCardParams {
     event: Event
@@ -17,5 +17,3 @@ export function EventListCard({ event } : EventCardParams) {
     </Card>
   );
 }
-
-// export default EventListCard;

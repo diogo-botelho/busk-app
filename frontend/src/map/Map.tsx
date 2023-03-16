@@ -1,9 +1,9 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import "./Map.css";
-import { DynamicMarker } from "./DynamicMarker";
-import { StaticMarker } from "./StaticMarker";
+import { DynamicMarker } from "../markers/DynamicMarker";
+import { StaticMarker } from "../markers/StaticMarker";
 
-import { Event } from "./interfaces/Event";
+import { Event } from "../interfaces/Event";
 
 interface MapParams {
   events: Event[];

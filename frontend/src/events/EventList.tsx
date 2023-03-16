@@ -2,18 +2,18 @@ import { useState, useEffect, useContext } from "react";
 import { Button, Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { Map } from "./Map";
+import { Map } from "../map/Map";
 import { AddEventForm } from "./AddEventForm";
-// import "./Home.css";
-import { NewCoordinatesContext } from "./NewCoordinatesContext";
-import { UserContext } from "./UserContext";
+// import "../Home.css";
+import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
+import { UserContext } from "../users/UserContext";
 import { EventListCard } from "./EventListCard";
 
-import { Coordinates } from "./interfaces/Coordinates";
-import { AddEventFormData } from "./interfaces/AddEventFormData";
-import { Event } from "./interfaces/Event";
+import { Coordinates } from "../interfaces/Coordinates";
+import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { Event } from "../interfaces/Event";
 
-import BuskApi from "./api";
+import BuskApi from "../api/api";
 
 /** Renders EventList
  *

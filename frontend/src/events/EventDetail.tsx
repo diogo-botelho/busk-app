@@ -1,11 +1,11 @@
 import { Card } from "react-bootstrap";
 import { Event } from "../interfaces/Event";
 
-interface EventListCardParams {
+interface EventCardParams {
     event: Event
 }
 
-export function EventListCard({ event } : EventListCardParams) {
+export function EventListCard({ event } : EventCardParams) {
   const { title, type } = event;
 
   return (

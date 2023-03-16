@@ -7,7 +7,7 @@ import { AddEventForm } from "./AddEventForm";
 // import "../Home.css";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
 import { UserContext } from "../users/UserContext";
-import { EventListCard } from "./EventListCard";
+import { EventListCard } from "./EventCard";
 
 import { Coordinates } from "../interfaces/Coordinates";
 import { AddEventFormData } from "../interfaces/AddEventFormData";

@@ -5,6 +5,7 @@ import { User } from "../models/user";
 export const router = express.Router();
 import { UserData } from "../interfaces/UserData";
 import { createToken } from "../helpers/tokens";
+import { BadRequestError } from "../expressError";
 
 /** Logs in a user, return user */
 router.post(
@@ -19,11 +20,14 @@ router.post(
     //   const errs = validator.errors.map(e => e.stack);
     //   throw new BadRequestError(errs);
     // }
-
-    const { username, password } = req.body;
-    const user = await User.authenticate(username, password);
-    const token = createToken(user);
-    return res.json({ token });
+    try {
+      const { username, password } = req.body;
+      const user = await User.authenticate(username, password);
+      const token = createToken(user);
+      return res.json({ token });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
@@ -35,11 +39,15 @@ router.post(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const newUserData: UserData = req.body;
+    try {
+      const newUserData: UserData = req.body;
 
-    const newUser = await User.register({ ...newUserData, isAdmin: false });
-    delete newUser.isAdmin;
-    const token = createToken(newUser);
-    return res.status(201).json({token});
+      const newUser = await User.register({ ...newUserData, isAdmin: false });
+      delete newUser.isAdmin;
+      const token = createToken(newUser);
+      return res.status(201).json({ token });
+    } catch (error) {
+      next(error);
+    }
   }
 );

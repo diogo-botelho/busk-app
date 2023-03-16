@@ -82,6 +82,14 @@ class BuskApi {
 
     return res;
   }
+
+  /**
+   * function to get all events. Returns [event, event,event] */
+  static async removeEvent(eventId:number) {
+    const res = await this.request(`events/${eventId}`,{},"delete");
+
+    return res;
+  }
 }
 
 export default BuskApi;

@@ -1,5 +1,5 @@
-// import { useContext } from 'react';
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import { useContext } from "react";
 import Home from "./Home";
 import UserList from "./UserList";
 import User from "./User";
@@ -8,6 +8,7 @@ import LoginForm from "./LoginForm";
 import RegistrationForm from "./RegistrationForm";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { RegistrationFormData } from "./interfaces/RegistrationFormData";
+import { UserContext } from "./UserContext";
 
 /**Renders Routes
  *
@@ -29,11 +30,12 @@ interface AllRoutesParams {
 }
 
 function AllRoutes({ login, register }: AllRoutesParams) {
+  const currentUser = useContext(UserContext);
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/users" element={<UserList />} />
-      <Route path="/users/:id" element={<User />} />
+      <Route path="/users/:username" element={<User />} />
       <Route path="/events" element={<EventList />} />
       {/* <Route path="/events/:id" element={<Event />} /> */}
       <Route path="/login" element={<LoginForm login={login} />} />

@@ -4,14 +4,14 @@ import BuskApi from "../api/api";
 
 interface EventCardParams {
   event: Event;
+  remove: (eventId:number) => void
 }
 
-export function EventCard({ event }: EventCardParams) {
-  const { title, type } = event;
+export function EventCard({ event, remove }: EventCardParams) {
+  const { title, type, id } = event;
 
-  async function remove() {
-    const token = await BuskApi.removeEvent(event.id);
-    console.log(token);
+  async function handleRemove() {
+    await remove(id);
   }
 
   return (
@@ -19,7 +19,7 @@ export function EventCard({ event }: EventCardParams) {
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Text>{type}</Card.Text>
-        <Button onClick={remove}>Remove</Button>
+        <Button onClick={handleRemove}>Remove</Button>
       </Card.Body>
     </Card>
   );

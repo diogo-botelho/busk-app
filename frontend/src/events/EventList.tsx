@@ -35,6 +35,7 @@ function EventList() {
   useEffect(
     function fetchEventsOnLoad() {
       async function getEventsfromApi() {
+        console.log("get events from api");
         try {
           const events = await BuskApi.getEvents();
           setEvents(events);
@@ -117,7 +118,13 @@ function EventList() {
     );
   }
 
-  let firstFourEvents = events.slice(-6);
+  let firstFourEvents = events.slice(-4);
+
+  async function remove(eventId:number) {
+    await BuskApi.removeEvent(eventId);
+    const updatedEvents = events.filter(event => event.id !== eventId);
+    setEvents(updatedEvents);
+  }
 
   return (
     <Container className="text-center ">
@@ -129,7 +136,7 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <EventCard key={event.id} event = {event}/>
+              <EventCard key={event.id} event = {event} remove={remove}/>
             ))}
             {newEventComponent()}
           </Col>

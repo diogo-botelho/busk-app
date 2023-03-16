@@ -27,7 +27,7 @@ export function Map({ events, isAddingEvent }: MapParams) {
       />
 
       {events.map((event) => (
-        <StaticMarker key={event.title} event={event} />
+        <StaticMarker key={event.id} event={event} />
       ))}
       {isAddingEvent ? <DynamicMarker /> : undefined}
     </MapContainer>

@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 
 import { Map } from "../map/Map";
 import { AddEventForm } from "./AddEventForm";
-// import "../Home.css";
+
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
 import { UserContext } from "../users/UserContext";
-import { EventListCard } from "./EventCard";
+import { EventCard } from "./EventCard";
 
 import { Coordinates } from "../interfaces/Coordinates";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
@@ -74,8 +74,8 @@ function EventList() {
     } else if (!newCoordinates) {
       console.log("Please select a location");
     } else {
-      await BuskApi.createEvent(eventDetails);
-      setEvents((previousData) => [...previousData, eventDetails]);
+      const newEvent = await BuskApi.createEvent(eventDetails);
+      setEvents((previousData) => [...previousData, newEvent]);
     }
     setIsAddingEvent(false);
     setNewCoordinates(undefined);
@@ -129,7 +129,7 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <EventListCard event = {event}/>
+              <EventCard key={event.id} event = {event}/>
             ))}
             {newEventComponent()}
           </Col>

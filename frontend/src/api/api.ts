@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import { LoginFormData } from "../interfaces/LoginFormData";
 import { RegistrationFormData } from "../interfaces/RegistrationFormData";
@@ -32,10 +32,14 @@ class BuskApi {
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      console.log("error");
-      // console.error("API Error:", err.response);
-      // let message = err.response.data.error.message;
-      // throw Array.isArray(message) ? message : [message];
+      if (err instanceof AxiosError) {
+        console.log("error", err.response?.data.error.message);
+        console.error("API Error:", err.response);
+        let message = err.response?.data.error.message;
+        throw Array.isArray(message) ? message : [message];
+      } else {
+        throw new Error("Something went wrong");
+      }
     }
   }
 
@@ -85,8 +89,8 @@ class BuskApi {
 
   /**
    * function to get all events. Returns [event, event,event] */
-  static async removeEvent(eventId:number) {
-    const res = await this.request(`events/${eventId}`,{},"delete");
+  static async removeEvent(eventId: number) {
+    const res = await this.request(`events/${eventId}`, {}, "delete");
 
     return res;
   }

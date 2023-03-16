@@ -6,6 +6,7 @@ import {
   FloatingLabel,
   Form,
   Row,
+  Alert,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Error from "../Error";
@@ -41,7 +42,7 @@ interface RegisterFormParams {
 function RegistrationForm({ register }: RegisterFormParams) {
   const [formData, setFormData] =
     useState<RegistrationFormData>(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<string[] | []>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
@@ -55,7 +56,11 @@ function RegistrationForm({ register }: RegisterFormParams) {
       await register(formData);
       return navigate("/events", { replace: true });
     } catch (err) {
-      setErrors(["Something went wrong"]);
+      if (Array.isArray(err)) {
+        setErrors(err);
+      } else {
+        setErrors(["Something went wrong. Please try again later."]);
+      }
     }
   }
 

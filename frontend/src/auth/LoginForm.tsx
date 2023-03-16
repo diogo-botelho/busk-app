@@ -48,7 +48,11 @@ function LoginForm({ login }: LoginFormParams) {
       await login(formData);
       return navigate("/events", { replace: true });
     } catch (err) {
-      setErrors(["Something went wrong"]);
+      if (Array.isArray(err)) {
+        setErrors(["Invalid username or password."]);
+      } else {
+        setErrors(["Something went wrong. Please try again later."]);
+      }
     }
   }
 

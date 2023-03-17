@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Container, Row, Col, Card } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { Map } from "../map/Map";
@@ -15,7 +15,6 @@ import { AddEventFormData } from "../interfaces/AddEventFormData";
 import { Event } from "../interfaces/Event";
 
 import BuskApi from "../api/api";
-import { addSyntheticLeadingComment } from "typescript";
 
 /** Renders EventList
  *

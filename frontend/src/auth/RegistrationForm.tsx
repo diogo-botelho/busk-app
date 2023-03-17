@@ -6,11 +6,13 @@ import {
   FloatingLabel,
   Form,
   Row,
-  Alert,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+
 import Error from "../Error";
+
 import { RegistrationFormData } from "../interfaces/RegistrationFormData";
+
 /**Renders a login form
  *
  * Props:

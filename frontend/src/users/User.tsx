@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
+import { Container } from "react-bootstrap";
+
 import "./User.css";
 import { UserContext, UserContextType } from "./UserContext";
-import { Container } from "react-bootstrap";
 
 interface userParamsInterface {
   user: UserContextType | undefined;

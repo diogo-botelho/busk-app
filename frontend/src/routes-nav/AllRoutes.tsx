@@ -1,19 +1,19 @@
 import { Route, Routes } from "react-router-dom";
 import { useContext } from "react";
 
+import LoginForm from "../auth/LoginForm";
+import RegistrationForm from "../auth/RegistrationForm";
+
+import EventList from "../events/EventList";
+
 import Home from "../homepage/Home";
+
+import { LoginFormData } from "../interfaces/LoginFormData";
+import { RegistrationFormData } from "../interfaces/RegistrationFormData";
 
 import UserList from "../users/UserList";
 import User from "../users/User";
 import { UserContext } from "../users/UserContext";
-
-import EventList from "../events/EventList";
-
-import LoginForm from "../auth/LoginForm";
-import RegistrationForm from "../auth/RegistrationForm";
-
-import { LoginFormData } from "../interfaces/LoginFormData";
-import { RegistrationFormData } from "../interfaces/RegistrationFormData";
 
 /**Renders Routes
  *
@@ -36,7 +36,7 @@ interface AllRoutesParams {
 
 function AllRoutes({ login, register }: AllRoutesParams) {
   const currentUser = useContext(UserContext);
-  
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

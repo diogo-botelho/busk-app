@@ -1,13 +1,13 @@
 import { Card, Button } from "react-bootstrap";
-import { Event } from "../interfaces/Event";
-import BuskApi from "../api/api";
 
-interface EventCardParams {
+import { Event } from "../interfaces/Event";
+
+interface EventCardParamsInterface {
   event: Event;
   remove: (eventId:number) => void
 }
 
-export function EventCard({ event, remove }: EventCardParams) {
+export function EventCard({ event, remove }: EventCardParamsInterface) {
   const { title, type, id } = event;
 
   async function handleRemove() {

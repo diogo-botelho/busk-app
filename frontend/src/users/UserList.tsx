@@ -1,6 +1,4 @@
-import React from 'react';
 import './User.css';
-// import { useParams } from "react-router-dom"
 
 function UserList() {
     // const params = useParams();

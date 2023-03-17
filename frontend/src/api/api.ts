@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import { LoginFormData } from "../interfaces/LoginFormData";
 import { RegistrationFormData } from "../interfaces/RegistrationFormData";
 import { Coordinates } from "../interfaces/Coordinates";
+
 import { BACKEND_BASE_URL } from "../config";
 
 interface EventDetails {

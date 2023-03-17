@@ -1,5 +1,5 @@
-// import "./Error.css";
 import { Alert } from "react-bootstrap";
+
 /** Renders an error message
  *
  * State:

@@ -9,6 +9,7 @@ import {
 } from "react-bootstrap";
 
 import Error from "../Error";
+
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 
 interface AddEventFormParams {

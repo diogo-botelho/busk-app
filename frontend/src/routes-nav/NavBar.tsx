@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
-import { UserContext } from "../users/UserContext";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { icon, solid, regular } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
 
 import "./NavBar.css";
+
+import { UserContext } from "../users/UserContext";
 
 /** Renders NavLinks
  *

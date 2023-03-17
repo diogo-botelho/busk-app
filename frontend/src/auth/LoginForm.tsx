@@ -10,7 +10,9 @@ import {
 } from "react-bootstrap";
 
 import Error from "../Error";
+
 import { LoginFormData } from "../interfaces/LoginFormData";
+
 /**Renders a login form
  *
  * Props:

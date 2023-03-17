@@ -12,8 +12,12 @@ router.get(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const events = await Event.getAll();
-    return res.json(events);
+    try {
+      const events = await Event.getAll();
+      return res.json(events);
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 
@@ -25,10 +29,14 @@ router.get(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const event = await Event.getById(+id);
-    return res.json({ event });
+      const event = await Event.getById(+id);
+      return res.json({ event });
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 
@@ -41,11 +49,14 @@ router.post(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const eventDetails = req.body;
+    try {
+      const eventDetails = req.body;
 
-    const event = await Event.create(eventDetails);
-    return res.status(201).json({ event });
-    // return("this worked");
+      const event = await Event.create(eventDetails);
+      return res.status(201).json({ event });
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 
@@ -58,13 +69,17 @@ router.patch(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const event = await Event.update(+id, req.body);
-    // if(!result.rows[0]) throw new NotFoundError();
+      const event = await Event.update(+id, req.body);
+      // if(!result.rows[0]) throw new NotFoundError();
 
-    if (!event) return res.status(404);
-    return res.json({ event });
+      if (!event) return res.status(404);
+      return res.json({ event });
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 
@@ -77,10 +92,14 @@ router.delete(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    await Event.remove(+id);
-    return res.json({ message: "event deleted" });
+      await Event.remove(+id);
+      return res.json({ message: "event deleted" });
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 

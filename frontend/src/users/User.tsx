@@ -1,10 +1,14 @@
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
-import "./User.css";
-import { UserContext } from "./UserContext";
 import { Container } from "react-bootstrap";
 
-function User() {
+import "./User.css";
+import { UserContext, UserContextType } from "./UserContext";
+
+interface UserParamsInterface {
+  user: UserContextType | undefined;
+}
+function User({user}:UserParamsInterface) {
   const currentUser = useContext(UserContext);
   const params = useParams();
 
@@ -14,7 +18,7 @@ function User() {
         <h1> You must be user {currentUser.username} </h1>
       </div>
       Events created by the user will go here.
-      </Container>
+    </Container>
   ) : (
     <div>This user doesn't exist.</div>
   );

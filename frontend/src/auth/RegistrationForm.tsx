@@ -8,8 +8,11 @@ import {
   Row,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Error from "../Error";
+
+import ErrorMessage from "../ErrorMessage";
+
 import { RegistrationFormData } from "../interfaces/RegistrationFormData";
+
 /**Renders a login form
  *
  * Props:
@@ -41,7 +44,7 @@ interface RegisterFormParams {
 function RegistrationForm({ register }: RegisterFormParams) {
   const [formData, setFormData] =
     useState<RegistrationFormData>(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<string[] | []>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
@@ -55,7 +58,11 @@ function RegistrationForm({ register }: RegisterFormParams) {
       await register(formData);
       return navigate("/events", { replace: true });
     } catch (err) {
-      setErrors(["Something went wrong"]);
+      if (Array.isArray(err)) {
+        setErrors(err);
+      } else {
+        setErrors([`${err}`]);
+      }
     }
   }
 
@@ -144,7 +151,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            {errors.length > 0 && <Error messages={errors} />}
+            {errors.length > 0 && <ErrorMessage messages={errors} />}
             <Button type="submit" className="btn btn-primary ">
               Submit
             </Button>

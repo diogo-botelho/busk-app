@@ -8,19 +8,21 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import Error from "../Error";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 
 interface AddEventFormParams {
   submitEvent: (formData: AddEventFormData) => void;
 }
 
+/**
+ * AddEventForm Component
+ * 
+ */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
   const [formData, setFormData] = useState<AddEventFormData>({
     title: "",
     type: "",
   });
-  const [errors, setErrors] = useState<string[] | []>([]);
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
@@ -28,12 +30,8 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   }
 
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
-    try {
       evt.preventDefault();
       submitEvent(formData);
-    } catch (err) {
-      setErrors(["Something went wrong"]);
-    }
   }
 
   return (
@@ -64,7 +62,6 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            {errors.length > 0 && <Error messages={errors} />}
             <Button type="submit" className="btn-primary mt-2">
               Submit
             </Button>

@@ -1,4 +1,4 @@
-// import "./Error.css";
+import { Alert } from "react-bootstrap";
 
 /** Renders an error message
  *
@@ -14,14 +14,15 @@ interface ErrorMessageParams {
   messages: string[];
 }
 
-function Error({ messages }: ErrorMessageParams) {
+function ErrorMessage({ messages }: ErrorMessageParams) {
   return (
-    <div className="Error">
+    <Alert variant="danger">
+      <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
       {messages.map((message, idx) => (
         <p key={idx}>{message}</p>
       ))}
-    </div>
+    </Alert>
   );
 }
 
-export default Error;
+export default ErrorMessage;

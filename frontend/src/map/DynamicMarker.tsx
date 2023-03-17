@@ -1,5 +1,6 @@
 import { Marker, useMapEvents } from "react-leaflet";
 import { useContext } from "react";
+
 import { NewCoordinatesContext } from "./NewCoordinatesContext";
 
 export function DynamicMarker() {

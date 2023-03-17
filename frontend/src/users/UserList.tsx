@@ -1,7 +1,6 @@
 import './User.css';
 
 function UserList() {
-    // const params = useParams();
     return (
         <div>
             Hi!

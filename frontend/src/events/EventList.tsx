@@ -3,17 +3,19 @@ import { Button, Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { Map } from "../map/Map";
-import { AddEventForm } from "./AddEventForm";
-
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
-import { UserContext } from "../users/UserContext";
+
+import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
+
+import { UserContext } from "../users/UserContext";
 
 import { Coordinates } from "../interfaces/Coordinates";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 import { Event } from "../interfaces/Event";
 
 import BuskApi from "../api/api";
+import { addSyntheticLeadingComment } from "typescript";
 
 /** Renders EventList
  *
@@ -32,6 +34,7 @@ function EventList() {
   const [needsEvents, setNeedsEvents] = useState(true);
   const currentUser = useContext(UserContext);
 
+  // Fetch events when rendering component
   useEffect(
     function fetchEventsOnLoad() {
       async function getEventsfromApi() {
@@ -45,21 +48,55 @@ function EventList() {
           // setErrors(previousErrors => [...previousErrors, ...err]);
         }
       }
-
       getEventsfromApi();
     },
     [needsEvents]
   );
-  // await BuskApi.getEvents();
 
-  function addEvent() {
+  /** Add Event
+   */
+  //Load Add Event Button
+  function newEventSection() {
+    // If not logged in, show prompt to login/register
+    if (!currentUser) {
+      return (
+        <div className="mt-auto">
+          <p>
+            Please <Link to="/login">login</Link> or{" "}
+            <Link to="/register">register</Link> to add an event.
+          </p>
+        </div>
+      );
+    }
+    // If logged in, show button to add new event
+    if (!isAddingEvent) {
+      return (
+        <Button
+          className="mt-2 bottom"
+          type="submit"
+          size="lg"
+          onClick={toggleAddEvent}
+        >
+          Add Event
+        </Button>
+      );
+    } else {
+      //If adding new event, show AddEventForm component
+      return <AddEventForm submitEvent={submitEvent} />;
+    }
+  }
+
+  //Toggle Add Event Button
+  function toggleAddEvent() {
     setIsAddingEvent(true);
   }
 
+  //Update coordinates based on DynamicMarker coordinates
   function updateNewCoordinates(mapCoordinates: Coordinates) {
     setNewCoordinates(mapCoordinates);
   }
 
+  //Submit AddEventForm
   async function submitEvent(formData: AddEventFormData) {
     const eventDetails = {
       buskerId: 1,
@@ -82,48 +119,24 @@ function EventList() {
     setNewCoordinates(undefined);
   }
 
+  /** Remove Event
+   */
+  async function removeEvent(eventId: number) {
+    await BuskApi.removeEvent(eventId);
+    const updatedEvents = events.filter((event) => event.id !== eventId);
+    setEvents(updatedEvents);
+  }
+
+  // Last 4 events
+  let firstFourEvents = events.slice(-4);
+
+  // Loading 
   if (needsEvents) {
     return (
       <Container className="text-center">
         <h1>Loading...</h1>
       </Container>
     );
-  }
-
-  function newEventComponent() {
-    if (!currentUser) {
-      return (
-        <div className="mt-auto">
-          <p>
-            Please <Link to="/login">login</Link> or{" "}
-            <Link to="/register">register</Link> to add an event.
-          </p>
-        </div>
-      );
-    }
-
-    if (isAddingEvent) {
-      return <AddEventForm submitEvent={submitEvent} />;
-    }
-
-    return (
-      <Button
-        className="mt-2 bottom"
-        type="submit"
-        size="lg"
-        onClick={addEvent}
-      >
-        Add Event
-      </Button>
-    );
-  }
-
-  let firstFourEvents = events.slice(-4);
-
-  async function remove(eventId:number) {
-    await BuskApi.removeEvent(eventId);
-    const updatedEvents = events.filter(event => event.id !== eventId);
-    setEvents(updatedEvents);
   }
 
   return (
@@ -136,9 +149,9 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <EventCard key={event.id} event = {event} remove={remove}/>
+              <EventCard key={event.id} event={event} remove={removeEvent} />
             ))}
-            {newEventComponent()}
+            {newEventSection()}
           </Col>
           <Col>
             <NewCoordinatesContext.Provider

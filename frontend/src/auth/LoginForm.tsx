@@ -9,7 +9,7 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import Error from "../Error";
+import ErrorMessage from "../ErrorMessage";
 
 import { LoginFormData } from "../interfaces/LoginFormData";
 
@@ -53,7 +53,7 @@ function LoginForm({ login }: LoginFormParams) {
       if (Array.isArray(err)) {
         setErrors(["Invalid username or password."]);
       } else {
-        setErrors(["Something went wrong. Please try again later."]);
+        setErrors([`${err}`]);
       }
     }
   }
@@ -91,7 +91,7 @@ function LoginForm({ login }: LoginFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            {errors.length > 0 && <Error messages={errors} />}
+            {errors.length > 0 && <ErrorMessage messages={errors} />}
 
             <Button type="submit" className="btn-primary mt-2">
               Submit

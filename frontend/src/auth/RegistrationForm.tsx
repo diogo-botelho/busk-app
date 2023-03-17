@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import Error from "../Error";
+import ErrorMessage from "../ErrorMessage";
 
 import { RegistrationFormData } from "../interfaces/RegistrationFormData";
 
@@ -61,7 +61,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
       if (Array.isArray(err)) {
         setErrors(err);
       } else {
-        setErrors(["Something went wrong. Please try again later."]);
+        setErrors([`${err}`]);
       }
     }
   }
@@ -151,7 +151,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            {errors.length > 0 && <Error messages={errors} />}
+            {errors.length > 0 && <ErrorMessage messages={errors} />}
             <Button type="submit" className="btn btn-primary ">
               Submit
             </Button>

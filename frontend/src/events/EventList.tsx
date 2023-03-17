@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+import ErrorMessage from "../ErrorMessage";
+
 import BuskApi from "../api/api";
 
 import { AddEventForm } from "./AddEventForm";
@@ -23,15 +25,15 @@ import { UserContext } from "../users/UserContext";
  *
  * Routes --> List
  */
-
 function EventList() {
+  const currentUser = useContext(UserContext);
+  const [errors, setErrors] = useState<string[] | []>([]);
+  const [needsEvents, setNeedsEvents] = useState(true);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isAddingEvent, setIsAddingEvent] = useState(false);
   const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
     undefined
   );
-  const [events, setEvents] = useState<Event[]>([]);
-  const [needsEvents, setNeedsEvents] = useState(true);
-  const currentUser = useContext(UserContext);
 
   // Fetch events when rendering component
   useEffect(
@@ -43,8 +45,11 @@ function EventList() {
           setEvents(events);
           setNeedsEvents(false);
         } catch (err) {
-          console.log("Errors on getting Events.");
-          // setErrors(previousErrors => [...previousErrors, ...err]);
+          setErrors([
+            "It seems we're struggling to get our events. " +
+              "Please try again later.",
+          ]);
+          setNeedsEvents(false);
         }
       }
       getEventsfromApi();
@@ -106,13 +111,20 @@ function EventList() {
         lng: newCoordinates?.lng,
       },
     };
-    if (!currentUser) {
-      console.log("Please log in to submit an event.");
-    } else if (!newCoordinates) {
-      console.log("Please select a location");
+    if (!newCoordinates) {
+      setErrors(["Please select a location"]);
     } else {
-      const newEvent = await BuskApi.createEvent(eventDetails);
-      setEvents((previousData) => [...previousData, newEvent]);
+      try {
+        const newEvent = await BuskApi.createEvent(eventDetails);
+        setEvents((previousData) => [...previousData, newEvent]);
+        setErrors([]);
+      } catch (err) {
+        if (Array.isArray(err)) {
+          setErrors(err);
+        } else {
+          setErrors([`${err}`]);
+        }
+      }
     }
     setIsAddingEvent(false);
     setNewCoordinates(undefined);
@@ -121,15 +133,23 @@ function EventList() {
   /** Remove Event
    */
   async function removeEvent(eventId: number) {
-    await BuskApi.removeEvent(eventId);
-    const updatedEvents = events.filter((event) => event.id !== eventId);
-    setEvents(updatedEvents);
+    try {
+      await BuskApi.removeEvent(eventId);
+      const updatedEvents = events.filter((event) => event.id !== eventId);
+      setEvents(updatedEvents);
+    } catch (err) {
+      if (Array.isArray(err)) {
+        setErrors(err);
+      } else {
+        setErrors([`${err}`]);
+      }
+    }
   }
 
   // Last 4 events
   let firstFourEvents = events.slice(-4);
 
-  // Loading 
+  // Loading
   if (needsEvents) {
     return (
       <Container className="text-center">
@@ -150,6 +170,7 @@ function EventList() {
             {firstFourEvents.map((event) => (
               <EventCard key={event.id} event={event} remove={removeEvent} />
             ))}
+            {errors.length > 0 && <ErrorMessage messages={errors} />}
             {newEventSection()}
           </Col>
           <Col>

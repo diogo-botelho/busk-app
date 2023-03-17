@@ -33,13 +33,11 @@ class BuskApi {
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      if (err instanceof AxiosError) {
-        console.log("error", err.response?.data.error.message);
-        console.error("API Error:", err.response);
+      if (err instanceof AxiosError && err.response) {
         let message = err.response?.data.error.message;
         throw Array.isArray(message) ? message : [message];
       } else {
-        throw new Error("Something went wrong");
+        throw new Error("Something went wrong. Please try again later.");
       }
     }
   }

@@ -14,7 +14,7 @@ interface ErrorMessageParams {
   messages: string[];
 }
 
-function Error({ messages }: ErrorMessageParams) {
+function ErrorMessage({ messages }: ErrorMessageParams) {
   return (
     <Alert variant="danger">
       <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
@@ -25,4 +25,4 @@ function Error({ messages }: ErrorMessageParams) {
   );
 }
 
-export default Error;
+export default ErrorMessage;

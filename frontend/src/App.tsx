@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
+import { Container } from "react-bootstrap"
 
 import "./App.css";
 import BuskApi from "./api/api";
@@ -18,9 +19,7 @@ const TOKEN_STORAGE_ID = "busk-app-token";
  *
  * App -> {AllRoutes, Navbar}
  */
-
 function App() {
-  // const [errors, setErrors] = useState([]);
   const [infoLoaded, setInfoLoaded] = useState(false);
   const [token, setToken] = useState(
     localStorage.getItem("token" || TOKEN_STORAGE_ID)
@@ -44,18 +43,16 @@ function App() {
             BuskApi.token = token;
             let currentUser = await BuskApi.getCurrentUser(decodedUsername);
             setCurrentUser(currentUser);
-            // setApplicationIds(new Set(currentUser.applications));
           } catch (err) {
-            console.error("App loadUserInfo: problem loading", err);
             setCurrentUser(undefined);
           }
         }
-        // setInfoLoaded(true);
+        setInfoLoaded(true);
       }
       // set infoLoaded to false while async getCurrentUser runs; once the
       // data is fetched (or even if an error happens!), this will be set back
       // to false to control the spinner.
-      // setInfoLoaded(false);
+      setInfoLoaded(false);
       getCurrentUser();
     },
     [token]
@@ -94,6 +91,15 @@ function App() {
     localStorage.removeItem("token");
     setCurrentUser(undefined);
     setToken(null);
+  }
+
+   // Loading
+   if (!infoLoaded) {
+    return (
+      <Container className="text-center">
+        <h1>Loading...</h1>
+      </Container>
+    );
   }
 
   return (

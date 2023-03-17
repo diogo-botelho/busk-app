@@ -5,10 +5,10 @@ import { Container } from "react-bootstrap";
 import "./User.css";
 import { UserContext, UserContextType } from "./UserContext";
 
-interface userParamsInterface {
+interface UserParamsInterface {
   user: UserContextType | undefined;
 }
-function User({user}:userParamsInterface) {
+function User({user}:UserParamsInterface) {
   const currentUser = useContext(UserContext);
   const params = useParams();
 

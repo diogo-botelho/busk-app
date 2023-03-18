@@ -9,10 +9,10 @@ import { StaticMarker } from "./StaticMarker";
 
 interface MapParams {
   events: Event[];
-  isAddingEvent: boolean;
+  showDynamicMarker: boolean;
 }
 
-export function Map({ events, isAddingEvent }: MapParams) {
+export function Map({ events, showDynamicMarker }: MapParams) {
   return (
     <MapContainer
       className="map"
@@ -31,7 +31,7 @@ export function Map({ events, isAddingEvent }: MapParams) {
       {events.map((event) => (
         <StaticMarker key={event.id} event={event} />
       ))}
-      {isAddingEvent ? <DynamicMarker /> : undefined}
+      {showDynamicMarker ? <DynamicMarker /> : undefined}
     </MapContainer>
   );
 }

@@ -12,6 +12,7 @@ import { EventCard } from "./EventCard";
 import { Coordinates } from "../interfaces/Coordinates";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 import { Event } from "../interfaces/Event";
+import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
 
 import { Map } from "../map/Map";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
@@ -34,6 +35,7 @@ function EventList() {
   const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
     undefined
   );
+  const [showDynamicMarker, setShowDynamicMarker] = useState(false);
 
   // Fetch events when rendering component
   useEffect(
@@ -60,7 +62,7 @@ function EventList() {
   /** Add Event
    */
   //Load Add Event Button
-  function newEventSection() {
+  function addEventSection() {
     // If not logged in, show prompt to login/register
     if (!currentUser) {
       return (
@@ -86,18 +88,29 @@ function EventList() {
       );
     } else {
       //If adding new event, show AddEventForm component
-      return <AddEventForm submitEvent={submitEvent} />;
+      return (
+        <Container>
+          <AddEventForm submitEvent={submitEvent} />
+          <Button onClick={handleCancel}>Cancel</Button>
+        </Container>
+      );
     }
   }
 
   //Toggle Add Event Button
   function toggleAddEvent() {
     setIsAddingEvent(true);
+    setShowDynamicMarker(true);
   }
 
   //Update coordinates based on DynamicMarker coordinates
   function updateNewCoordinates(mapCoordinates: Coordinates) {
     setNewCoordinates(mapCoordinates);
+  }
+
+  async function handleCancel() {
+    setIsAddingEvent(false);
+    toggleDynamicMarker(false);
   }
 
   //Submit AddEventForm
@@ -127,7 +140,34 @@ function EventList() {
       }
     }
     setIsAddingEvent(false);
-    setNewCoordinates(undefined);
+    toggleDynamicMarker(false);
+  }
+
+  /** Submit UpdateEventForm
+   */
+  async function updateEvent(eventId: number, formData: UpdateEventFormData) {
+    const eventDetails = {
+      buskerId: 1,
+      title: formData.title,
+      type: formData.type,
+      coordinates: {
+        lat: newCoordinates?.lat,
+        lng: newCoordinates?.lng,
+      },
+    };
+
+    try {
+      await BuskApi.updateEvent(eventId, eventDetails);
+      setNeedsEvents(true);
+      setErrors([]);
+    } catch (err) {
+      if (Array.isArray(err)) {
+        setErrors(err);
+      } else {
+        setErrors([`${err}`]);
+      }
+    }
+    toggleDynamicMarker(false);
   }
 
   /** Remove Event
@@ -144,6 +184,7 @@ function EventList() {
         setErrors([`${err}`]);
       }
     }
+    setShowDynamicMarker(false);
   }
 
   // Last 4 events
@@ -158,6 +199,12 @@ function EventList() {
     );
   }
 
+  //Function that resets newCoordinates and shows/hides DynamicMarker
+  function toggleDynamicMarker(show: boolean) {
+    setNewCoordinates(undefined);
+    setShowDynamicMarker(show);
+  }
+
   return (
     <Container className="text-center ">
       <header className="p-3 mb-4 bg-light border rounded-3">
@@ -168,16 +215,23 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <EventCard key={event.id} event={event} remove={removeEvent} />
+              <EventCard
+                key={event.id}
+                event={event}
+                updateEvent={updateEvent}
+                removeEvent={removeEvent}
+                toggleDynamicMarker={toggleDynamicMarker}
+                isAddingEvent={isAddingEvent}
+              />
             ))}
             {errors.length > 0 && <ErrorMessage messages={errors} />}
-            {newEventSection()}
+            {addEventSection()}
           </Col>
           <Col>
             <NewCoordinatesContext.Provider
               value={{ newCoordinates, updateNewCoordinates }}
             >
-              <Map events={events} isAddingEvent={isAddingEvent} />
+              <Map events={events} showDynamicMarker={showDynamicMarker} />
             </NewCoordinatesContext.Provider>
           </Col>
         </Row>

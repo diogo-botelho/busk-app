@@ -34,7 +34,7 @@ class BuskApi {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
-        let message = err.response?.data.error.message;
+        let message = err.response.data.error.message;
         throw Array.isArray(message) ? message : [message];
       } else {
         throw new Error("Something went wrong. Please try again later.");
@@ -42,52 +42,52 @@ class BuskApi {
     }
   }
 
-  // Individual API routes
+  /** User API Routes */
 
-  /** Get the current user. */
-
+  /** Function to get the current user. Takes username, returns a token. */
   static async getCurrentUser(username: string) {
     let res = await this.request(`users/${username}`);
     return res;
   }
 
-  /** function to log in a user, takes an object {username, password}
-   * returns token */
+  /** Function to log in a user, takes an object {username, password}
+   *  Returns token */
   static async login(loginData: LoginFormData) {
     const res = await this.request("auth/login", loginData, "post");
     return res.token;
   }
 
-  /** function to register a new user
-   * takes an object  { username, password, firstName, lastName, email }
-   * returns token */
+  /** Function to register a new user. Takes an object
+   * { username, password, firstName, lastName, phone, email }. Returns token */
   static async register(registerData: RegistrationFormData) {
-    // const { username, password, firstName, lastName, phone, email } =
-    //   registerData;
-
     const res = await this.request("auth/register", registerData, "post");
     return res.token;
   }
 
-  /**
-   * function to create a new event, takes an object
-   * eventDetails { title, type, coordinates }
-   * Returns string "Event added." */
+  /** Event API Routes */
+
+  /** Function to create a new event, takes an object eventDetails
+   * { title, type, coordinates }. Returns event. */
   static async createEvent(eventDetails: EventDetails) {
     const res = await this.request("events/create", eventDetails, "post");
     return res.event;
   }
 
-  /**
-   * function to get all events. Returns [event, event,event] */
+  /** Function to get all events. Returns [event, event,event] */
   static async getEvents() {
     const res = await this.request("events/");
 
     return res;
   }
 
-  /**
-   * function to get all events. Returns [event, event,event] */
+  /** Function to get an event. Takes eventId. Returns event */
+  static async updateEvent(eventId: number,updateData:EventDetails) {
+    const res = await this.request(`events/${eventId}`, updateData, "patch");
+
+    return res;
+  }
+
+  /** Function to get an event. Takes eventId. Returns event */
   static async removeEvent(eventId: number) {
     const res = await this.request(`events/${eventId}`, {}, "delete");
 

@@ -8,7 +8,7 @@ import { UpdateEventForm } from "./UpdateEventForm";
 
 interface EventCardParamsInterface {
   event: Event;
-  updateEvent: (eventId: number, formData: UpdateEventFormData) => void;
+  updateEvent: (event: Event, formData: UpdateEventFormData) => void;
   removeEvent: (eventId: number) => void;
   toggleDynamicMarker: (show: boolean) => void;
   isAddingEvent: boolean;

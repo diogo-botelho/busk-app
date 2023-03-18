@@ -145,17 +145,19 @@ function EventList() {
 
   /** Submit UpdateEventForm
    */
-  async function updateEvent(eventId: number, formData: UpdateEventFormData) {
+  async function updateEvent(event: Event, formData: UpdateEventFormData) {
     const eventDetails = {
       buskerId: 1,
       title: formData.title,
       type: formData.type,
       coordinates: {
-        lat: newCoordinates?.lat,
-        lng: newCoordinates?.lng,
+        lat: newCoordinates?.lat || event.coordinates.lat,
+        lng: newCoordinates?.lng || event.coordinates.lng
       },
     };
 
+    const eventId = event.id;
+    
     try {
       await BuskApi.updateEvent(eventId, eventDetails);
       setNeedsEvents(true);

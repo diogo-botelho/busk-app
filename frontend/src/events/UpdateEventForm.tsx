@@ -13,7 +13,7 @@ import {Event} from "../interfaces/Event"
 
 interface UpdateEventFormParams {
     event: Event,
-    updateEvent: (eventId:number, formData: UpdateEventFormData) => void;
+    updateEvent: (event:Event, formData: UpdateEventFormData) => void;
 }
 
 /**
@@ -33,7 +33,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
 
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    updateEvent(event.id, formData);
+    updateEvent(event, formData);
   }
 
   return (

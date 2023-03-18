@@ -64,8 +64,8 @@ function NavBar({ logout }: Logout) {
           </Link>
         </li>
         <li className="nav-item mx-2">
-          <Link className="nav-link" to="/register" onClick={toggle}>
-            Register
+          <Link className="nav-link" to="/signup" onClick={toggle}>
+            Signup
           </Link>
         </li>
       </ul>

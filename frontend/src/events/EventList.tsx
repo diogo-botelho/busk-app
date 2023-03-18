@@ -2,29 +2,26 @@ import { useState, useEffect, useContext } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import ErrorMessage from "../ErrorMessage";
-
 import BuskApi from "../api/api";
+import {LoadingMessage} from "../common/LoadingMessage"
+import ErrorMessage from "../common/ErrorMessage";
 
 import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
-
 import { Coordinates } from "../interfaces/Coordinates";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 import { Event } from "../interfaces/Event";
 import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
-
 import { Map } from "../map/Map";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
-
 import { UserContext } from "../users/UserContext";
 
-/** Renders EventList
+/** Renders EventList 
  *
  * Props: none
  * State: none
  *
- * Routes --> List
+ * AllRoutes --> List
  */
 function EventList() {
   const currentUser = useContext(UserContext);
@@ -63,13 +60,13 @@ function EventList() {
    */
   //Load Add Event Button
   function addEventSection() {
-    // If not logged in, show prompt to login/register
+    // If not logged in, show prompt to login/signup
     if (!currentUser) {
       return (
         <div className="mt-auto">
           <p>
             Please <Link to="/login">login</Link> or{" "}
-            <Link to="/register">register</Link> to add an event.
+            <Link to="/signup">signup</Link> to add an event.
           </p>
         </div>
       );
@@ -193,13 +190,7 @@ function EventList() {
   let firstFourEvents = events.slice(-4);
 
   // Loading
-  if (needsEvents) {
-    return (
-      <Container className="text-center">
-        <h1>Loading...</h1>
-      </Container>
-    );
-  }
+  if (needsEvents) LoadingMessage()
 
   //Function that resets newCoordinates and shows/hides DynamicMarker
   function toggleDynamicMarker(show: boolean) {

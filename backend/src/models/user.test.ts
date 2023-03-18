@@ -21,11 +21,12 @@ beforeEach(async function () {
                 ('TestUser2', 'TestFirstName2', 'TestLastName2')`);
 });
 
-/************************************** register */
+/************************************** signup */
 
-describe("register", function () {
+describe("signup", function () {
   const newUser = {
     username: "new",
+    password: "password",
     firstName: "Test",
     lastName: "Tester",
     phone: "111111111",
@@ -35,7 +36,7 @@ describe("register", function () {
   const { username, firstName, lastName, phone, email } = newUser;
 
   test("works", async function () {
-    let user = await User.register(username, firstName, lastName, phone, email);
+    let user = await User.signup(newUser);
     expect(user).toEqual(newUser);
     const found = await db.query("SELECT * FROM users WHERE username = 'new'");
     expect(found.rows.length).toEqual(1);
@@ -45,8 +46,8 @@ describe("register", function () {
 
   test("bad request with dup data", async function () {
     try {
-      await User.register(username, firstName, lastName, phone, email);
-      await User.register(username, firstName, lastName, phone, email);
+      await User.signup(newUser);
+      await User.signup(newUser);
       fail();
     } catch (err) {
       console.log("This test threw an error due to BadRequestError.");
@@ -79,11 +80,11 @@ describe("getAll", function () {
   });
 });
 
-/************************************** getById */
+/************************************** get */
 
-describe("getById", function () {
+describe("get", function () {
   test("works", async function () {
-    let user = await User.getById(1);
+    let user = await User.get("u1");
     expect(user).toEqual({
       username: "u1",
       firstName: "U1F",
@@ -95,7 +96,7 @@ describe("getById", function () {
 
   test("not found if no such user", async function () {
     try {
-      await User.getById(0);
+      await User.get(0);
       fail();
     } catch (err) {
       console.log("This test failed due to NotFoundError.");
@@ -109,6 +110,7 @@ describe("getById", function () {
 describe("update", function () {
   const updateData = {
     username: "newUsername",
+    password: "newPassword",
     firstName: "NewF",
     lastName: "NewF",
     phone: "000000000",

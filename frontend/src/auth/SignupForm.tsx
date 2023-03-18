@@ -7,69 +7,68 @@ import {
   Form,
   Row,
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../common/ErrorMessage";
+import { SignupFormData } from "../interfaces/SignupFormData";
 
-import { RegistrationFormData } from "../interfaces/RegistrationFormData";
-
-/**Renders a login form
- *
- * Props:
- *  - login(): function that authenticates user data
- *
- * State:
- *  - formData
- *  - errors
- *
- * Routes -> LoginForm
- * */
-
-// interface RegistrationFormParams {
-// }
-
-const INITIAL_FORM_DATA = {
-  username: "",
-  password: "",
-  firstName: "",
-  lastName: "",
-  phone: "",
-  email: "",
-};
-
-interface RegisterFormParams {
-  register: (name: RegistrationFormData) => void;
+interface SignupFormParams {
+  signup: (name: SignupFormData) => void;
 }
 
-function RegistrationForm({ register }: RegisterFormParams) {
-  const [formData, setFormData] =
-    useState<RegistrationFormData>(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<string[]>([]);
-  const navigate = useNavigate();
+/**Signup Form.
+ *
+ * Props:
+ *  - signup(): function that handles user signup.
+ *
+ * State:
+ *  - formData: tracks data inserted into form.
+ *  - formErrors: tracks errors.
+ *
+ * On submission:
+ * - calls signup function prop
+ *
+ * AllRoutes -> LoginForm -> ErrorMessage
+ * Routed as /signup
+ * */
 
+function SignupForm({ signup }: SignupFormParams) {
+  const [formData, setFormData] = useState<SignupFormData>({
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+  });
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+
+  /** Handle form submit:
+   *
+   * Calls signup func prop and, if not successful, sets errors.
+   */
+  async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
+    try {
+      evt.preventDefault();
+      await signup(formData);
+    } catch (err) {
+      if (Array.isArray(err)) {
+        setFormErrors(err);
+      } else {
+        setFormErrors([`${err}`]);
+      }
+    }
+  }
+
+  /** Update form data field */
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
-  async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
-    try {
-      evt.preventDefault();
-      await register(formData);
-      return navigate("/events", { replace: true });
-    } catch (err) {
-      if (Array.isArray(err)) {
-        setErrors(err);
-      } else {
-        setErrors([`${err}`]);
-      }
-    }
-  }
-
   return (
     <Container>
       <header className="p-3 mb-4 bg-light border rounded-3">
-        <h1 className="text-center">Register</h1>
+        <h1 className="text-center">Signup</h1>
       </header>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
@@ -151,7 +150,7 @@ function RegistrationForm({ register }: RegisterFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            {errors.length > 0 && <ErrorMessage messages={errors} />}
+            {formErrors.length > 0 && <ErrorMessage messages={formErrors} />}
             <Button type="submit" className="btn btn-primary ">
               Submit
             </Button>
@@ -162,4 +161,4 @@ function RegistrationForm({ register }: RegisterFormParams) {
   );
 }
 
-export default RegistrationForm;
+export default SignupForm;

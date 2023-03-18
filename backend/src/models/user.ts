@@ -51,14 +51,14 @@ export class User {
     throw new UnauthorizedError("Invalid username/password");
   }
 
-  /** Register user with data.
+  /** Signup user with data.
    *
    * Returns { username, firstName, lastName, email, phone, isAdmin }
    *
    * Throws BadRequestError on duplicates.
    **/
 
-  static async register(userData: UserData) {
+  static async signup(userData: UserData) {
     const { username, password, firstName, lastName, email, phone, isAdmin } =
       userData;
     const duplicateCheck = await db.query(

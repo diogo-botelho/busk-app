@@ -51,10 +51,11 @@ router.post(
   ) {
     try {
       const eventDetails = req.body;
-
       const event = await Event.create(eventDetails);
+
       return res.status(201).json({ event });
     } catch (err) {
+      
       return next(err);
     }
   }
@@ -73,7 +74,6 @@ router.patch(
       const { id } = req.params;
 
       const event = await Event.update(+id, req.body);
-      // if(!result.rows[0]) throw new NotFoundError();
 
       if (!event) return res.status(404);
       return res.json({ event });

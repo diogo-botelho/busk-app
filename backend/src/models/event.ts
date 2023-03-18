@@ -77,7 +77,7 @@ export class Event {
     const querySql = `UPDATE events
             SET ${setCols} 
             WHERE id = ${eventVarIdx} 
-            RETURNING id, busker_id as "buskerId", title, type`;
+            RETURNING id, busker_id as "buskerId", title, type, coordinates`;
 
     const result = await db.query(querySql, [...values, id]);
     const event = result.rows[0];

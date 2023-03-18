@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Container, Card, Button } from "react-bootstrap";
 
 import { Event } from "../interfaces/Event";
 import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
 
 import { UpdateEventForm } from "./UpdateEventForm";
+
+import { UserContext } from "../users/UserContext";
 
 interface EventCardParamsInterface {
   event: Event;
@@ -21,9 +23,10 @@ export function EventCard({
   toggleDynamicMarker,
   isAddingEvent,
 }: EventCardParamsInterface) {
+  const currentUser = useContext(UserContext);
   const [isUpdatingEvent, setIsUpdatingEvent] = useState(false);
 
-  const { title, type, id } = event;
+  const { title, type, id, buskerId } = event;
 
   //Toggle Add Event Button
   function toggleUpdateEvent() {
@@ -53,7 +56,7 @@ export function EventCard({
           {" "}
           <Card.Title>{title}</Card.Title>
           <Card.Text>{type}</Card.Text>
-          {!isAddingEvent ? (
+          {!isAddingEvent && buskerId === currentUser?.buskerId ? (
             <Container>
               <Button onClick={toggleUpdateEvent}>Update</Button>
               <Button onClick={handleRemove}>Remove</Button>

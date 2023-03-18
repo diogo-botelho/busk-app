@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
-import { Container } from "react-bootstrap"
+import { Container } from "react-bootstrap";
 
 import "./App.css";
 import BuskApi from "./api/api";
@@ -93,8 +93,8 @@ function App() {
     setToken(null);
   }
 
-   // Loading
-   if (!infoLoaded) {
+  // Loading
+  if (!infoLoaded) {
     return (
       <Container className="text-center">
         <h1>Loading...</h1>

@@ -1,14 +1,9 @@
 import { Alert } from "react-bootstrap";
 
-/** Renders an error message
+/** Presentational component for showing bootstrap-style alerts.
  *
- * State:
- *  - none
- *
- * Props:
- *  - Array of errror messages
- *
- */
+ * { LoginForm, SignupForm, EventList  } -> ErrorMessage
+ **/
 
 interface ErrorMessageParams {
   messages: string[];

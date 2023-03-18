@@ -14,9 +14,18 @@ interface AddEventFormParams {
   submitEvent: (formData: AddEventFormData) => void;
 }
 
-/**
- * AddEventForm Component
- * 
+/**Add Event Form.
+ *
+ * Props:
+ *  - submitEvent(): function that hadnles event creation.
+ *
+ * State:
+ *  - formData: tracks data inserted into form.
+ *
+ * On submission:
+ * - calls submitEvent function prop
+ *
+ * EventList -> AddEventForm
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
   const [formData, setFormData] = useState<AddEventFormData>({
@@ -24,14 +33,19 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
     type: "",
   });
 
+  /** Handle form submit:
+   *
+   * Calls submitEvent func prop and, if not successful, sets errors.
+   */
+  async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
+    submitEvent(formData);
+  }
+
+  /** Update form data field */
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
-
-  async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
-      evt.preventDefault();
-      submitEvent(formData);
   }
 
   return (

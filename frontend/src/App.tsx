@@ -1,30 +1,51 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 import "./App.css";
 import BuskApi from "./api/api";
+import { LoadingMessage } from "./common/LoadingMessage";
 import { LoginFormData } from "./interfaces/LoginFormData";
-import { RegistrationFormData } from "./interfaces/RegistrationFormData";
+import { SignupFormData } from "./interfaces/SignupFormData";
 import AllRoutes from "./routes-nav/AllRoutes";
 import NavBar from "./routes-nav/NavBar";
 import { UserContext } from "./users/UserContext";
 
+// Key name for storing token in localStorage for "remember me" re-login
 const TOKEN_STORAGE_ID = "busk-app-token";
 
-/** Renders Busk App
+/** Busk application.
  *
- * Props: none
- * State: none
+ * Props:
+ * - none
+ *
+ * State:
+ * - infoLoaded: has user data been pulled from API?
+ *   (this manages message for "Loading...")
+ *
+ * - currentUser: user obj from API. This becomes the canonical way to tell
+ *   if someone is logged in. This is passed around via context throughout app.
+ *
+ * - token: for logged in users, this is their authentication JWT.
+ *   Is required to be set for most API calls. This is initially read from
+ *   localStorage and synced to there via the useLocalStorage hook.
  *
  * App -> {AllRoutes, Navbar}
  */
+
 function App() {
   const [infoLoaded, setInfoLoaded] = useState(false);
+  const [currentUser, setCurrentUser] = useState(undefined);
   const [token, setToken] = useState(
     localStorage.getItem("token" || TOKEN_STORAGE_ID)
   );
-  const [currentUser, setCurrentUser] = useState(undefined);
+
+  const navigate = useNavigate();
+
+  // Load user info from API. Until a user is logged in and they have a token,
+  // this should not run. It only needs to re-run when a user logs out, so
+  // the value of the token is a dependency for this effect.
 
   useEffect(
     function loadUserInfo() {
@@ -33,15 +54,15 @@ function App() {
       async function getCurrentUser() {
         if (token) {
           try {
-            let username = jwt_decode(token);
-
+            const username = jwt_decode(token);
             const decodedUsername = JSON.parse(
               JSON.stringify(username)
             ).username;
 
             // put the token on the Api class so it can use it to call the API.
             BuskApi.token = token;
-            let currentUser = await BuskApi.getCurrentUser(decodedUsername);
+            const currentUser = await BuskApi.getCurrentUser(decodedUsername);
+
             setCurrentUser(currentUser);
           } catch (err) {
             setCurrentUser(undefined);
@@ -60,8 +81,8 @@ function App() {
 
   /** Handles site-wide login.
    *
-   * Logs in a user, adds token to localStorage and adds current user to
-   * CurrentUser context.
+   * Logs in a user, adds token to localStorage, adds current user to
+   * CurrentUser context and redirects user to Events.
    *
    * Make sure you await this function to see if any error happens.
    */
@@ -70,20 +91,22 @@ function App() {
 
     localStorage.setItem("token", token);
     setToken(token);
+    return navigate("/events", { replace: true });
   }
 
-  /** Handles site-wide new user registration.
+  /** Handles site-wide user signup.
    *
-   * Automatically logs them in (set token) upon signup and adds current user to
-   * CurrentUser context.
+   * Automatically logs them in (set token) upon signup, adds current user to
+   * CurrentUser context and redirects user to Events.
    *
    * Make sure you await this function to see if any error happens.
    */
-  async function register(registerData: RegistrationFormData) {
-    const token = await BuskApi.register(registerData);
+  async function signup(signupData: SignupFormData) {
+    const token = await BuskApi.signup(signupData);
     localStorage.setItem("token", token);
     setToken(token);
-    console.log(token.username + " was successfully registered");
+    console.log(token.username + " was successfully signed up.");
+    return navigate("/events", { replace: true });
   }
 
   /** Handles site-wide logout. */
@@ -94,19 +117,13 @@ function App() {
   }
 
   // Loading
-  if (!infoLoaded) {
-    return (
-      <Container className="text-center">
-        <h1>Loading...</h1>
-      </Container>
-    );
-  }
+  if (!infoLoaded) LoadingMessage();
 
   return (
     <div className="App">
       <UserContext.Provider value={currentUser}>
         <NavBar logout={logout} />
-        <AllRoutes login={login} register={register} />
+        <AllRoutes login={login} signup={signup} />
       </UserContext.Provider>
     </div>
   );

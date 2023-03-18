@@ -16,6 +16,29 @@ interface EventCardParamsInterface {
   isAddingEvent: boolean;
 }
 
+/** Show information about an event.
+ * 
+ * Is rendered by EventList to show a "card" for each event. Includes buttons
+ * to update or remove the event.
+ *
+ * Props:
+ *  - event: event object
+ *  - updateEvent(): function that handles updating event details.
+ *  - removeEvent(): function that handles removing event.
+ *  - toggleDynamicMarker(): function that handles showing/hiding DynamicMarker
+ *  on Map component.
+ *  - isAddingEvent: tracks if an event is being added and hides update/delete 
+ *  buttons if yes.
+ * 
+ * Context:
+ *  - currentUser: current logged in user, or undefined.
+ * 
+ * State:
+ *  - isUpdatingEvent: tracks if event is being updated.
+ *
+ * EventList -> EventCard -> UpdateEventForm
+ */
+
 export function EventCard({
   event,
   updateEvent,

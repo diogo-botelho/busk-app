@@ -8,7 +8,7 @@ import "./Home.css";
  * Props: none
  * State: none
  *
- * Routes --> HomePage
+ * AllRoutes --> HomePage
  */
 
 function Home() {

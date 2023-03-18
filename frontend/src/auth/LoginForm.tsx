@@ -1,61 +1,67 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
+  Button,
+  Col,
   Container,
+  FloatingLabel,
   Form,
   Row,
-  Col,
-  Button,
-  FloatingLabel,
 } from "react-bootstrap";
 
-import ErrorMessage from "../ErrorMessage";
-
+import ErrorMessage from "../common/ErrorMessage";
 import { LoginFormData } from "../interfaces/LoginFormData";
-
-/**Renders a login form
- *
- * Props:
- *  - login(): function that authenticates user data
- *
- * State:
- *  - formData
- *  - errors
- *
- * Routes -> LoginForm
- * */
-
-const INITIAL_FORM_DATA = {
-  username: "",
-  password: "",
-};
 
 interface LoginFormParams {
   login: (username: LoginFormData) => void;
 }
 
+/**Login form.
+ *
+ * Shows form and manages uodate to state on changes.
+ *
+ * Props:
+ *  - login(): function that authenticates user data
+ *
+ * State:
+ *  - formData: tracks data inserted into form.
+ *  - errors: tracks errors.
+ *
+ * On submission:
+ * - calls login function prop
+ *
+ * AllRoutes -> LoginForm -> ErrorMessage
+ * Routed as /login
+ * */
+
 function LoginForm({ login }: LoginFormParams) {
-  const [formData, setFormData] = useState<LoginFormData>(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<string[] | []>([]);
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState<LoginFormData>(
+    {
+      username: "",
+      password: "",
+    })
+  const [formErrors, setFormErrors] = useState<string[] | []>([]);
 
-  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = evt.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
-
+  /** Handle form submit:
+   *
+   * Calls login func prop and, if not successful, sets errors.
+   */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     try {
       await login(formData);
-      return navigate("/events", { replace: true });
     } catch (err) {
       if (Array.isArray(err)) {
-        setErrors(["Invalid username or password."]);
+        setFormErrors(["Invalid username or password."]);
       } else {
-        setErrors([`${err}`]);
+        setFormErrors([`${err}`]);
       }
     }
+  }
+
+  /** Update form data field */
+  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = evt.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
   return (
@@ -91,7 +97,7 @@ function LoginForm({ login }: LoginFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            {errors.length > 0 && <ErrorMessage messages={errors} />}
+            {formErrors.length > 0 && <ErrorMessage messages={formErrors} />}
 
             <Button type="submit" className="btn-primary mt-2">
               Submit

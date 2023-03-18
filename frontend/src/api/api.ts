@@ -1,12 +1,11 @@
 import axios, { AxiosError } from "axios";
 
+import { BACKEND_BASE_URL } from "../config";
 import { LoginFormData } from "../interfaces/LoginFormData";
-import { RegistrationFormData } from "../interfaces/RegistrationFormData";
+import { SignupFormData } from "../interfaces/SignupFormData";
 import { Coordinates } from "../interfaces/Coordinates";
 
-import { BACKEND_BASE_URL } from "../config";
-
-interface EventDetails {
+interface EventDetailsInterface {
   buskerId: number | undefined;
   title: string;
   type: string;
@@ -26,6 +25,7 @@ class BuskApi {
 
   static async request(endpoint: string, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
+
     const url = `${BACKEND_BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${BuskApi.token}` };
     const params = method === "get" ? data : {};
@@ -44,50 +44,57 @@ class BuskApi {
 
   /** User API Routes */
 
-  /** Function to get the current user. Takes username, returns a token. */
+  /** Get the current user. Takes username.
+   * Returns user object {userId, username, firstName, lastName, phone, email}
+   */
   static async getCurrentUser(username: string) {
     let res = await this.request(`users/${username}`);
     return res;
   }
 
-  /** Function to log in a user, takes an object {username, password}
-   *  Returns token */
+  /** Log in a user. Takes an object {username, password}. Returns token */
   static async login(loginData: LoginFormData) {
     const res = await this.request("auth/login", loginData, "post");
     return res.token;
   }
 
-  /** Function to register a new user. Takes an object
-   * { username, password, firstName, lastName, phone, email }. Returns token */
-  static async register(registerData: RegistrationFormData) {
-    const res = await this.request("auth/register", registerData, "post");
+  /** Signup a new user.
+   *  Takes an object { username, password, firstName, lastName, phone, email }.
+   *  Returns token */
+  static async signup(signupData: SignupFormData) {
+    const res = await this.request("auth/signup", signupData, "post");
     return res.token;
   }
 
   /** Event API Routes */
 
-  /** Function to create a new event, takes an object eventDetails
-   * { title, type, coordinates }. Returns event. */
-  static async createEvent(eventDetails: EventDetails) {
-    const res = await this.request("events/create", eventDetails, "post");
-    return res.event;
-  }
-
-  /** Function to get all events. Returns [event, event,event] */
+  /** Get all events. Returns [{buskerId, title, type, coordinates}, ...] */
   static async getEvents() {
     const res = await this.request("events/");
 
     return res;
   }
 
-  /** Function to get an event. Takes eventId. Returns event */
-  static async updateEvent(eventId: number,updateData:EventDetails) {
+  /** Create a new event.
+   *  Takes an object eventDetails { title, type, coordinates }.
+   *  Returns event. */
+  static async createEvent(eventDetails: EventDetailsInterface) {
+    const res = await this.request("events/create", eventDetails, "post");
+    return res.event;
+  }
+
+  /** Update an event.
+   *  Takes eventId and an object eventDetails { title, type, coordinates }.
+   *  Returns event */
+  static async updateEvent(eventId: number, updateData: EventDetailsInterface) {
     const res = await this.request(`events/${eventId}`, updateData, "patch");
 
     return res;
   }
 
-  /** Function to get an event. Takes eventId. Returns event */
+  /** Get an event.
+   *  Takes eventId.
+   *  Returns event */
   static async removeEvent(eventId: number) {
     const res = await this.request(`events/${eventId}`, {}, "delete");
 

@@ -118,7 +118,8 @@ export class User {
 
   static async get(username: string) {
     const result = await db.query(
-      `SELECT username, 
+      `SELECT id,
+              username, 
               first_name as "firstName", 
               last_name as "lastName", 
               phone, 
@@ -128,10 +129,21 @@ export class User {
             WHERE username = $1`,
       [username]
     );
-
     const user = result.rows[0];
 
     if (!user) throw new NotFoundError(`No such user: ${username}`);
+
+    const buskerResult = await db.query(
+      `SELECT id
+        FROM buskers
+        WHERE userId = $1`,
+      [user.id]
+    );
+
+    const buskerId = buskerResult.rows[0];
+    console.log(buskerId);
+    if (buskerId !== undefined) user.buskerId = buskerId.id;
+    delete user.id;
 
     return user;
   }

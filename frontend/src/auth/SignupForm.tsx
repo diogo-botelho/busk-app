@@ -17,6 +17,8 @@ interface SignupFormParams {
 
 /**Signup Form.
  *
+ * Shows form and manages update to state on changes.
+ *
  * Props:
  *  - signup(): function that handles user signup.
  *
@@ -25,7 +27,7 @@ interface SignupFormParams {
  *  - formErrors: tracks errors.
  *
  * On submission:
- * - calls signup function prop
+ *  - calls signup function prop
  *
  * AllRoutes -> LoginForm -> ErrorMessage
  * Routed as /signup

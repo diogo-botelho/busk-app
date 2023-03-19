@@ -8,32 +8,50 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData"
-import {Event} from "../interfaces/Event"
+import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { Event } from "../interfaces/Event";
 
 interface UpdateEventFormParams {
-    event: Event,
-    updateEvent: (event:Event, formData: UpdateEventFormData) => void;
+  event: Event;
+  updateEvent: (event: Event, formData: UpdateEventFormData) => void;
 }
 
-/**
- * UpdateEventForm Component
+/**Update Event form.
  *
- */
+ * Shows form and manages update to state on changes.
+ *
+ * Props:
+ *  - event: event object {eventId, buskerId, title, type, coordinates{lat,lng}}
+ *  - updateEvent(): function that handles updating an event.
+ *
+ * State:
+ *  - formData: tracks data inserted into form.
+ *
+ * On submission:
+ *  - calls updateEvent function prop
+ *
+ * EventCard -> UpdateEventForm
+ * */
+
 export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   const [formData, setFormData] = useState<UpdateEventFormData>({
     title: event.title,
     type: event.type,
   });
 
-  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = evt.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }
-
+  /** Handle form submit.
+   *
+   * Calls updateEvent func prop.
+   */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     updateEvent(event, formData);
+  }
+
+  /** Update form data field */
+  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = evt.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
   return (

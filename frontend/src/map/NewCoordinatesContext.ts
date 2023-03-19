@@ -7,6 +7,10 @@ interface NewCoordinatesContextType {
   updateNewCoordinates: (coordinates: Coordinates) => void;
 }
 
+/** Context: provides NewCoordinatesContext object and setter for it throughout
+ * app.
+*/
+
 export const NewCoordinatesContext = createContext<
   NewCoordinatesContextType | undefined
 >({

@@ -8,13 +8,14 @@ import "./NavBar.css";
 
 import { UserContext } from "../users/UserContext";
 
-/** Renders NavLinks
+/** Navigation bar for site. Shows up on every page.
  *
- * Props: none
- * State: none
+ * Shows link to events. When user is logged out, shows links to Login and
+ * Signup forms.
  *
- * App -> NavBar
+ * Rendered by App.
  */
+
 interface Logout {
   logout: () => void;
 }
@@ -76,11 +77,10 @@ function NavBar({ logout }: Logout) {
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand me-auto" href="/">
-        {/* <FontAwesomeIcon icon={icon({name:'guitar', style:'solid'})} /> */}
         <FontAwesomeIcon icon={solid('guitar')} />
         </a>
         <button
-          onClick={toggle} // need an onClick to toggle
+          onClick={toggle}
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"

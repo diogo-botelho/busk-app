@@ -6,6 +6,20 @@ interface StaticMarkerParams {
   event: Event;
 }
 
+/** Static Marker Component.
+ * 
+ * Renders React Leaflet Marker component on Map, located at the event 
+ * coordinates.
+ *
+ * Props:
+ *  - event: event object {eventId, buskerId, title, type, coordinates{lat,lng}}
+ *
+ * Context: N/A
+ *
+ * State: N/A
+ *
+ * Map -> StaticMarker
+ */
 export function StaticMarker({ event }: StaticMarkerParams) {
   const { title, type } = event;
   const { lat, lng } = event.coordinates;

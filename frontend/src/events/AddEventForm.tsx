@@ -16,6 +16,8 @@ interface AddEventFormParams {
 
 /**Add Event Form.
  *
+ * Shows form and manages update to state on changes.
+ *
  * Props:
  *  - submitEvent(): function that hadnles event creation.
  *
@@ -23,7 +25,7 @@ interface AddEventFormParams {
  *  - formData: tracks data inserted into form.
  *
  * On submission:
- * - calls submitEvent function prop
+ *  - calls submitEvent function prop
  *
  * EventList -> AddEventForm
  */
@@ -35,7 +37,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
 
   /** Handle form submit:
    *
-   * Calls submitEvent func prop and, if not successful, sets errors.
+   * Calls submitEvent func prop.
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();

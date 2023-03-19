@@ -9,10 +9,28 @@ import { StaticMarker } from "./StaticMarker";
 
 interface MapParams {
   events: Event[];
-  showDynamicMarker: boolean;
+  enableDynamicMarker: boolean;
 }
 
-export function Map({ events, showDynamicMarker }: MapParams) {
+/** Map presentational component.
+ * 
+ * Renders React Leaflet MapContainer component, StaticMarker components for 
+ * each event in events array prop, and renders DynamicMarker component if
+ * enableDynamicMarker is true.
+ * 
+ * Props:
+ *  - events: array of all events.
+ *  - enableDynamicMarker: function that handles enabling/disabling
+ *  DynamicMarker on Map.
+ *
+ * Context: N/A
+ *
+ * State: N/A
+ *
+ * EventList -> Map -> { StaticMarker, DynamicMarker }
+ */
+
+export function Map({ events, enableDynamicMarker }: MapParams) {
   return (
     <MapContainer
       className="map"
@@ -31,7 +49,7 @@ export function Map({ events, showDynamicMarker }: MapParams) {
       {events.map((event) => (
         <StaticMarker key={event.id} event={event} />
       ))}
-      {showDynamicMarker ? <DynamicMarker /> : undefined}
+      {enableDynamicMarker ? <DynamicMarker /> : undefined}
     </MapContainer>
   );
 }

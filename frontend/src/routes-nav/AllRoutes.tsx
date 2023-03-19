@@ -15,18 +15,9 @@ import UserList from "../users/UserList";
 import User from "../users/User";
 import { UserContext } from "../users/UserContext";
 
-/**Renders Routes
+/** Site-wide routes.
  *
- * Props: none
- * State: none
- * Context: none
- *
- * App -> AllRoutes -> {
- *              HomePage,
- *              UserList,
- *              User,
- *              AddUserForm
- *          }
+ * Visiting a non-existant route redirects to the homepage.
  */
 
 interface AllRoutesParams {
@@ -35,13 +26,13 @@ interface AllRoutesParams {
 }
 
 function AllRoutes({ login, signup }: AllRoutesParams) {
-  const currentUser = useContext(UserContext);
+  // const currentUser = useContext(UserContext);
 
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/users" element={<UserList />} />
-      <Route path="/users/:username" element={<User user={currentUser} />} />
+      <Route path="/users/:username" element={<User />} />
       <Route path="/events" element={<EventList />} />
       {/* <Route path="/events/:id" element={<Event />} /> */}
       <Route path="/login" element={<LoginForm login={login} />} />
@@ -49,7 +40,7 @@ function AllRoutes({ login, signup }: AllRoutesParams) {
         path="/signup"
         element={<SignupForm signup={signup} />}
       />
-      ;{/* <Navigate to="/" /> */}
+      <Route path="/*" element={<Home />} /> {/*Works but is it best practice? */}
     </Routes>
   );
 }

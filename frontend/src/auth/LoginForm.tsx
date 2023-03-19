@@ -17,7 +17,7 @@ interface LoginFormParams {
 
 /**Login form.
  *
- * Shows form and manages uodate to state on changes.
+ * Shows form and manages update to state on changes.
  *
  * Props:
  *  - login(): function that authenticates user data
@@ -27,18 +27,17 @@ interface LoginFormParams {
  *  - errors: tracks errors.
  *
  * On submission:
- * - calls login function prop
+ *  - calls login function prop
  *
  * AllRoutes -> LoginForm -> ErrorMessage
  * Routed as /login
  * */
 
 function LoginForm({ login }: LoginFormParams) {
-  const [formData, setFormData] = useState<LoginFormData>(
-    {
-      username: "",
-      password: "",
-    })
+  const [formData, setFormData] = useState<LoginFormData>({
+    username: "",
+    password: "",
+  });
   const [formErrors, setFormErrors] = useState<string[] | []>([]);
 
   /** Handle form submit:

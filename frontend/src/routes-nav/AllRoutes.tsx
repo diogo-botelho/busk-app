@@ -13,7 +13,6 @@ import { SignupFormData } from "../interfaces/SignupFormData"
 
 import UserList from "../users/UserList";
 import User from "../users/User";
-import { UserContext } from "../users/UserContext";
 
 /** Site-wide routes.
  *

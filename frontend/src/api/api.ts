@@ -75,6 +75,13 @@ class BuskApi {
     return res;
   }
 
+  /** Get details on a event by eventId. */
+
+  static async getEvent(eventId: number | undefined) {
+    let res = await this.request(`events/${eventId}`);
+    return res.event;
+  }
+
   /** Create a new event.
    *  Takes an object eventDetails { title, type, coordinates }.
    *  Returns event. */

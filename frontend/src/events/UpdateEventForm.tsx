@@ -49,7 +49,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   }
 
   /** Update form data field */
-  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
+  function handleChange(evt: ChangeEvent<HTMLFormElement | any>) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
@@ -73,13 +73,17 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
             </Form.Group>
             <Form.Group className="">
               <FloatingLabel label="Type">
-                <Form.Control
+                <Form.Select
+                  // multiple
                   id="type"
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  placeholder="Type"
-                />
+                >
+                  <option>concert</option>
+                  <option>dance</option>
+                  <option>something else</option>
+                </Form.Select>
               </FloatingLabel>
             </Form.Group>
             <Button type="submit" className="btn-primary mt-2">

@@ -117,7 +117,7 @@ function App() {
   }
 
   // Loading
-  if (!infoLoaded) LoadingMessage();
+  if (!infoLoaded) return <LoadingMessage />;
 
   return (
     <div className="App">

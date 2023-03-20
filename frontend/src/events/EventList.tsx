@@ -10,7 +10,7 @@ import { EventCard } from "./EventCard";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 import { Coordinates } from "../interfaces/Coordinates";
 import { Event } from "../interfaces/Event";
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+// import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
 import { Map } from "../map/Map";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
 import { UserContext } from "../users/UserContext";
@@ -117,7 +117,7 @@ function EventList() {
    */
   function toggleAddEvent() {
     setIsAddingEvent(true);
-    setEnableDynamicMarker(true);
+    toggleDynamicMarker(true);
   }
 
   /** Update coordinates based on DynamicMarker coordinates */
@@ -170,73 +170,17 @@ function EventList() {
     toggleDynamicMarker(false);
   }
 
-  /** Handles updating event.
-   *
-   * Submits a request to api to update the event, triggers needsEvents to fetch
-   * updated list of events from the api and disables the DynamicMarker.
-   *
-   * If any error occurs, updates errors state with errors.
-   */
-  async function updateEvent(event: Event, formData: UpdateEventFormData) {
-    const eventDetails = {
-      buskerId: 1,
-      title: formData.title,
-      type: formData.type,
-      coordinates: {
-        lat: newCoordinates?.lat || event.coordinates.lat,
-        lng: newCoordinates?.lng || event.coordinates.lng,
-      },
-    };
-
-    const eventId = event.id;
-
-    try {
-      await BuskApi.updateEvent(eventId, eventDetails);
-      setNeedsEvents(true);
-      setErrors([]);
-    } catch (err) {
-      if (Array.isArray(err)) {
-        setErrors(err);
-      } else {
-        setErrors([`${err}`]);
-      }
-    }
-    toggleDynamicMarker(false);
-  }
-
-  /** Handles removing event.
-   *
-   * Submits a request to api to remove the event, sets events state to exclude
-   * removed event and disables the DynamicMarker.
-   *
-   * If any error occurs, updates errors state with errors.
-   */
-  async function removeEvent(eventId: number) {
-    try {
-      await BuskApi.removeEvent(eventId);
-      const updatedEvents = events.filter((event) => event.id !== eventId);
-      setEvents(updatedEvents);
-    } catch (err) {
-      if (Array.isArray(err)) {
-        setErrors(err);
-      } else {
-        setErrors([`${err}`]);
-      }
-    }
-    setEnableDynamicMarker(false);
-  }
-
   /** Fetches 4 latest events to show in the Latest Events section */
   let firstFourEvents = events.slice(-4);
-
-  /** Renders LoadingMessage */
-  if (needsEvents) LoadingMessage();
 
   /** Resets newCoordinates and enables/disables DynamicMarker */
   function toggleDynamicMarker(enable: boolean) {
     setNewCoordinates(undefined);
     setEnableDynamicMarker(enable);
   }
+
+  /** Renders LoadingMessage */
+  if (needsEvents) return <LoadingMessage />;
 
   return (
     <Container className="text-center ">
@@ -248,14 +192,12 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                updateEvent={updateEvent}
-                removeEvent={removeEvent}
-                toggleDynamicMarker={toggleDynamicMarker}
-                isAddingEvent={isAddingEvent}
-              />
+              <Link
+                to={`/events/${event.id}`}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <EventCard key={event.id} event={event} />
+              </Link>
             ))}
             {errors.length > 0 && <ErrorMessage messages={errors} />}
             {addEventSection()}

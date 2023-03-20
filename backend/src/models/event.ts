@@ -25,7 +25,7 @@ export class Event {
    */
   static async getAll() {
     const result = await db.query(
-      `SELECT id, busker_id, title, type, coordinates
+      `SELECT id, busker_id AS "buskerId", title, type, coordinates
           FROM events`
     );
 
@@ -36,7 +36,7 @@ export class Event {
    * returns {id, busker_id, title, type } */
   static async getById(id: number) {
     const result = await db.query(
-      `SELECT id, busker_id, title, type
+      `SELECT id, busker_id AS "buskerId" , title, type
         FROM events
         WHERE id = $1`,
       [id]
@@ -77,7 +77,7 @@ export class Event {
     const querySql = `UPDATE events
             SET ${setCols} 
             WHERE id = ${eventVarIdx} 
-            RETURNING id, busker_id as "buskerId", title, type`;
+            RETURNING id, busker_id as "buskerId", title, type, coordinates`;
 
     const result = await db.query(querySql, [...values, id]);
     const event = result.rows[0];

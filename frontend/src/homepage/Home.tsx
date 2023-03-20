@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 
 import "./Home.css";
 
-/** Renders HomePage
+/** Homepage of site.
  *
- * Props: none
- * State: none
+ * Shows welcome message and link to events.
  *
- * Routes --> HomePage
+ * Routed at /
+ *
+ * AllRoutes -> Homepage
  */
 
 function Home() {
@@ -18,22 +19,22 @@ function Home() {
         <h1>Welcome To Busk!</h1>
       </header>
       <h6 className="fs-4">Find local artists around your location!</h6>
-        <p>
-          <b>busk·er</b> /ˈbəskər/
-        </p>
-        <p>
-          noun: <b>busker</b>; plural noun: <b>buskers</b>
-        </p>
-        <p>
-          <i>
-            "a person who performs music or other entertainment in the street or
-            another public place for monetary donations."
-          </i>
-        </p>
-        <img
-          src="https://media.istockphoto.com/id/1006917342/photo/busking-street-musician.jpg?s=612x612&w=0&k=20&c=XKKyNCLiz4Wq7dnJsj3VlDcthFwvzCJSgbyW2oWxt-Q="
-          alt="busker"
-        ></img>
+      <p>
+        <b>busk·er</b> /ˈbəskər/
+      </p>
+      <p>
+        noun: <b>busker</b>; plural noun: <b>buskers</b>
+      </p>
+      <p>
+        <i>
+          "a person who performs music or other entertainment in the street or
+          another public place for monetary donations."
+        </i>
+      </p>
+      <img
+        src="https://media.istockphoto.com/id/1006917342/photo/busking-street-musician.jpg?s=612x612&w=0&k=20&c=XKKyNCLiz4Wq7dnJsj3VlDcthFwvzCJSgbyW2oWxt-Q="
+        alt="busker"
+      ></img>
       <p>
         Check out the events from our users <Link to="/events">here</Link>.
       </p>

@@ -8,40 +8,44 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { Event } from "../interfaces/Event";
 
-interface AddEventFormParams {
-  submitEvent: (formData: AddEventFormData) => void;
+interface UpdateEventFormParams {
+  event: Event;
+  updateEvent: (event: Event, formData: UpdateEventFormData) => void;
 }
 
-/**Add Event Form.
+/**Update Event form.
  *
  * Shows form and manages update to state on changes.
  *
  * Props:
- *  - submitEvent(): function that hadnles event creation.
+ *  - event: event object {eventId, buskerId, title, type, coordinates{lat,lng}}
+ *  - updateEvent(): function that handles updating an event.
  *
  * State:
  *  - formData: tracks data inserted into form.
  *
  * On submission:
- *  - calls submitEvent function prop
+ *  - calls updateEvent function prop
  *
- * EventList -> AddEventForm
- */
-export function AddEventForm({ submitEvent }: AddEventFormParams) {
-  const [formData, setFormData] = useState<AddEventFormData>({
-    title: "",
-    type: "",
+ * EventCard -> UpdateEventForm
+ * */
+
+export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
+  const [formData, setFormData] = useState<UpdateEventFormData>({
+    title: event.title,
+    type: event.type,
   });
 
-  /** Handle form submit:
+  /** Handle form submit.
    *
-   * Calls submitEvent func prop.
+   * Calls updateEvent func prop.
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    submitEvent(formData);
+    updateEvent(event, formData);
   }
 
   /** Update form data field */
@@ -51,7 +55,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   }
 
   return (
-    <Container className="AddEventForm">
+    <Container className="UpdateEventForm">
       <h5>Select a location on the map</h5>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">

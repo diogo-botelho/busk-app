@@ -2,29 +2,44 @@ import { useState, useEffect, useContext } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import ErrorMessage from "../ErrorMessage";
-
 import BuskApi from "../api/api";
-
+import { LoadingMessage } from "../common/LoadingMessage";
+import ErrorMessage from "../common/ErrorMessage";
 import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
-
-import { Coordinates } from "../interfaces/Coordinates";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { Coordinates } from "../interfaces/Coordinates";
 import { Event } from "../interfaces/Event";
-
+import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
 import { Map } from "../map/Map";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
-
 import { UserContext } from "../users/UserContext";
 
-/** Renders EventList
+/** Show page with list of events.
  *
- * Props: none
- * State: none
+ * On mount, loads events from API and Map component populated with
+ * StaticMarkers for each event.
  *
- * Routes --> List
+ * Props: N/A
+ *
+ * Context:
+ *  - currentUser: current logged in user, or undefined.
+ *
+ * State:
+ *  - errors: tracks errors.
+ *  - needsEvents: have events been pulled from API?
+ *  - events: array of all events.
+ *  - isAddingEvent: tracks if an event is being added and hides update/delete
+ *  buttons if yes.
+ *  - newCoordinates: tracks coordinates of DynamicMarker for adding/updating
+ *  events.
+ *  - enableDynamicMarker: function that handles enabling/disabling
+ *  DynamicMarker on Map.
+ *
+ * AllRoutes -> EventList -> { Map, EventCard, AddEventForm, ErrorMessage }
+ * This is routed to at /events
  */
+
 function EventList() {
   const currentUser = useContext(UserContext);
   const [errors, setErrors] = useState<string[] | []>([]);
@@ -34,8 +49,9 @@ function EventList() {
   const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
     undefined
   );
+  const [enableDynamicMarker, setEnableDynamicMarker] = useState(false);
 
-  // Fetch events when rendering component
+  /** Fetch events when rendering component */
   useEffect(
     function fetchEventsOnLoad() {
       async function getEventsfromApi() {
@@ -57,22 +73,22 @@ function EventList() {
     [needsEvents]
   );
 
-  /** Add Event
+  /** Determines what to render depending on whether there's a currentUser and
+   * if an event is being added.
    */
-  //Load Add Event Button
-  function newEventSection() {
-    // If not logged in, show prompt to login/register
+  function addEventSection() {
+    // If user is not logged in, show prompt to login/signup
     if (!currentUser) {
       return (
         <div className="mt-auto">
           <p>
             Please <Link to="/login">login</Link> or{" "}
-            <Link to="/register">register</Link> to add an event.
+            <Link to="/signup">signup</Link> to add an event.
           </p>
         </div>
       );
     }
-    // If logged in, show button to add new event
+    /** If user is logged in, show button to add new event */
     if (!isAddingEvent) {
       return (
         <Button
@@ -85,22 +101,46 @@ function EventList() {
         </Button>
       );
     } else {
-      //If adding new event, show AddEventForm component
-      return <AddEventForm submitEvent={submitEvent} />;
+      /** If user is adding new event, show AddEventForm component */
+      return (
+        <Container>
+          <AddEventForm submitEvent={submitEvent} />
+          <Button onClick={handleCancel}>Cancel</Button>
+        </Container>
+      );
     }
   }
 
-  //Toggle Add Event Button
+  /** Toggle Add Event Button
+   *
+   * Sets isAddingEvent to true and enables DynamicMarker.
+   */
   function toggleAddEvent() {
     setIsAddingEvent(true);
+    setEnableDynamicMarker(true);
   }
 
-  //Update coordinates based on DynamicMarker coordinates
+  /** Update coordinates based on DynamicMarker coordinates */
   function updateNewCoordinates(mapCoordinates: Coordinates) {
     setNewCoordinates(mapCoordinates);
   }
 
-  //Submit AddEventForm
+  /** Cancels adding a new event.
+   *
+   *  Sets isAddingEvent to false and disables DynamicMarker.
+   */
+  async function handleCancel() {
+    setIsAddingEvent(false);
+    toggleDynamicMarker(false);
+  }
+
+  /** Handles adding a new event.
+   *
+   * Submits a request to api to create a new event, adds new event to events
+   * state, sets isAddingEvent to false and disables DynamicMarker.
+   *
+   * If any error occurs, updates errors state with errors.
+   */
   async function submitEvent(formData: AddEventFormData) {
     const eventDetails = {
       buskerId: 1,
@@ -127,10 +167,49 @@ function EventList() {
       }
     }
     setIsAddingEvent(false);
-    setNewCoordinates(undefined);
+    toggleDynamicMarker(false);
   }
 
-  /** Remove Event
+  /** Handles updating event.
+   *
+   * Submits a request to api to update the event, triggers needsEvents to fetch
+   * updated list of events from the api and disables the DynamicMarker.
+   *
+   * If any error occurs, updates errors state with errors.
+   */
+  async function updateEvent(event: Event, formData: UpdateEventFormData) {
+    const eventDetails = {
+      buskerId: 1,
+      title: formData.title,
+      type: formData.type,
+      coordinates: {
+        lat: newCoordinates?.lat || event.coordinates.lat,
+        lng: newCoordinates?.lng || event.coordinates.lng,
+      },
+    };
+
+    const eventId = event.id;
+
+    try {
+      await BuskApi.updateEvent(eventId, eventDetails);
+      setNeedsEvents(true);
+      setErrors([]);
+    } catch (err) {
+      if (Array.isArray(err)) {
+        setErrors(err);
+      } else {
+        setErrors([`${err}`]);
+      }
+    }
+    toggleDynamicMarker(false);
+  }
+
+  /** Handles removing event.
+   *
+   * Submits a request to api to remove the event, sets events state to exclude
+   * removed event and disables the DynamicMarker.
+   *
+   * If any error occurs, updates errors state with errors.
    */
   async function removeEvent(eventId: number) {
     try {
@@ -144,18 +223,19 @@ function EventList() {
         setErrors([`${err}`]);
       }
     }
+    setEnableDynamicMarker(false);
   }
 
-  // Last 4 events
+  /** Fetches 4 latest events to show in the Latest Events section */
   let firstFourEvents = events.slice(-4);
 
-  // Loading
-  if (needsEvents) {
-    return (
-      <Container className="text-center">
-        <h1>Loading...</h1>
-      </Container>
-    );
+  /** Renders LoadingMessage */
+  if (needsEvents) LoadingMessage();
+
+  /** Resets newCoordinates and enables/disables DynamicMarker */
+  function toggleDynamicMarker(enable: boolean) {
+    setNewCoordinates(undefined);
+    setEnableDynamicMarker(enable);
   }
 
   return (
@@ -168,16 +248,23 @@ function EventList() {
           <Col xs={4} className="shownEvents">
             <h5 className="text-start mb-3">Most recent events:</h5>
             {firstFourEvents.map((event) => (
-              <EventCard key={event.id} event={event} remove={removeEvent} />
+              <EventCard
+                key={event.id}
+                event={event}
+                updateEvent={updateEvent}
+                removeEvent={removeEvent}
+                toggleDynamicMarker={toggleDynamicMarker}
+                isAddingEvent={isAddingEvent}
+              />
             ))}
             {errors.length > 0 && <ErrorMessage messages={errors} />}
-            {newEventSection()}
+            {addEventSection()}
           </Col>
           <Col>
             <NewCoordinatesContext.Provider
               value={{ newCoordinates, updateNewCoordinates }}
             >
-              <Map events={events} isAddingEvent={isAddingEvent} />
+              <Map events={events} enableDynamicMarker={enableDynamicMarker} />
             </NewCoordinatesContext.Provider>
           </Col>
         </Row>

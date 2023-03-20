@@ -33,7 +33,7 @@ router.post(
 
 /** Create new user, return user */
 router.post(
-  "/register",
+  "/signup",
   async function (
     req: express.Request,
     res: express.Response,
@@ -42,7 +42,7 @@ router.post(
     try {
       const newUserData: UserData = req.body;
 
-      const newUser = await User.register({ ...newUserData, isAdmin: false });
+      const newUser = await User.signup({ ...newUserData, isAdmin: false });
       delete newUser.isAdmin;
       const token = createToken(newUser);
       return res.status(201).json({ token });

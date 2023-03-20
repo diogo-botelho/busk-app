@@ -16,7 +16,7 @@ const router = express.Router();
 
 /** POST / { user }  => { user, token }
  *
- * Adds a new user. This is not the registration endpoint --- instead, this is
+ * Adds a new user. This is not the signup endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be an
  * admin.
  *
@@ -36,7 +36,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
     const newUserData: UserData = req.body;
 
-    const user = await User.register(newUserData);
+    const user = await User.signup(newUserData);
     const token = createToken(user);
     return res.status(201).json({ user, token });
   } catch (err) {

@@ -3,12 +3,20 @@ import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 import "./User.css";
-import { UserContext, UserContextType } from "./UserContext";
+import { UserContext } from "./UserContext";
 
-interface UserParamsInterface {
-  user: UserContextType | undefined;
-}
-function User({user}:UserParamsInterface) {
+/** User page.
+ *
+ * Props: N/A
+ *
+ * Context:
+ *  - currentUser: current logged in user, or undefined.
+ *
+ * State: N/A
+ *
+ * TBD -> UpdateEventForm
+ */
+function User() {
   const currentUser = useContext(UserContext);
   const params = useParams();
 

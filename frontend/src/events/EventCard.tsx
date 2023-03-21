@@ -1,15 +1,6 @@
-import { useContext, useState } from "react";
-import { Container, Card, Button } from "react-bootstrap";
+import { Card} from "react-bootstrap";
 
 import { Event } from "../interfaces/Event";
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
-import { Coordinates } from "../interfaces/Coordinates";
-
-import { UpdateEventForm } from "./UpdateEventForm";
-
-import { UserContext } from "../users/UserContext";
-
-import BuskApi from "../api/api";
 
 interface EventCardParamsInterface {
   event: Event;

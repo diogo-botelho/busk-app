@@ -8,11 +8,12 @@ import ErrorMessage from "../common/ErrorMessage";
 import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
 import { AddEventFormData } from "../interfaces/AddEventFormData";
-import { Coordinates } from "../interfaces/Coordinates";
 import { Event } from "../interfaces/Event";
-// import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
 import { Map } from "../map/Map";
-import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
+import {
+  NewCoordinatesContext,
+  NewCoordinatesContextInterface,
+} from "../map/NewCoordinatesContext";
 import { UserContext } from "../users/UserContext";
 
 /** Show page with list of events.
@@ -42,13 +43,12 @@ import { UserContext } from "../users/UserContext";
 
 function EventList() {
   const currentUser = useContext(UserContext);
+  const { newCoordinates, updateNewCoordinates } =
+    useContext<NewCoordinatesContextInterface>(NewCoordinatesContext);
   const [errors, setErrors] = useState<string[] | []>([]);
   const [needsEvents, setNeedsEvents] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
   const [isAddingEvent, setIsAddingEvent] = useState(false);
-  const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
-    undefined
-  );
   const [enableDynamicMarker, setEnableDynamicMarker] = useState(false);
 
   /** Fetch events when rendering component */
@@ -77,7 +77,7 @@ function EventList() {
    * if an event is being added.
    */
   function addEventSection() {
-    // If user is not logged in, show prompt to login/signup
+    /** If user is not logged in, show prompt to login/signup  */
     if (!currentUser) {
       return (
         <div className="mt-auto">
@@ -120,11 +120,6 @@ function EventList() {
     toggleDynamicMarker(true);
   }
 
-  /** Update coordinates based on DynamicMarker coordinates */
-  function updateNewCoordinates(mapCoordinates: Coordinates) {
-    setNewCoordinates(mapCoordinates);
-  }
-
   /** Cancels adding a new event.
    *
    *  Sets isAddingEvent to false and disables DynamicMarker.
@@ -142,18 +137,18 @@ function EventList() {
    * If any error occurs, updates errors state with errors.
    */
   async function submitEvent(formData: AddEventFormData) {
-    const eventDetails = {
-      buskerId: 1,
-      title: formData.title,
-      type: formData.type,
-      coordinates: {
-        lat: newCoordinates?.lat,
-        lng: newCoordinates?.lng,
-      },
-    };
     if (!newCoordinates) {
       setErrors(["Please select a location"]);
     } else {
+      const eventDetails = {
+        buskerId: 1,
+        title: formData.title,
+        type: formData.type,
+        coordinates: {
+          lat: Object.values(newCoordinates)[0],
+          lng: Object.values(newCoordinates)[1],
+        },
+      };
       try {
         const newEvent = await BuskApi.createEvent(eventDetails);
         setEvents((previousData) => [...previousData, newEvent]);
@@ -175,7 +170,7 @@ function EventList() {
 
   /** Resets newCoordinates and enables/disables DynamicMarker */
   function toggleDynamicMarker(enable: boolean) {
-    setNewCoordinates(undefined);
+    updateNewCoordinates(undefined);
     setEnableDynamicMarker(enable);
   }
 
@@ -203,11 +198,7 @@ function EventList() {
             {addEventSection()}
           </Col>
           <Col>
-            <NewCoordinatesContext.Provider
-              value={{ newCoordinates, updateNewCoordinates }}
-            >
-              <Map events={events} enableDynamicMarker={enableDynamicMarker} />
-            </NewCoordinatesContext.Provider>
+            <Map events={events} enableDynamicMarker={enableDynamicMarker} />
           </Col>
         </Row>
       </Container>

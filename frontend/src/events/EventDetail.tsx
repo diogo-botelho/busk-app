@@ -1,17 +1,19 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
+import { Card, Button, Container, Row } from "react-bootstrap";
 
-import { UserContext } from "../users/UserContext";
 import BuskApi from "../api/api";
-import { Event } from "../interfaces/Event";
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
-import { Coordinates } from "../interfaces/Coordinates";
-
-import { UpdateEventForm } from "./UpdateEventForm";
-import { Map } from "../map/Map";
 import ErrorMessage from "../common/ErrorMessage";
 import { LoadingMessage } from "../common/LoadingMessage";
+import { Event } from "../interfaces/Event";
+import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { UpdateEventForm } from "./UpdateEventForm";
+import { Map } from "../map/Map";
+import {
+  NewCoordinatesContext,
+  NewCoordinatesContextInterface,
+} from "../map/NewCoordinatesContext";
+import { UserContext } from "../users/UserContext";
 
 /** Show information about an event.
  *
@@ -39,14 +41,13 @@ import { LoadingMessage } from "../common/LoadingMessage";
  */
 export function EventDetail() {
   const currentUser = useContext(UserContext);
-  // const { title, type } = event;
+  const { newCoordinates, updateNewCoordinates } =
+    useContext<NewCoordinatesContextInterface>(NewCoordinatesContext);
   let { id } = useParams();
   const [errors, setErrors] = useState<string[] | []>([]);
   const [isUpdatingEvent, setIsUpdatingEvent] = useState(false);
   const [event, setEvent] = useState<Event | undefined>(undefined);
-  const [newCoordinates, setNewCoordinates] = useState<Coordinates | undefined>(
-    undefined
-  );
+
   const [enableDynamicMarker, setEnableDynamicMarker] = useState(false);
   const [infoLoaded, setInfoLoaded] = useState(false);
 
@@ -83,16 +84,22 @@ export function EventDetail() {
       buskerId: 1,
       title: formData.title,
       type: formData.type,
-      coordinates: {
-        lat: newCoordinates?.lat || event.coordinates.lat,
-        lng: newCoordinates?.lng || event.coordinates.lng,
-      },
+      coordinates: newCoordinates
+        ? {
+            lat: Object.values(newCoordinates)[0],
+            lng: Object.values(newCoordinates)[1],
+          }
+        : {
+            lat: Object.values(event.coordinates)[0],
+            lng: Object.values(event.coordinates)[1],
+          },
     };
 
     const eventId = event.id;
 
     try {
-      await BuskApi.updateEvent(eventId, eventDetails);
+      const updatedEvent = await BuskApi.updateEvent(eventId, eventDetails);
+      setEvent((previousData) => updatedEvent);
       setErrors([]);
     } catch (err) {
       if (Array.isArray(err)) {
@@ -102,6 +109,7 @@ export function EventDetail() {
       }
     }
     setIsUpdatingEvent(false);
+    toggleDynamicMarker(false);
   }
 
   /** Handles removing event.
@@ -122,16 +130,18 @@ export function EventDetail() {
         setErrors([`${err}`]);
       }
     }
-    setEnableDynamicMarker(false);
+    toggleDynamicMarker(false);
   }
 
   //Toggle Add Event Button
   function toggleUpdateEvent() {
     setIsUpdatingEvent(true);
+    toggleDynamicMarker(true);
   }
 
   async function handleCancel() {
     setIsUpdatingEvent(false);
+    toggleDynamicMarker(false);
   }
 
   async function handleRemove() {
@@ -143,40 +153,51 @@ export function EventDetail() {
   /** Loading message */
   if (!infoLoaded) return <LoadingMessage />;
 
-  return event ? (
+  /** Resets newCoordinates and enables/disables DynamicMarker */
+  function toggleDynamicMarker(enable: boolean) {
+    updateNewCoordinates(undefined);
+    setEnableDynamicMarker(enable);
+  }
+
+  return (
     <Container>
-      <Card className="mb-3">
-        {isUpdatingEvent ? (
-          <Row className="justify-content-md-center">
-            <Card.Body>
-              <UpdateEventForm event={event} updateEvent={updateEvent} />
-              <Button onClick={handleCancel}>Cancel</Button>
-            </Card.Body>
-          </Row>
-        ) : (
-          <Container>
-            <Card.Body>
-              {" "}
-              <Card.Title>{event.title}</Card.Title>
-              <Card.Text>{event.type}</Card.Text>
-              {event.buskerId === currentUser?.buskerId ? (
-                <Container>
-                  <Button onClick={toggleUpdateEvent}>Update</Button>
-                  <Button onClick={handleRemove}>Remove</Button>
-                </Container>
-              ) : null}
-            </Card.Body>
-          </Container>
-        )}
-      </Card>
-      <Row>
-        <Map events={[event]} enableDynamicMarker={enableDynamicMarker} />
-      </Row>
-    </Container>
-  ) : (
-    <Container>
-      <ErrorMessage messages={errors} />
-      <Map events={[]} enableDynamicMarker={enableDynamicMarker} />
+      {event ? (
+        <Card className="mb-3">
+          {isUpdatingEvent ? (
+            <Row className="justify-content-md-center">
+              <Card.Body>
+                <UpdateEventForm event={event} updateEvent={updateEvent} />
+                <Button onClick={handleCancel}>Cancel</Button>
+              </Card.Body>
+            </Row>
+          ) : (
+            <Container>
+              <Card.Body>
+                {" "}
+                <Card.Title>{event.title}</Card.Title>
+                <Card.Text>{event.type}</Card.Text>
+                {event.buskerId === currentUser?.buskerId ? (
+                  <Container>
+                    <Button onClick={toggleUpdateEvent}>Update</Button>
+                    <Button onClick={handleRemove}>Remove</Button>
+                  </Container>
+                ) : null}
+              </Card.Body>
+            </Container>
+          )}
+        </Card>
+      ) : (
+        <ErrorMessage messages={errors} />
+      )}
+      {event && !newCoordinates ? (
+        <Row>
+          <Map events={[event]} enableDynamicMarker={enableDynamicMarker} />
+        </Row>
+      ) : (
+        <Row>
+          <Map events={[]} enableDynamicMarker={enableDynamicMarker} />
+        </Row>
+      )}
     </Container>
   );
 }

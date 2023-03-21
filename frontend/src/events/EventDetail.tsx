@@ -150,7 +150,7 @@ export function EventDetail() {
     }
   }
 
-  /** Loading message */
+  // Loading message
   if (!infoLoaded) return <LoadingMessage />;
 
   /** Resets newCoordinates and enables/disables DynamicMarker */

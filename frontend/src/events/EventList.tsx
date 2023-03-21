@@ -77,7 +77,7 @@ function EventList() {
    * if an event is being added.
    */
   function addEventSection() {
-    /** If user is not logged in, show prompt to login/signup  */
+    // If user is not logged in, show prompt to login/signup
     if (!currentUser) {
       return (
         <div className="mt-auto">
@@ -88,7 +88,7 @@ function EventList() {
         </div>
       );
     }
-    /** If user is logged in, show button to add new event */
+    // If user is logged in, show button to add new event
     if (!isAddingEvent) {
       return (
         <Button
@@ -101,7 +101,7 @@ function EventList() {
         </Button>
       );
     } else {
-      /** If user is adding new event, show AddEventForm component */
+      // If user is adding new event, show AddEventForm component
       return (
         <Container>
           <AddEventForm submitEvent={submitEvent} />
@@ -165,7 +165,7 @@ function EventList() {
     toggleDynamicMarker(false);
   }
 
-  /** Fetches 4 latest events to show in the Latest Events section */
+  // Fetches 4 latest events to show in the Latest Events section
   let firstFourEvents = events.slice(-4);
 
   /** Resets newCoordinates and enables/disables DynamicMarker */
@@ -174,7 +174,7 @@ function EventList() {
     setEnableDynamicMarker(enable);
   }
 
-  /** Renders LoadingMessage */
+  // Renders LoadingMessage
   if (needsEvents) return <LoadingMessage />;
 
   return (

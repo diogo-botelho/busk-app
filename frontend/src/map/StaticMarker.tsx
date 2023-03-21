@@ -7,8 +7,8 @@ interface StaticMarkerParams {
 }
 
 /** Static Marker Component.
- * 
- * Renders React Leaflet Marker component on Map, located at the event 
+ *
+ * Renders React Leaflet Marker component on Map, located at the event
  * coordinates.
  *
  * Props:
@@ -22,8 +22,8 @@ interface StaticMarkerParams {
  */
 export function StaticMarker({ event }: StaticMarkerParams) {
   const { title, type } = event;
-  const lat = Object.values(event.coordinates)[0]
-  const lng = Object.values(event.coordinates)[1]
+  const lat = Object.values(event.coordinates)[0];
+  const lng = Object.values(event.coordinates)[1];
 
   return lat && lng ? (
     <Marker position={[lat, lng]}>

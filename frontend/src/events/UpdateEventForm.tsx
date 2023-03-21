@@ -1,5 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import {
+  FormControl,
+  FormControlProps,
   Button,
   Container,
   Form,
@@ -49,7 +51,9 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   }
 
   /** Update form data field */
-  function handleChange(evt: ChangeEvent<HTMLFormElement | any>) {
+  function handleChange(
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+  ) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
@@ -74,7 +78,6 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
             <Form.Group className="">
               <FloatingLabel label="Type">
                 <Form.Select
-                  // multiple
                   id="type"
                   name="type"
                   value={formData.type}

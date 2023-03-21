@@ -45,7 +45,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   }
 
   /** Update form data field */
-  function handleChange(evt: ChangeEvent<any>) {
+  function handleChange(
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+  ) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
@@ -70,7 +72,6 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
             <Form.Group className="">
               <FloatingLabel label="Type">
                 <Form.Select
-                  // multiple
                   id="type"
                   name="type"
                   value={formData.type}

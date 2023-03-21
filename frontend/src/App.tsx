@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
-import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 import "./App.css";
@@ -8,6 +7,10 @@ import BuskApi from "./api/api";
 import { LoadingMessage } from "./common/LoadingMessage";
 import { LoginFormData } from "./interfaces/LoginFormData";
 import { SignupFormData } from "./interfaces/SignupFormData";
+import {
+  NewCoordinatesContext,
+  NewCoordinatesContextInterface,
+} from "./map/NewCoordinatesContext";
 import AllRoutes from "./routes-nav/AllRoutes";
 import NavBar from "./routes-nav/NavBar";
 import { UserContext } from "./users/UserContext";
@@ -40,6 +43,8 @@ function App() {
   const [token, setToken] = useState(
     localStorage.getItem("token" || TOKEN_STORAGE_ID)
   );
+  const [newCoordinates, setNewCoordinates] =
+    useState<NewCoordinatesContextInterface["newCoordinates"]>(undefined);
 
   const navigate = useNavigate();
 
@@ -116,15 +121,26 @@ function App() {
     setToken(null);
   }
 
+  /** Update coordinates based on DynamicMarker coordinates */
+  function updateNewCoordinates(
+    mapCoordinates: NewCoordinatesContextInterface["newCoordinates"]
+  ) {
+    setNewCoordinates(mapCoordinates);
+  }
+
   // Loading
   if (!infoLoaded) return <LoadingMessage />;
 
   return (
     <div className="App">
-      <UserContext.Provider value={currentUser}>
-        <NavBar logout={logout} />
-        <AllRoutes login={login} signup={signup} />
-      </UserContext.Provider>
+      <NewCoordinatesContext.Provider
+        value={{ newCoordinates, updateNewCoordinates }}
+      >
+        <UserContext.Provider value={currentUser}>
+          <NavBar logout={logout} />
+          <AllRoutes login={login} signup={signup} />
+        </UserContext.Provider>
+      </NewCoordinatesContext.Provider>
     </div>
   );
 }

@@ -1,15 +1,15 @@
 import axios, { AxiosError } from "axios";
+import { LatLngExpression } from "leaflet";
 
 import { BACKEND_BASE_URL } from "../config";
 import { LoginFormData } from "../interfaces/LoginFormData";
 import { SignupFormData } from "../interfaces/SignupFormData";
-import { Coordinates } from "../interfaces/Coordinates";
 
 interface EventDetailsInterface {
   buskerId: number | undefined;
   title: string;
   type: string;
-  coordinates: Coordinates;
+  coordinates: LatLngExpression;
 }
 
 /** API Class.
@@ -96,7 +96,7 @@ class BuskApi {
   static async updateEvent(eventId: number, updateData: EventDetailsInterface) {
     const res = await this.request(`events/${eventId}`, updateData, "patch");
 
-    return res;
+    return res.event;
   }
 
   /** Get an event.

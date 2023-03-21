@@ -141,7 +141,7 @@ export class User {
     );
 
     const buskerId = buskerResult.rows[0];
-    console.log(buskerId);
+    
     if (buskerId !== undefined) user.buskerId = buskerId.id;
     delete user.id;
 

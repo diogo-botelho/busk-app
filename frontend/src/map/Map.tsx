@@ -1,11 +1,9 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 
-import "./Map.css";
-
 import { Event } from "../interfaces/Event";
-
 import { DynamicMarker } from "./DynamicMarker";
 import { StaticMarker } from "./StaticMarker";
+import "./Map.css";
 
 interface MapParams {
   events: Event[];
@@ -13,11 +11,11 @@ interface MapParams {
 }
 
 /** Map presentational component.
- * 
- * Renders React Leaflet MapContainer component, StaticMarker components for 
+ *
+ * Renders React Leaflet MapContainer component, StaticMarker components for
  * each event in events array prop, and renders DynamicMarker component if
  * enableDynamicMarker is true.
- * 
+ *
  * Props:
  *  - events: array of all events.
  *  - enableDynamicMarker: function that handles enabling/disabling
@@ -46,9 +44,9 @@ export function Map({ events, enableDynamicMarker }: MapParams) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {events.map((event) => (
-        <StaticMarker key={event.id} event={event} />
-      ))}
+      {events.length
+        ? events.map((event) => <StaticMarker key={event.id} event={event} />)
+        : null}
       {enableDynamicMarker ? <DynamicMarker /> : undefined}
     </MapContainer>
   );

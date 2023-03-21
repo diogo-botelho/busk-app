@@ -36,7 +36,7 @@ export class Event {
    * returns {id, busker_id, title, type } */
   static async getById(id: number) {
     const result = await db.query(
-      `SELECT id, busker_id AS "buskerId" , title, type
+      `SELECT id, busker_id AS "buskerId" , title, type, coordinates
         FROM events
         WHERE id = $1`,
       [id]

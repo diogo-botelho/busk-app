@@ -75,7 +75,7 @@ router.patch(
       const event = await Event.update(+id, req.body);
 
       if (!event) return res.status(404);
-      return res.json({ event });
+      return res.status(201).json({ event });
     } catch (err) {
       return next(err);
     }

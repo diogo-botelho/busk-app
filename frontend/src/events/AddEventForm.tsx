@@ -32,7 +32,7 @@ interface AddEventFormParams {
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
   const [formData, setFormData] = useState<AddEventFormData>({
     title: "",
-    type: "",
+    type: "concert",
   });
 
   /** Handle form submit:
@@ -45,7 +45,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   }
 
   /** Update form data field */
-  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
+  function handleChange(
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+  ) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
@@ -69,13 +71,16 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
             </Form.Group>
             <Form.Group className="">
               <FloatingLabel label="Type">
-                <Form.Control
+                <Form.Select
                   id="type"
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  placeholder="Type"
-                />
+                >
+                  <option>concert</option>
+                  <option>dance</option>
+                  <option>something else</option>
+                </Form.Select>
               </FloatingLabel>
             </Form.Group>
             <Button type="submit" className="btn-primary mt-2">

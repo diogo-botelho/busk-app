@@ -22,7 +22,8 @@ interface StaticMarkerParams {
  */
 export function StaticMarker({ event }: StaticMarkerParams) {
   const { title, type } = event;
-  const { lat, lng } = event.coordinates;
+  const lat = Object.values(event.coordinates)[0]
+  const lng = Object.values(event.coordinates)[1]
 
   return lat && lng ? (
     <Marker position={[lat, lng]}>

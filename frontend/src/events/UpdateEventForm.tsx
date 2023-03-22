@@ -1,7 +1,5 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useContext, useEffect } from "react";
 import {
-  FormControl,
-  FormControlProps,
   Button,
   Container,
   Form,
@@ -10,12 +8,16 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { eventFormData } from "../interfaces/EventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
 import { Event } from "../interfaces/Event";
+import {
+  NewCoordinatesContext,
+  NewCoordinatesContextInterface,
+} from "../map/NewCoordinatesContext";
 
 interface UpdateEventFormParams {
   event: Event;
-  updateEvent: (event: Event, formData: eventFormData) => void;
+  updateEvent: (event: Event, formData: EventFormData) => void;
 }
 
 /**Update Event form.
@@ -36,13 +38,36 @@ interface UpdateEventFormParams {
  * */
 
 export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
-  const [formData, setFormData] = useState<eventFormData>({
+  const { newCoordinates } = useContext<NewCoordinatesContextInterface>(
+    NewCoordinatesContext
+  );
+  const [formData, setFormData] = useState<EventFormData>({
     title: event.title,
     type: event.type,
-    date: undefined,
-    startTime: undefined,
-    endTime: undefined,
+    date: "event.date",
+    startTime: "event.startTime",
+    endTime: "event.endTime",
+    coordinates: newCoordinates,
   });
+
+  /** Handle newCoordinates change. Adds newCoordinates to formData. */
+  useEffect(
+    function updateFormCoordinates() {
+      async function updateCoordinatesOnClick() {
+        try {
+          setFormData((prevData) => ({
+            ...prevData,
+            coordinates: newCoordinates,
+          }));
+        } catch (err) {
+          // setErrors(["Error"]);
+          console.log("error");
+        }
+      }
+      updateCoordinatesOnClick();
+    },
+    [newCoordinates]
+  );
 
   /** Handle form submit.
    *
@@ -57,6 +82,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   function handleChange(
     evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
   ) {
+    console.log(newCoordinates);
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
@@ -78,8 +104,8 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
-            </Col>
-            <Col xs={6} className="">
+          </Col>
+          <Col xs={6} className="">
             <Form.Group className="">
               <FloatingLabel label="Type">
                 <Form.Select

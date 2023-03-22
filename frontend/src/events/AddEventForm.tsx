@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useContext, useEffect } from "react";
 import {
   Button,
   Container,
@@ -8,10 +8,11 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { eventFormData } from "../interfaces/EventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
+import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
 
 interface AddEventFormParams {
-  submitEvent: (formData: eventFormData) => void;
+  submitEvent: (formData: EventFormData) => void;
 }
 
 /**Add Event Form.
@@ -30,13 +31,35 @@ interface AddEventFormParams {
  * EventList -> AddEventForm
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
-  const [formData, setFormData] = useState<eventFormData>({
+  const { newCoordinates } = useContext(NewCoordinatesContext);
+
+  const [formData, setFormData] = useState<EventFormData>({
     title: "",
     type: "",
     date: "",
     startTime: "",
     endTime: "",
+    coordinates: newCoordinates,
   });
+
+  /** Handle newCoordinates change. Adds newCoordinates to formData. */
+  useEffect(
+    function updateFormCoordinates() {
+      async function updateCoordinatesOnClick() {
+        try {
+          setFormData((prevData) => ({
+            ...prevData,
+            coordinates: newCoordinates,
+          }));
+        } catch (err) {
+          // setErrors(["Error"]);
+          console.log("error");
+        }
+      }
+      updateCoordinatesOnClick();
+    },
+    [newCoordinates]
+  );
 
   /** Handle form submit:
    *
@@ -46,7 +69,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
     evt.preventDefault();
     submitEvent(formData);
   }
-  console.log("outside", formData);
+
   /** Update form data field */
   function handleChange(
     evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
@@ -54,7 +77,6 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
     console.log(evt);
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-    // console.log("inside", formData);
   }
 
   return (

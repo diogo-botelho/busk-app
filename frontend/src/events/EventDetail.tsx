@@ -6,7 +6,7 @@ import BuskApi from "../api/api";
 import ErrorMessage from "../common/ErrorMessage";
 import { LoadingMessage } from "../common/LoadingMessage";
 import { Event } from "../interfaces/Event";
-import { eventFormData } from "../interfaces/EventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
 import { UpdateEventForm } from "./UpdateEventForm";
 import { Map } from "../map/Map";
 import {
@@ -79,25 +79,32 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function updateEvent(event: Event, formData: eventFormData) {
+  async function updateEvent(event: Event, formData: EventFormData) {
+    //Uncomment line 84 event model starts accepting timestamps
+    // formData["coordinates"] = formData.coordinates || event.coordinates;
+
+    //Delete lines 86-99 when event model starts accepting timestamps
     const eventDetails = {
       buskerId: 1,
       title: formData.title,
       type: formData.type,
-      coordinates: newCoordinates
-        ? {
-            lat: Object.values(newCoordinates)[0],
-            lng: Object.values(newCoordinates)[1],
-          }
-        : {
-            lat: Object.values(event.coordinates)[0],
-            lng: Object.values(event.coordinates)[1],
-          },
+      coordinates: formData.coordinates || event.coordinates
+        // ? {
+        //     lat: Object.values(newCoordinates)[0],
+        //     lng: Object.values(newCoordinates)[1],
+        //   }
+        // : {
+        //     lat: Object.values(event.coordinates)[0],
+        //     lng: Object.values(event.coordinates)[1],
+        //   },
     };
 
     const eventId = event.id;
 
     try {
+      //Uncomment line 106 event model starts accepting timestamps
+      //const updatedEvent = await BuskApi.updateEvent(eventId, formData);
+      //Comment line 108 event model starts accepting timestamps
       const updatedEvent = await BuskApi.updateEvent(eventId, eventDetails);
       setEvent((previousData) => updatedEvent);
       setErrors([]);

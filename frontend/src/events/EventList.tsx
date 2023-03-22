@@ -7,7 +7,7 @@ import { LoadingMessage } from "../common/LoadingMessage";
 import ErrorMessage from "../common/ErrorMessage";
 import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
-import { eventFormData } from "../interfaces/EventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
 import { Event } from "../interfaces/Event";
 import { Map } from "../map/Map";
 import {
@@ -136,20 +136,19 @@ function EventList() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function submitEvent(formData: eventFormData) {
-    if (!newCoordinates) {
+  async function submitEvent(formData: EventFormData) {
+    if (!formData.coordinates) {
       setErrors(["Please select a location"]);
-    } else {
+    } else {     
       const eventDetails = {
         buskerId: 1,
         title: formData.title,
         type: formData.type,
-        coordinates: {
-          lat: Object.values(newCoordinates)[0],
-          lng: Object.values(newCoordinates)[1],
-        },
+        coordinates: formData.coordinates
       };
       try {
+        //Uncomment when event model starts accepting timestamps
+        //const newEvent = await BuskApi.createEvent(formData);
         const newEvent = await BuskApi.createEvent(eventDetails);
         setEvents((previousData) => [...previousData, newEvent]);
         setErrors([]);

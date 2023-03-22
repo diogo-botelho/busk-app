@@ -10,12 +10,12 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { eventFormData } from "../interfaces/EventFormData";
 import { Event } from "../interfaces/Event";
 
 interface UpdateEventFormParams {
   event: Event;
-  updateEvent: (event: Event, formData: UpdateEventFormData) => void;
+  updateEvent: (event: Event, formData: eventFormData) => void;
 }
 
 /**Update Event form.
@@ -36,9 +36,12 @@ interface UpdateEventFormParams {
  * */
 
 export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
-  const [formData, setFormData] = useState<UpdateEventFormData>({
+  const [formData, setFormData] = useState<eventFormData>({
     title: event.title,
     type: event.type,
+    date: undefined,
+    startTime: undefined,
+    endTime: undefined,
   });
 
   /** Handle form submit.
@@ -63,7 +66,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
       <h5>Select a location on the map</h5>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
-          <Col xs={8} className="">
+          <Col xs={6} className="">
             <Form.Group className="">
               <FloatingLabel label="Title" className="mb-3">
                 <Form.Control
@@ -75,6 +78,8 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
+            </Col>
+            <Col xs={6} className="">
             <Form.Group className="">
               <FloatingLabel label="Type">
                 <Form.Select
@@ -83,17 +88,57 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                   value={formData.type}
                   onChange={handleChange}
                 >
+                  <option>""</option>
                   <option>concert</option>
                   <option>dance</option>
                   <option>something else</option>
                 </Form.Select>
               </FloatingLabel>
             </Form.Group>
-            <Button type="submit" className="btn-primary mt-2">
-              Submit
-            </Button>
           </Col>
         </Row>
+        <Row>
+          <Col xs={4} className="">
+            <Form.Group>
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                id="date"
+                type="date"
+                name="date"
+                placeholder="Date"
+                value={formData.date}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={4} className="">
+            <Form.Group>
+              <Form.Label>Start</Form.Label>
+              <Form.Control
+                id="startTime"
+                type="time"
+                name="startTime"
+                placeholder="Time"
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={4} className="">
+            <Form.Group>
+              <Form.Label>End</Form.Label>
+              <Form.Control
+                id="endTime"
+                type="time"
+                name="endTime"
+                placeholder="Time"
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Button type="submit" className="btn-primary mt-2">
+          Submit
+        </Button>
       </Form>
     </Container>
   );

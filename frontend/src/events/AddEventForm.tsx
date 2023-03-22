@@ -8,10 +8,10 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { eventFormData } from "../interfaces/EventFormData";
 
 interface AddEventFormParams {
-  submitEvent: (formData: AddEventFormData) => void;
+  submitEvent: (formData: eventFormData) => void;
 }
 
 /**Add Event Form.
@@ -30,9 +30,12 @@ interface AddEventFormParams {
  * EventList -> AddEventForm
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
-  const [formData, setFormData] = useState<AddEventFormData>({
+  const [formData, setFormData] = useState<eventFormData>({
     title: "",
-    type: "concert",
+    type: "",
+    date: "",
+    startTime: "",
+    endTime: "",
   });
 
   /** Handle form submit:
@@ -43,13 +46,15 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
     evt.preventDefault();
     submitEvent(formData);
   }
-
+  console.log("outside", formData);
   /** Update form data field */
   function handleChange(
     evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
   ) {
+    console.log(evt);
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+    // console.log("inside", formData);
   }
 
   return (
@@ -57,7 +62,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
       <h5>Select a location on the map</h5>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
-          <Col xs={8} className="">
+          <Col xs={12}>
             <Form.Group className="">
               <FloatingLabel label="Title" className="mb-3">
                 <Form.Control
@@ -69,6 +74,8 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
+          </Col>
+          <Col xs={12}>
             <Form.Group className="">
               <FloatingLabel label="Type">
                 <Form.Select
@@ -77,17 +84,57 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                   value={formData.type}
                   onChange={handleChange}
                 >
+                  <option>Event type</option>
                   <option>concert</option>
                   <option>dance</option>
                   <option>something else</option>
                 </Form.Select>
               </FloatingLabel>
             </Form.Group>
-            <Button type="submit" className="btn-primary mt-2">
-              Submit
-            </Button>
           </Col>
         </Row>
+        <Row>
+          <Col xs={12} className="">
+            <Form.Group>
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                id="date"
+                type="date"
+                name="date"
+                placeholder="Date"
+                value={formData.date}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={6} className="">
+            <Form.Group>
+              <Form.Label>Start</Form.Label>
+              <Form.Control
+                id="startTime"
+                type="time"
+                name="startTime"
+                placeholder="Time"
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={6} className="">
+            <Form.Group>
+              <Form.Label>End</Form.Label>
+              <Form.Control
+                id="endTime"
+                type="time"
+                name="endTime"
+                placeholder="Time"
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Button type="submit" className="btn-primary mt-2">
+          Submit
+        </Button>
       </Form>
     </Container>
   );

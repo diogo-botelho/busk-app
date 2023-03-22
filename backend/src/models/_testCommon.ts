@@ -3,34 +3,58 @@
 import db from "../db";
 // const { BCRYPT_WORK_FACTOR } = require("../config");
 
-const testJobIds: Object[] = [];
+let testUsers: any = [];
+let testBuskers: any = [];
 
-export async function commonBeforeAll() {
-  // noinspection SqlWithoutWhere
-  await db.query("DELETE FROM companies");
-  // noinspection SqlWithoutWhere
+async function commonBeforeAll() {
+  await db.query("DELETE FROM events");
+
+  await db.query("DELETE FROM buskers");
+
   await db.query("DELETE FROM users");
 
-  await db.query(`
-    INSERT INTO events(buskerId, title, type, coordinates)
-    VALUES ('b1', 'e1', 'E1', '[0,0]',
-           ('b2', 'e2', 'E2', '[0,1]',`);
+  const resultUsers = await db.query(`
+  INSERT INTO users (username, password, first_name, last_name, phone, email)
+  VALUES ('u1','password1','u1F', 'u1L', '111222333', 'u1@email.com'),
+         ('u2','password2','u2F', 'u2L', '999888777', 'u2@email.com')
+         returning id`);
+  testUsers.splice(0, 0, ...resultUsers.rows.map((r) => r.id));
 
-  await db.query(`
-    INSERT INTO users (username firstName, lastName, phone, email)
-    VALUES ('u1','u1F', u1L, '111222333', 'u1@email.com'),
-           ('u2','u2F', u2L, '999888777', 'u2@email.com'),
-    RETURNING firstName`);
+  const resultBuskers = await db.query(
+    `INSERT INTO buskers (userId, type)
+  VALUES ($1, 'musician')
+  RETURNING id`,
+    [testUsers[0]]
+  );
+  testBuskers.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
+
+  await db.query(
+    `
+    INSERT INTO events(busker_id, title, type, coordinates)
+    VALUES ($1, 'e1', 'E1', '{"lat":0,"lng":0}')`,
+    [testBuskers[0]]
+  );
+
+  console.log("testCommon, inside", {testUsers,testBuskers});
 }
 
-export async function commonBeforeEach() {
+async function commonBeforeEach() {
   await db.query("BEGIN");
 }
 
-export async function commonAfterEach() {
+async function commonAfterEach() {
   await db.query("ROLLBACK");
 }
 
-export async function commonAfterAll() {
+async function commonAfterAll() {
   await db.end();
 }
+
+export {
+  commonBeforeAll,
+  commonBeforeEach,
+  commonAfterEach,
+  commonAfterAll,
+  testUsers,
+  testBuskers,
+};

@@ -16,8 +16,8 @@ VALUES  ('diogobotelho',
          'test2@email.com',
          TRUE);
 
-INSERT INTO buskers (userId, type)
-VALUES (1, 'musician');
+INSERT INTO buskers (userId, buskerName, category, description)
+VALUES (1, 'Saxiogo', 'musician', 'Diogo plays saxophone in the park.');
 
 INSERT INTO events (busker_id, title, type,coordinates)
 VALUES (1,

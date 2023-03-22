@@ -6,7 +6,7 @@ import BuskApi from "../api/api";
 import ErrorMessage from "../common/ErrorMessage";
 import { LoadingMessage } from "../common/LoadingMessage";
 import { Event } from "../interfaces/Event";
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { eventFormData } from "../interfaces/EventFormData";
 import { UpdateEventForm } from "./UpdateEventForm";
 import { Map } from "../map/Map";
 import {
@@ -79,7 +79,7 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function updateEvent(event: Event, formData: UpdateEventFormData) {
+  async function updateEvent(event: Event, formData: eventFormData) {
     const eventDetails = {
       buskerId: 1,
       title: formData.title,

@@ -7,7 +7,7 @@ import { LoadingMessage } from "../common/LoadingMessage";
 import ErrorMessage from "../common/ErrorMessage";
 import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
-import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { eventFormData } from "../interfaces/EventFormData";
 import { Event } from "../interfaces/Event";
 import { Map } from "../map/Map";
 import {
@@ -136,7 +136,7 @@ function EventList() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function submitEvent(formData: AddEventFormData) {
+  async function submitEvent(formData: eventFormData) {
     if (!newCoordinates) {
       setErrors(["Please select a location"]);
     } else {

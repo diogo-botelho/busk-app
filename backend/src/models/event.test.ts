@@ -1,12 +1,13 @@
 import { Event } from "./event";
+import { BadRequestError, NotFoundError } from "../expressError";
 import db from "../db";
 import {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testUsers,
-  testBuskers
+  testBuskers,
+  testEvents,
 } from "./_testCommon";
 
 beforeAll(commonBeforeAll);
@@ -24,27 +25,43 @@ describe("create", function () {
   };
 
   test("works", async function () {
-    // console.log(testUsers);
-    let buskerId = await db.query("SELECT id from buskers limit 1");
-    buskerId = buskerId.rows[0].id;
-    newEvent["buskerId"] = `${buskerId}`;
+    newEvent["buskerId"] = testBuskers[0];
 
     let event = await Event.create(newEvent);
     expect(event).toEqual({
       ...newEvent,
-      buskerId: buskerId,
-      id: expect.any(Number),
+      id: testEvents[0] + 1,
     });
   });
 
-  test("bad request with dup data", async function () {
+  test("bad request with missing buskerId", async function () {
     try {
-      await Event.create(newEvent);
+      delete newEvent.buskerId;
       await Event.create(newEvent);
       fail();
     } catch (err) {
-      console.log("This test threw an error due to BadRequestError.");
-      //   expect(err instanceof BadRequestError).toBeTruthy();
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+  test("bad request with missing title", async function () {
+    newEvent["buskerId"] = testBuskers[0];
+    try {
+      delete newEvent.title;
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+  test("bad request with empty title", async function () {
+    newEvent.title = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
 });
@@ -52,17 +69,22 @@ describe("create", function () {
 // /************************************** getAll */
 
 describe("getAll", function () {
+  const newEvent = {
+    buskerId: "",
+    title: "Test title",
+    type: "Test type",
+    coordinates: { lat: 1, lng: 1 },
+  };
+
   test("works", async function () {
-    const events = await Event.getAll();
-    expect(events).toEqual([
-      {
-        id: expect.any(Number),
-        buskerId: expect.any(Number),
-        title: "e1",
-        type: "E1",
-        coordinates: { lat: 0, lng: 0 },
-      },
-    ]);
+    newEvent["buskerId"] = testBuskers[0];
+
+    const events1 = await Event.getAll();
+    expect(events1.length).toEqual(1);
+
+    await Event.create(newEvent);
+    const events2 = await Event.getAll();
+    expect(events2.length).toEqual(2);
   });
 });
 
@@ -70,9 +92,10 @@ describe("getAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let event = await Event.getById(1);
-    expect(Event).toEqual({
-      buskerId: "b1",
+    let event = await Event.getById(testEvents[0]);
+    expect(event).toEqual({
+      id: testEvents[0],
+      buskerId: testBuskers[0],
       title: "e1",
       type: "E1",
       coordinates: { lat: 0, lng: 0 },
@@ -84,68 +107,69 @@ describe("get", function () {
       await Event.getById(0);
       fail();
     } catch (err) {
-      console.log("This test failed due to NotFoundError.");
-      // expect(err instanceof NotFoundError).toBeTruthy();
+      expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
 });
 
-// /************************************** update */
+/************************************** update */
 
-// describe("update", function () {
-//   const updateData = {
-//     buskerId: "b1",
-//     title: "newTitle",
-//     type: "NewType",
-//     coordinates: { lat: 45, lng: 45 },
-//   };
+describe("update", function () {
+  const updateData = {
+    buskerId: "",
+    title: "newTitle",
+    type: "NewType",
+    coordinates: { lat: 45, lng: 45 },
+  };
 
-//   test("works", async function () {
-//     let event = await Event.update(1, updateData);
-//     expect(event).toEqual({
-//       id: 1,
-//       title: "newTitle",
-//       ...updateData,
-//     });
-//   });
+  test("works", async function () {
+    updateData["buskerId"] = testBuskers[0];
+    const oldEvent = await Event.getById(testEvents[0]);
+    let event = await Event.update(testEvents[0], updateData);
+    expect(oldEvent).not.toEqual(event);
+    expect(event).toEqual({
+      id: testEvents[0],
+      title: "newTitle",
+      ...updateData,
+    });
+  });
 
-//   test("not found if no such event", async function () {
-//     try {
-//       await Event.update(0, {
-//         ...updateData,
-//       });
-//       fail();
-//     } catch (err) {
-//       // expect(err instanceof NotFoundError).toBeTruthy();
-//     }
-//   });
+  test("not found if no such event", async function () {
+    try {
+      await Event.update(0, {
+        ...updateData,
+      });
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
 
-//   test("bad request with no data", async function () {
-//     try {
-//       await Event.update(1, null);
-//       fail();
-//     } catch (err) {
-//       // expect(err instanceof BadRequestError).toBeTruthy();
-//     }
-//   });
-// });
+  test("bad request with no data", async function () {
+    try {
+      await Event.update(1, null);
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+});
 
-// /************************************** remove */
+/************************************** remove */
 
-// describe("remove", function () {
-//   test("works", async function () {
-//     await Event.remove(1);
-//     const res = await db.query("SELECT * FROM events WHERE username='u1'");
-//     expect(res.rows.length).toEqual(0);
-//   });
+describe("remove", function () {
+  test("works", async function () {
+    await Event.remove(testEvents[0]);
+    const res = await db.query(
+      `SELECT * FROM events WHERE busker_id=${testBuskers[0]}`
+    );
+    expect(res.rows.length).toEqual(0);
+  });
 
-//   test("not found if no such event", async function () {
-//     try {
-//       await Event.remove(0);
-//       fail();
-//     } catch (err) {
-//       console.log("This test has failed due to NotFoundError.");
-//       // expect(err instanceof NotFoundError).toBeTruthy();
-//     }
-//   });
-// });
+  test("not found if no such event", async function () {
+    try {
+      await Event.remove(0);
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});

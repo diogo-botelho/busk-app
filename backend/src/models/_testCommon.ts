@@ -3,10 +3,11 @@
 import db from "../db";
 // const { BCRYPT_WORK_FACTOR } = require("../config");
 
-let testUsers: any = [];
-let testBuskers: any = [];
+export let testUsers: number[] = [];
+export let testBuskers: number[] = [];
+export let testEvents: number[] = [];
 
-async function commonBeforeAll() {
+export async function commonBeforeAll() {
   await db.query("DELETE FROM events");
 
   await db.query("DELETE FROM buskers");
@@ -28,33 +29,24 @@ async function commonBeforeAll() {
   );
   testBuskers.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
 
-  await db.query(
+  const resultEvents = await db.query(
     `
     INSERT INTO events(busker_id, title, type, coordinates)
-    VALUES ($1, 'e1', 'E1', '{"lat":0,"lng":0}')`,
+    VALUES ($1, 'e1', 'E1', '{"lat":0,"lng":0}')
+    RETURNING id`,
     [testBuskers[0]]
   );
-
-  console.log("testCommon, inside", {testUsers,testBuskers});
+  testEvents.splice(0, 0, ...resultEvents.rows.map((r) => r.id));
 }
 
-async function commonBeforeEach() {
+export async function commonBeforeEach() {
   await db.query("BEGIN");
 }
 
-async function commonAfterEach() {
+export async function commonAfterEach() {
   await db.query("ROLLBACK");
 }
 
-async function commonAfterAll() {
+export async function commonAfterAll() {
   await db.end();
 }
-
-export {
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
-  testUsers,
-  testBuskers,
-};

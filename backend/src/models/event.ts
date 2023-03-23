@@ -3,7 +3,7 @@
  **/
 
 import db from "../db";
-import { NotFoundError } from "../expressError";
+import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
 
 interface Coordinates {
@@ -50,24 +50,31 @@ export class Event {
 
   /** create an event: returns { id, bukserId, title, type } */
   static async create(eventData: EventData | undefined) {
-    if (eventData) {
-      const { buskerId, title, type } = eventData;
-      const coordinates = JSON.stringify(eventData.coordinates);
+    if (Object.keys(eventData).length < 4) {
+      throw new BadRequestError("Invalid Data.");
+    }
 
-      const result = await db.query(
-        `INSERT INTO events (busker_id, title, type, coordinates)
+    const { buskerId, title, type } = eventData;
+
+    if (title.length === 0) throw new BadRequestError("Empty Title.");
+
+    const coordinates = JSON.stringify(eventData.coordinates);
+
+    const result = await db.query(
+      `INSERT INTO events (busker_id, title, type, coordinates)
         VALUES ($1, $2, $3, $4)
         RETURNING id, busker_id as "buskerId", title, type, coordinates`,
-        [buskerId, title, type, coordinates]
-      );
+      [buskerId, title, type, coordinates]
+    );
 
-      const event = result.rows[0];
-      return event;
-    } else return "Invalid data.";
+    const event = result.rows[0];
+    return event;
   }
 
   /** Update an event: returns { id, buskerId, title, type } */
   static async update(id: number, data: EventData) {
+    if (!data) throw new BadRequestError("Invalid Data.");
+
     const { setCols, values } = sqlForPartialUpdate(data, {
       buskerId: "busker_id",
     });

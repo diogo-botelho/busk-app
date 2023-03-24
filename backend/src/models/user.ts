@@ -16,6 +16,16 @@ import {
 import { BCRYPT_WORK_FACTOR } from "../config";
 import { UserData } from "../interfaces/UserData";
 
+interface updateUserData {
+  username?: string | undefined;
+  password?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
+  isAdmin?: boolean | undefined;
+}
+
 export class User {
   /** authenticate user with username, password.
    *
@@ -59,8 +69,15 @@ export class User {
    **/
 
   static async signup(userData: UserData) {
-    const { username, password, firstName, lastName, email, phone, isAdmin } =
-      userData;
+    const {
+      username,
+      password,
+      firstName,
+      lastName,
+      email,
+      phone,
+      isAdmin = true,
+    } = userData;
     const duplicateCheck = await db.query(
       `SELECT username
        FROM users
@@ -141,7 +158,7 @@ export class User {
     );
 
     const buskerId = buskerResult.rows[0];
-    
+
     if (buskerId !== undefined) user.buskerId = buskerId.id;
     delete user.id;
 
@@ -165,7 +182,12 @@ export class User {
    * or a serious security risks are opened.
    * */
 
-  static async update(username: string, data: UserData): Promise<UserData> {
+  static async update(
+    username: string,
+    data: updateUserData
+  ): Promise<UserData> {
+    if (!data) throw new BadRequestError("Invalid Data.");
+
     if (data.password) {
       data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
     }
@@ -175,11 +197,12 @@ export class User {
       lastName: "last_name",
       isAdmin: "is_admin",
     });
-    const idVarIdx = "$" + (values.length + 1);
+
+    const usernameVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users
             SET ${setCols} 
-            WHERE id = ${idVarIdx} 
+            WHERE username = ${usernameVarIdx} 
             RETURNING username, 
                       first_name as "firstName",
                       last_name AS "lastName", 
@@ -189,9 +212,7 @@ export class User {
 
     const result = await db.query(querySql, [...values, username]);
     const user = result.rows[0];
-
     if (!user) throw new NotFoundError(`No user: ${username}`);
-
     delete user.password;
     return user;
   }
@@ -200,16 +221,23 @@ export class User {
    */
 
   static async remove(username: string) {
-    const result = await db.query(
-      `DELETE
+    //Check if user has buskerId
+    const user = await this.get(username);
+
+    if (user.buskerId) {
+      throw new BadRequestError(`This user has buskerId.`);
+    } else {
+      const result = await db.query(
+        `DELETE
             FROM users
             WHERE username = $1
             RETURNING username`,
-      [username]
-    );
+        [username]
+      );
 
-    const user = result.rows[0];
+      const deletedUser = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No such user: ${1}`);
+      if (!deletedUser) throw new NotFoundError(`No such user: ${1}`);
+    }
   }
 }

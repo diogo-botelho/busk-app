@@ -8,12 +8,46 @@ import {
   testUsers,
   testBuskers,
 } from "./_testCommon";
-import { NotFoundError, BadRequestError } from "../expressError";
+import { NotFoundError, BadRequestError, UnauthorizedError } from "../expressError";
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
+
+/************************************** authenticate */
+
+describe("authenticate", function () {
+  test("works", async function () {
+    const user = await User.authenticate("u1", "password1");
+    expect(user).toEqual({
+      username: "u1",
+      firstName: "u1F",
+      lastName: "u1L",
+      email: "u1@email.com",
+      phone: "111222333",
+      isAdmin: false,
+    });
+  });
+
+  test("unauth if no such user", async function () {
+    try {
+      await User.authenticate("nope", "password");
+      fail();
+    } catch (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    }
+  });
+
+  test("unauth if wrong password", async function () {
+    try {
+      await User.authenticate("u1", "wrong");
+      fail();
+    } catch (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    }
+  });
+});
 
 /************************************** signup */
 
@@ -99,6 +133,14 @@ describe("get", function () {
     });
   });
 
+  test("user with buskerId shows buskerId", async function() {
+    let user1 = await User.get("u1");
+    let user2 = await User.get("u2");
+
+    expect(user1.buskerId).toBeTruthy();
+    expect(user2.buskerId).toBeFalsy();
+  })
+
   test("not found if no such user", async function () {
     try {
       await User.get("noSuchUser");
@@ -132,7 +174,6 @@ describe("update", function () {
       isAdmin: false,
     });
   });
-});
 
   test("works: set password", async function () {
     let user = await User.update("u1", { password: "new" });

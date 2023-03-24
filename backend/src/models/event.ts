@@ -12,10 +12,10 @@ interface Coordinates {
 }
 
 interface EventData {
-  buskerId: string | undefined;
-  title: string | undefined;
-  type: string | undefined;
-  coordinates: Coordinates | undefined;
+  buskerId?: string;
+  title?: string;
+  type?: string;
+  coordinates?: Coordinates;
 }
 
 export class Event {
@@ -49,7 +49,7 @@ export class Event {
   }
 
   /** create an event: returns { id, bukserId, title, type } */
-  static async create(eventData: EventData | undefined) {
+  static async create(eventData: EventData) {
     if (Object.keys(eventData).length < 4) {
       throw new BadRequestError("Invalid Data.");
     }

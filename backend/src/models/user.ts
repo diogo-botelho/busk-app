@@ -16,16 +16,6 @@ import {
 import { BCRYPT_WORK_FACTOR } from "../config";
 import { UserData } from "../interfaces/UserData";
 
-interface updateUserData {
-  username?: string | undefined;
-  password?: string | undefined;
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  phone?: string | undefined;
-  email?: string | undefined;
-  isAdmin?: boolean | undefined;
-}
-
 export class User {
   /** authenticate user with username, password.
    *
@@ -69,6 +59,10 @@ export class User {
    **/
 
   static async signup(userData: UserData) {
+    if (Object.keys(userData).length < 6) {
+      throw new BadRequestError("Not enough keys");
+    }
+
     const {
       username,
       password,
@@ -76,7 +70,7 @@ export class User {
       lastName,
       email,
       phone,
-      isAdmin = true,
+      isAdmin,
     } = userData;
     const duplicateCheck = await db.query(
       `SELECT username
@@ -184,7 +178,7 @@ export class User {
 
   static async update(
     username: string,
-    data: updateUserData
+    data: UserData
   ): Promise<UserData> {
     if (!data) throw new BadRequestError("Invalid Data.");
 

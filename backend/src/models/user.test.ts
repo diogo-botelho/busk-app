@@ -132,6 +132,22 @@ describe("update", function () {
       isAdmin: false,
     });
   });
+});
+
+  test("works: set password", async function () {
+    let user = await User.update("u1", { password: "new" });
+    expect(user).toEqual({
+      username: "u1",
+      firstName: "u1F",
+      lastName: "u1L",
+      phone: "111222333",
+      email: "u1@email.com",
+      isAdmin: false,
+    });
+    const found = await db.query("SELECT * FROM users WHERE username = 'u1'");
+    expect(found.rows.length).toEqual(1);
+    expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
+  });
 
   test("works: set password", async function () {
     let user = await User.update("u1", { password: "new" });

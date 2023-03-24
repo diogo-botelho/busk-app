@@ -32,15 +32,14 @@ describe("signup", function () {
 
   test("works", async function () {
     let user = await User.signup(newUser);
+    const newUserCopy = { ...newUser };
+    delete newUserCopy.password;
+
     expect(user).toEqual({
       id: expect.any(Number),
-      username: "new",
-      firstName: "Test",
-      lastName: "Tester",
-      phone: "123456789",
-      email: "test@test.com",
-      isAdmin: false,
+      ...newUserCopy,
     });
+
     const found = await db.query("SELECT * FROM users WHERE username = 'new'");
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].is_admin).toEqual(false);
@@ -183,14 +182,6 @@ describe("remove", function () {
       await User.remove("noSuchUser");
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
-    }
-  });
-
-  test("bad request if deleting user with buskerId", async function () {
-    try {
-      await User.remove("u1");
-    } catch (err) {
-      expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
 });

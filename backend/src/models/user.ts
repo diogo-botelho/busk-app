@@ -40,6 +40,7 @@ export class User {
     );
 
     const user = result.rows[0];
+
     if (user) {
       const isValid = await bcrypt.compare(password, user.password);
       if (isValid === true) {
@@ -47,7 +48,6 @@ export class User {
         return user;
       }
     }
-
     throw new UnauthorizedError("Invalid username/password");
   }
 
@@ -141,8 +141,8 @@ export class User {
     );
 
     const buskerId = buskerResult.rows[0];
-    
-    if (buskerId !== undefined) user.buskerId = buskerId.id;
+
+    if (buskerId) user.buskerId = buskerId.id;
     delete user.id;
 
     return user;
@@ -166,6 +166,8 @@ export class User {
    * */
 
   static async update(username: string, data: UserData): Promise<UserData> {
+    if (!data) throw new BadRequestError("Invalid Data.");
+
     if (data.password) {
       data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
     }
@@ -175,11 +177,12 @@ export class User {
       lastName: "last_name",
       isAdmin: "is_admin",
     });
-    const idVarIdx = "$" + (values.length + 1);
+
+    const usernameVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users
             SET ${setCols} 
-            WHERE id = ${idVarIdx} 
+            WHERE username = ${usernameVarIdx} 
             RETURNING username, 
                       first_name as "firstName",
                       last_name AS "lastName", 
@@ -189,9 +192,8 @@ export class User {
 
     const result = await db.query(querySql, [...values, username]);
     const user = result.rows[0];
-
     if (!user) throw new NotFoundError(`No user: ${username}`);
-
+    
     delete user.password;
     return user;
   }
@@ -208,8 +210,10 @@ export class User {
       [username]
     );
 
-    const user = result.rows[0];
+    const deletedUser = result.rows[0];
 
-    if (!user) throw new NotFoundError(`No such user: ${1}`);
+    if (!deletedUser) throw new NotFoundError(`No such user: ${1}`);
+
+    return "This user was successfully deleted.";
   }
 }

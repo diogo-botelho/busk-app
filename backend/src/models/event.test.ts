@@ -132,7 +132,6 @@ describe("update", function () {
       ...updateData,
       id: testEvents[0],
       buskerId: testBuskers[0],
-      title: "newTitle",
     });
   });
 

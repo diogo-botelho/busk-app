@@ -177,7 +177,6 @@ export class User {
       lastName: "last_name",
       isAdmin: "is_admin",
     });
-
     const usernameVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users

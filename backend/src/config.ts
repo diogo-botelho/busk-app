@@ -11,4 +11,3 @@ export const DB_URI =
 export const SECRET_KEY = "secret key";
 
 export const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
-

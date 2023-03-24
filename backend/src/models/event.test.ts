@@ -123,6 +123,11 @@ describe("update", function () {
     coordinates: { lat: 45, lng: 45 },
   };
 
+  const updateData2 = {
+    buskerId: "",
+    title: "newTitle2",
+  };
+
   test("works", async function () {
     updateData["buskerId"] = `${testBuskers[0]}`;
     const oldEvent = await Event.getById(testEvents[0]);
@@ -132,6 +137,19 @@ describe("update", function () {
       ...updateData,
       id: testEvents[0],
       buskerId: testBuskers[0],
+    });
+  });
+
+  test("works with partial data", async function () {
+    updateData2["buskerId"] = `${testBuskers[0]}`;
+    const oldEvent = await Event.getById(testEvents[0]);
+    let event = await Event.update(testEvents[0], updateData2);
+    expect(oldEvent).not.toEqual(event);
+    expect(event).toEqual({
+      ...oldEvent,
+      id: testEvents[0],
+      buskerId: testBuskers[0],
+      title: updateData2.title,
     });
   });
 

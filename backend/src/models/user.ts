@@ -71,8 +71,8 @@ export class User {
     if (duplicateCheck.rows[0]) {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
-
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+
     const result = await db.query(
       `INSERT INTO users (
         username,
@@ -86,7 +86,6 @@ export class User {
       RETURNING id, username, first_name AS "firstName", last_name AS "lastName", phone, email, is_admin as "isAdmin"`,
       [username, hashedPassword, firstName, lastName, phone, email, isAdmin]
     );
-
     const user = result.rows[0];
 
     return user;
@@ -192,14 +191,13 @@ export class User {
     const result = await db.query(querySql, [...values, username]);
     const user = result.rows[0];
     if (!user) throw new NotFoundError(`No user: ${username}`);
-    
+
     delete user.password;
     return user;
   }
 
   /** Delete user from database given id; returns undefined.
    */
-
   static async remove(username: string) {
     const result = await db.query(
       `DELETE
@@ -208,10 +206,9 @@ export class User {
             RETURNING username`,
       [username]
     );
-
     const deletedUser = result.rows[0];
 
-    if (!deletedUser) throw new NotFoundError(`No such user: ${1}`);
+    if (!deletedUser) throw new NotFoundError(`No such user.`);
 
     return "This user was successfully deleted.";
   }

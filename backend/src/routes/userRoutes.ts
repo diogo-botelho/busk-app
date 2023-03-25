@@ -33,7 +33,6 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     //   const errs = validator.errors.map(e => e.stack);
     //   throw new BadRequestError(errs);
     // }
-
     const newUserData: UserData = req.body;
 
     const user = await User.signup(newUserData);
@@ -139,10 +138,13 @@ router.delete(
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { username } = req.params;
-
-    await User.remove(username);
-    return res.json({ message: `User ${username} deleted.` });
+    try {
+      const { username } = req.params;
+      await User.remove(username);
+      return res.json({ deleted: username });
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 

@@ -21,7 +21,7 @@ CREATE TABLE buskers (
 /* EVENTS TABLE */
 CREATE TABLE events(
   id SERIAL PRIMARY KEY,
-  busker_id INTEGER NOT NULL REFERENCES buskers,
+  busker_id INTEGER NOT NULL REFERENCES buskers ON DELETE CASCADE,
   title TEXT NOT NULL,
   type TEXT NOT NULL,
   coordinates JSON NOT NULL

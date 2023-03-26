@@ -1,4 +1,3 @@
-// import bcrypt from "bcrypt";
 import db from "../db";
 
 import { User } from "../models/user";

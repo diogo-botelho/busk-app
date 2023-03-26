@@ -1,4 +1,3 @@
-// import request from "supertest"
 import request from "supertest";
 
 import db from "../db";
@@ -9,15 +8,14 @@ import {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testUserIds,
   testBuskerIds,
-  testEventIds,
   u1Token,
   u2Token,
   adminToken,
 } from "./_testCommon";
+
 import { User } from "../models/user";
-import { UnauthorizedError } from "../expressError";
+
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);

@@ -8,6 +8,6 @@ export const DB_URI =
 //   "busk_app_test"
 // : "busk_app";
 
-export const SECRET_KEY = "secret key";
+export const SECRET_KEY = process.env.SECRET_KEY || "secret key";
 
 export const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;

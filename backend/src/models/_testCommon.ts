@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import db from "../db";
 
-const { BCRYPT_WORK_FACTOR } = require("../config");
+import { BCRYPT_WORK_FACTOR } from "../config";
 
 export let testUsers: number[] = [];
 export let testBuskers: number[] = [];

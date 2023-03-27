@@ -235,9 +235,10 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    await User.remove("u2");
+    const removeMessage = await User.remove("u2");
     const res = await db.query("SELECT * FROM users WHERE username='u2'");
     expect(res.rows.length).toEqual(0);
+    expect(removeMessage).toEqual("This user was successfully deleted.");
   });
 
   test("not found if no such user", async function () {

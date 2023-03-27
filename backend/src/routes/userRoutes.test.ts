@@ -110,31 +110,31 @@ describe("POST /users", function () {
   });
 
   //NEEDS JSON SCHEMA
-  // test("bad request if missing data", async function () {
-  //   const resp = await request(app)
-  //       .post("/users")
-  //       .send({
-  //         username: "u-new",
-  //       })
-  //       .set("authorization", `Bearer ${adminToken}`);
-  //   expect(resp.statusCode).toEqual(400);
-  // });
+  test("bad request if missing data", async function () {
+    const resp = await request(app)
+        .post("/users")
+        .send({
+          username: "u-new",
+        })
+        .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  });
 
   //NEEDS JSON SCHEMA
-  // test("bad request if invalid data", async function () {
-  //   const resp = await request(app)
-  //       .post("/users")
-  //       .send({
-  //         username: "u-new",
-  //         firstName: "First-new",
-  //         lastName: "Last-newL",
-  //         password: "password-new",
-  //         email: "not-an-email",
-  //         isAdmin: true,
-  //       })
-  //       .set("authorization", `Bearer ${adminToken}`);
-  //   expect(resp.statusCode).toEqual(400);
-  // });
+  test("bad request if invalid data", async function () {
+    const resp = await request(app)
+        .post("/users")
+        .send({
+          username: "u-new",
+          firstName: "First-new",
+          lastName: "Last-newL",
+          password: "password-new",
+          email: "not-an-email",
+          isAdmin: true,
+        })
+        .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  });
 });
 
 /************************************** GET /users */
@@ -310,15 +310,15 @@ describe("PATCH /users/:username", () => {
   });
 
   //NEEDS JSON SCHEMA
-  // test("bad request if invalid data", async function () {
-  //   const resp = await request(app)
-  //     .patch(`/users/u1`)
-  //     .send({
-  //       firstName: 42,
-  //     })
-  //     .set("authorization", `Bearer ${adminToken}`);
-  //   expect(resp.statusCode).toEqual(400);
-  // });
+  test("bad request if invalid data", async function () {
+    const resp = await request(app)
+      .patch(`/users/u1`)
+      .send({
+        firstName: 42,
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  });
 
   test("works: can set new password", async function () {
     const resp = await request(app)

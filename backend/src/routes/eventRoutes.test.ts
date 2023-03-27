@@ -10,6 +10,7 @@ import {
   testBuskerIds,
   testEventIds,
   adminToken,
+  u1Token
 } from "./_testCommon";
 
 beforeAll(commonBeforeAll);
@@ -83,30 +84,30 @@ describe("POST /events", function () {
 
   test("unauth for users", async function () {});
 
-  //NEEDS JSON SCHEMA
-  //   test("bad request with missing data", async function () {
-  //     const resp = await request(app)
-  //       .post(`/events/create`)
-  //       .send({
-  //         title: "test event title",
-  //       })
-  //       .set("authorization", `Bearer ${adminToken}`);
-  //     expect(resp.statusCode).toEqual(400);
-  //   });
+  // NEEDS JSON SCHEMA
+    test("bad request with missing data", async function () {
+      const resp = await request(app)
+        .post(`/events/create`)
+        .send({
+          title: "test event title",
+        })
+        .set("authorization", `Bearer ${adminToken}`);
+      expect(resp.statusCode).toEqual(400);
+    });
 
-  //NEEDS JSON SCHEMA
-  //   test("bad request with invalid data", async function () {
-  //     const resp = await request(app)
-  //       .post(`/events/create`)
-  //       .send({
-  //         buskerId: testBuskerIds[0],
-  //         title: "test event title",
-  //         type: "test event type",
-  //         coordinates: "not coordinates",
-  //       })
-  //       .set("authorization", `Bearer ${adminToken}`);
-  //     expect(resp.statusCode).toEqual(400);
-  //   });
+  // NEEDS JSON SCHEMA
+    test("bad request with invalid data", async function () {
+      const resp = await request(app)
+        .post(`/events/create`)
+        .send({
+          buskerId: testBuskerIds[0],
+          title: "test event title",
+          type: "test event type",
+          coordinates: "not coordinates",
+        })
+        .set("authorization", `Bearer ${adminToken}`);
+      expect(resp.statusCode).toEqual(400);
+    });
 });
 
 /************************************** PATCH /events/:id */
@@ -132,15 +133,15 @@ describe("PATCH /events/:id", () => {
 
   //CURRENTLY AUTHORIZING EVERYONE TO UPDATE EVENTS. THIS TEST IS NEEDED
   //WHEN WE INTRODUCE BUSKERS MODEL
-//   test("unauth for others", async function () {
-//     const resp = await request(app)
-//       .patch(`/events/${testEventIds[0]}`)
-//       .send({
-//         title: "New title",
-//       })
-//       .set("authorization", `Bearer ${u1Token}`);
-//     expect(resp.statusCode).toEqual(401);
-//   });
+  test("unauth for others", async function () {
+    const resp = await request(app)
+      .patch(`/events/${testEventIds[0]}`)
+      .send({
+        title: "New title",
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
 
   test("not found on no such event", async function () {
     const resp = await request(app)
@@ -149,21 +150,20 @@ describe("PATCH /events/:id", () => {
         title: "New title",
       })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
     //CHANGE TO EXPECT BadRequestError WHEN WE IMPLEMENT JSON SCHEMA
-    // expect(resp.statusCode).toEqual(400);
+    expect(resp.statusCode).toEqual(400);
   });
 
   //NEEDS JSON SCHEMA
-//   test("bad request with invalid data", async function () {
-//     const resp = await request(app)
-//       .patch(`/events/${testEventIds[0]}`)
-//       .send({
-//         coordinates: "not coordinates",
-//       })
-//       .set("authorization", `Bearer ${adminToken}`);
-//     expect(resp.statusCode).toEqual(400);
-//   });
+  test("bad request with invalid data", async function () {
+    const resp = await request(app)
+      .patch(`/events/${testEventIds[0]}`)
+      .send({
+        coordinates: "not coordinates",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+  });
 });
 
 /************************************** DELETE /events/:id */
@@ -178,20 +178,20 @@ describe("DELETE /events/:id", function () {
       
     //TEST FAILS BECAUSE WE ARE CURRENTLY AUTHORIZING EVERYONE TO UPDATE EVENTS.
     // THIS TEST IS NEEDED WHEN WE INTRODUCE BUSKERS MODEL    
-    //   test("unauth for others", async function () {
-    //     const resp = await request(app)
-    //       .delete(`/events/${testEventIds[0]}`)
-    //       .set("authorization", `Bearer ${u1Token}`);
-    //     expect(resp.statusCode).toEqual(401);
-    //   });
+      test("unauth for others", async function () {
+        const resp = await request(app)
+          .delete(`/events/${testEventIds[0]}`)
+          .set("authorization", `Bearer ${u1Token}`);
+        expect(resp.statusCode).toEqual(401);
+      });
     
     //TEST FAILS BECAUSE WE ARE CURRENTLY AUTHORIZING EVERYONE TO UPDATE EVENTS.
     // THIS TEST IS NEEDED WHEN WE INTRODUCE BUSKERS MODEL
-    //   test("unauth for anon", async function () {
-    //     const resp = await request(app)
-    //       .delete(`/events/${testEventIds[0]}`);
-    //     expect(resp.statusCode).toEqual(401);
-    //   });
+      test("unauth for anon", async function () {
+        const resp = await request(app)
+          .delete(`/events/${testEventIds[0]}`);
+        expect(resp.statusCode).toEqual(401);
+      });
     
       test("not found for no such event", async function () {
         const resp = await request(app)

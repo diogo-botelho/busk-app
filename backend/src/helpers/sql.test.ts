@@ -1,3 +1,4 @@
+import { BadRequestError } from "../expressError";
 import { sqlForPartialUpdate } from "./sql";
 
 describe("sqlForPartialUpdate", function () {
@@ -43,5 +44,16 @@ describe("sqlForPartialUpdate", function () {
       setCols: '"first_name"=$1, "last_name"=$2, "phone"=$3',
       values: ["newF", "newL", "111"],
     });
+  });
+
+  test("error: no data", function () {
+    try {
+      const result = sqlForPartialUpdate(
+        {},
+        { firstName: "first_name", lastName: "last_name" }
+      );
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
   });
 });

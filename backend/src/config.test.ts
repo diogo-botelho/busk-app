@@ -1,5 +1,3 @@
-"use strict";
-
 describe("config can come from env", function () {
   test("works", function () {
     process.env.SECRET_KEY = "abc";
@@ -10,7 +8,7 @@ describe("config can come from env", function () {
     const config = require("./config");
     expect(config.SECRET_KEY).toEqual("abc");
     expect(config.PORT).toEqual(5000);
-    expect(config.DB_URI).toEqual("other");
+    expect(config.getDatabaseUri()).toEqual("other");
     expect(config.BCRYPT_WORK_FACTOR).toEqual(12);
 
     delete process.env.SECRET_KEY;
@@ -18,13 +16,9 @@ describe("config can come from env", function () {
     delete process.env.BCRYPT_WORK_FACTOR;
     delete process.env.DATABASE_URL;
 
-    console.log(config.DB_URI);
-    expect(config.DB_URI).toEqual("jobly");
-    
-    console.log(config.DB_URI);
+    expect(config.getDatabaseUri()).toEqual("busk_app");
     process.env.NODE_ENV = "test";
-    
-    console.log(config.DB_URI);
-    expect(config.DB_URI).toEqual("jobly_test");
+
+    expect(config.getDatabaseUri()).toEqual("busk_app_test");
   });
 });

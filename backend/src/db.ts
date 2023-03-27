@@ -1,9 +1,9 @@
 /** Database for Busk */
-import { DB_URI } from "./config";
+import { getDatabaseUri } from "./config";
 import { Client } from "pg";
 
 const db = new Client({
-  connectionString: DB_URI,
+  connectionString: getDatabaseUri(),
 });
 
 db.connect();

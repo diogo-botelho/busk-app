@@ -1,14 +1,20 @@
-import { User } from "./user";
 import db from "../db";
+
+import { User } from "./user";
+
 import {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testUsers,
   testBuskers,
 } from "./_testCommon";
-import { NotFoundError, BadRequestError, UnauthorizedError } from "../expressError";
+
+import {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} from "../expressError";
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -133,13 +139,13 @@ describe("get", function () {
     });
   });
 
-  test("user with buskerId shows buskerId", async function() {
+  test("user with buskerId shows buskerId", async function () {
     let user1 = await User.get("u1");
     let user2 = await User.get("u2");
 
     expect(user1.buskerId).toBeTruthy();
     expect(user2.buskerId).toBeFalsy();
-  })
+  });
 
   test("not found if no such user", async function () {
     try {
@@ -229,9 +235,10 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    await User.remove("u2");
+    const removeMessage = await User.remove("u2");
     const res = await db.query("SELECT * FROM users WHERE username='u2'");
     expect(res.rows.length).toEqual(0);
+    expect(removeMessage).toEqual("This user was successfully deleted.");
   });
 
   test("not found if no such user", async function () {

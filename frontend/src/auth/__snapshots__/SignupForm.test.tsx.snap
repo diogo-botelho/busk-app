@@ -1,0 +1,150 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="container"
+  >
+    <header
+      class="p-3 mb-4 bg-light border rounded-3"
+    >
+      <h1
+        class="text-center"
+      >
+        Signup
+      </h1>
+    </header>
+    <form
+      class=""
+    >
+      <div
+        class="justify-content-center row"
+      >
+        <div
+          class="col-6"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="mb-2 form-floating"
+            >
+              <input
+                class="form-control form-control"
+                id="username"
+                name="username"
+                placeholder="Username"
+                value=""
+              />
+              <label>
+                Username
+              </label>
+            </div>
+          </div>
+          <div
+            class=""
+          >
+            <div
+              class="mb-2 form-floating"
+            >
+              <input
+                class="form-control form-control"
+                id="password"
+                name="password"
+                placeholder="Password"
+                type="password"
+                value=""
+              />
+              <label>
+                Password
+              </label>
+            </div>
+          </div>
+          <div
+            class=""
+          >
+            <div
+              class="mb-2 form-floating"
+            >
+              <input
+                class="form-control form-control"
+                id="firstName"
+                name="firstName"
+                placeholder="First Name"
+                type="firstName"
+                value=""
+              />
+              <label>
+                First Name
+              </label>
+            </div>
+          </div>
+          <div
+            class=""
+          >
+            <div
+              class="mb-2 form-floating"
+            >
+              <input
+                class="form-control form-control"
+                id="lastName"
+                name="lastName"
+                placeholder="Last Name"
+                type="lastName"
+                value=""
+              />
+              <label>
+                Last Name
+              </label>
+            </div>
+          </div>
+          <div
+            class=""
+          >
+            <div
+              class="mb-2 form-floating"
+            >
+              <input
+                class="form-control form-control"
+                id="phone"
+                name="phone"
+                placeholder="Phone"
+                type="phone"
+                value=""
+              />
+              <label>
+                Phone
+              </label>
+            </div>
+          </div>
+          <div
+            class=""
+          >
+            <div
+              class="mb-2 form-floating"
+            >
+              <input
+                class="form-control form-control"
+                id="email"
+                name="email"
+                placeholder="Email"
+                type="email"
+                value=""
+              />
+              <label>
+                Email
+              </label>
+            </div>
+          </div>
+          <button
+            class="btn btn-primary  btn btn-primary"
+            type="submit"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</DocumentFragment>
+`;

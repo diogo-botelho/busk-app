@@ -60,7 +60,7 @@ describe("ensureLoggedIn", function () {
   test("works", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { username: "test" } } };
+    const res: unknown = { locals: { user: { username: "test" } } };
     const next = function (err: ExpressError) {
       expect(err).toBeFalsy();
     };
@@ -82,7 +82,9 @@ describe("ensureAdmin", function () {
   test("works", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { username: "test", isAdmin: true } } };
+    const res: unknown = {
+      locals: { user: { username: "test", isAdmin: true } },
+    };
     const next = function (err: ExpressError) {
       expect(err).toBeFalsy();
     };
@@ -92,7 +94,9 @@ describe("ensureAdmin", function () {
   test("unauth if not admin", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const res: unknown = {
+      locals: { user: { username: "test", isAdmin: false } },
+    };
     const next = function (err: ExpressError) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
@@ -113,8 +117,10 @@ describe("ensureAdmin", function () {
 describe("ensureCorrectUserOrAdmin", function () {
   test("works: admin", function () {
     expect.assertions(1);
-    const req = { params: { username: "test" } };
-    const res = { locals: { user: { username: "admin", isAdmin: true } } };
+    const req: unknown = { params: { username: "test" } };
+    const res: unknown = {
+      locals: { user: { username: "admin", isAdmin: true } },
+    };
     const next = function (err: ExpressError) {
       expect(err).toBeFalsy();
     };
@@ -127,8 +133,10 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("works: same user", function () {
     expect.assertions(1);
-    const req = { params: { username: "test" } };
-    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const req: unknown = { params: { username: "test" } };
+    const res: unknown = {
+      locals: { user: { username: "test", isAdmin: false } },
+    };
     const next = function (err: ExpressError) {
       expect(err).toBeFalsy();
     };
@@ -141,8 +149,10 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("unauth: mismatch", function () {
     expect.assertions(1);
-    const req = { params: { username: "wrong" } };
-    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const req: unknown = { params: { username: "wrong" } };
+    const res: unknown = {
+      locals: { user: { username: "test", isAdmin: false } },
+    };
     const next = function (err: ExpressError) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
@@ -155,7 +165,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("unauth: if anon", function () {
     expect.assertions(1);
-    const req = { params: { username: "test" } };
+    const req: unknown = { params: { username: "test" } };
     const res = { locals: {} };
     const next = function (err: ExpressError) {
       expect(err instanceof UnauthorizedError).toBeTruthy();

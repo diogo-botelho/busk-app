@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "buskerId": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "type": {
+      "type": "string"
+    },
+    "coordinates": {
+      "type": "object",
+      "properties": {
+        "lat": {"type" : "number"},
+        "lng": {"type" : "number"}
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "buskerId",
+    "title",
+    "type",
+    "coordinates"
+  ]
+}

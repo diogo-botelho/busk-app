@@ -1,0 +1,230 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="leaflet-container leaflet-touch leaflet-grab leaflet-touch-drag leaflet-touch-zoom"
+    style="position: relative;"
+    tabindex="0"
+  >
+    <div
+      class="leaflet-pane leaflet-map-pane"
+      style="left: 0px; top: 0px;"
+    >
+      <div
+        class="leaflet-pane leaflet-tile-pane"
+      />
+      <div
+        class="leaflet-pane leaflet-overlay-pane"
+      />
+      <div
+        class="leaflet-pane leaflet-shadow-pane"
+      />
+      <div
+        class="leaflet-pane leaflet-marker-pane"
+      />
+      <div
+        class="leaflet-pane leaflet-tooltip-pane"
+      />
+      <div
+        class="leaflet-pane leaflet-popup-pane"
+      />
+    </div>
+    <div
+      class="leaflet-control-container"
+    >
+      <div
+        class="leaflet-top leaflet-left"
+      >
+        <div
+          class="leaflet-control-zoom leaflet-bar leaflet-control"
+        >
+          <a
+            aria-disabled="false"
+            aria-label="Zoom in"
+            class="leaflet-control-zoom-in"
+            href="#"
+            role="button"
+            title="Zoom in"
+          >
+            <span
+              aria-hidden="true"
+            >
+              +
+            </span>
+          </a>
+          <a
+            aria-disabled="false"
+            aria-label="Zoom out"
+            class="leaflet-control-zoom-out"
+            href="#"
+            role="button"
+            title="Zoom out"
+          >
+            <span
+              aria-hidden="true"
+            >
+              −
+            </span>
+          </a>
+        </div>
+      </div>
+      <div
+        class="leaflet-top leaflet-right"
+      />
+      <div
+        class="leaflet-bottom leaflet-left"
+      />
+      <div
+        class="leaflet-bottom leaflet-right"
+      >
+        <div
+          class="leaflet-control-attribution leaflet-control"
+        >
+          <a
+            href="https://leafletjs.com"
+            title="A JavaScript library for interactive maps"
+          >
+            Leaflet
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="map leaflet-container leaflet-touch leaflet-grab leaflet-touch-drag leaflet-touch-zoom"
+      style="height: 800px; position: relative;"
+      tabindex="0"
+    >
+      <div
+        class="leaflet-pane leaflet-map-pane"
+        style="left: 0px; top: 0px;"
+      >
+        <div
+          class="leaflet-pane leaflet-tile-pane"
+        >
+          <div
+            class="leaflet-layer "
+            style="z-index: 1;"
+          >
+            <div
+              class="leaflet-tile-container leaflet-zoom-animated"
+              style="z-index: 18; left: 0px; top: 0px;"
+            >
+              <img
+                alt=""
+                class="leaflet-tile"
+                src="https://c.tile.openstreetmap.org/13/2412/3077.png"
+                style="width: 256px; height: 256px; left: -223px; top: -240px;"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="leaflet-pane leaflet-overlay-pane"
+        />
+        <div
+          class="leaflet-pane leaflet-shadow-pane"
+        >
+          <img
+            alt=""
+            class="leaflet-marker-shadow leaflet-zoom-hide"
+            src="marker-shadow.png"
+            style="margin-left: -12px; margin-top: -41px; width: 41px; height: 41px; left: 436706px; top: 254798px;"
+          />
+        </div>
+        <div
+          class="leaflet-pane leaflet-marker-pane"
+        >
+          <img
+            alt="Marker"
+            class="leaflet-marker-icon leaflet-zoom-hide leaflet-interactive"
+            role="button"
+            src="marker-icon.png"
+            style="margin-left: -12px; margin-top: -41px; width: 25px; height: 41px; left: 436706px; top: 254798px; z-index: 254798;"
+            tabindex="0"
+          />
+        </div>
+        <div
+          class="leaflet-pane leaflet-tooltip-pane"
+        />
+        <div
+          class="leaflet-pane leaflet-popup-pane"
+        />
+      </div>
+      <div
+        class="leaflet-control-container"
+      >
+        <div
+          class="leaflet-top leaflet-left"
+        >
+          <div
+            class="leaflet-control-zoom leaflet-bar leaflet-control"
+          >
+            <a
+              aria-disabled="false"
+              aria-label="Zoom in"
+              class="leaflet-control-zoom-in"
+              href="#"
+              role="button"
+              title="Zoom in"
+            >
+              <span
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </a>
+            <a
+              aria-disabled="false"
+              aria-label="Zoom out"
+              class="leaflet-control-zoom-out"
+              href="#"
+              role="button"
+              title="Zoom out"
+            >
+              <span
+                aria-hidden="true"
+              >
+                −
+              </span>
+            </a>
+          </div>
+        </div>
+        <div
+          class="leaflet-top leaflet-right"
+        />
+        <div
+          class="leaflet-bottom leaflet-left"
+        />
+        <div
+          class="leaflet-bottom leaflet-right"
+        >
+          <div
+            class="leaflet-control-attribution leaflet-control"
+          >
+            <a
+              href="https://leafletjs.com"
+              title="A JavaScript library for interactive maps"
+            >
+              Leaflet
+            </a>
+             
+            <span
+              aria-hidden="true"
+            >
+              |
+            </span>
+             © 
+            <a
+              href="https://www.openstreetmap.org/copyright"
+            >
+              OpenStreetMap
+            </a>
+             contributors
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

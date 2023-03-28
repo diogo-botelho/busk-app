@@ -1,16 +1,15 @@
 /** Routes for users. */
 
 import express from "express";
-import db from "../db";
-
-// import jsonschema from "jsonschema";
+import jsonschema from "jsonschema";
 
 import { User } from "../models/user";
 import { ensureCorrectUserOrAdmin, ensureAdmin } from "../middleware/auth";
 import { createToken } from "../helpers/tokens";
-// import userNewSchema from "../schemas/userNew.json";
-// import userUpdateSchema from "../schemas/userUpdate.json";
+import userNewSchema from "../schemas/userNew.json";
+import userUpdateSchema from "../schemas/userUpdate.json";
 import { UserData } from "../interfaces/UserData";
+import { BadRequestError } from "../expressError";
 
 const router = express.Router();
 
@@ -28,11 +27,11 @@ const router = express.Router();
 
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
-    // const validator = jsonschema.validate(req.body, userNewSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
+    const validator = jsonschema.validate(req.body, userNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(...errs);
+    }
     const newUserData: UserData = req.body;
 
     const user = await User.signup(newUserData);
@@ -110,11 +109,11 @@ router.patch(
     next: express.NextFunction
   ) {
     try {
-      // const validator = jsonschema.validate(req.body, userUpdateSchema);
-      // if (!validator.valid) {
-      //   const errs = validator.errors.map(e => e.stack);
-      //   throw new BadRequestError(errs);
-      // }
+      const validator = jsonschema.validate(req.body, userUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(...errs);
+      }
       const { username } = req.params;
 
       const user = await User.update(username, req.body);

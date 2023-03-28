@@ -32,7 +32,7 @@ describe("POST /users", function () {
         password: "password-new",
         firstName: "First-new",
         lastName: "Last-newL",
-        phone: "111111111",
+        phone: "1111111111",
         email: "new@email.com",
         isAdmin: false,
       })
@@ -44,7 +44,7 @@ describe("POST /users", function () {
         username: "u-new1",
         firstName: "First-new",
         lastName: "Last-newL",
-        phone: "111111111",
+        phone: "1111111111",
         email: "new@email.com",
         isAdmin: false,
       },
@@ -60,7 +60,7 @@ describe("POST /users", function () {
         password: "password-new",
         firstName: "First-new",
         lastName: "Last-newL",
-        phone: "111111111",
+        phone: "1111111111",
         email: "new@email.com",
         isAdmin: true,
       })
@@ -72,7 +72,7 @@ describe("POST /users", function () {
         username: "u-new2",
         firstName: "First-new",
         lastName: "Last-newL",
-        phone: "111111111",
+        phone: "1111111111",
         email: "new@email.com",
         isAdmin: true,
       },
@@ -109,30 +109,28 @@ describe("POST /users", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  //NEEDS JSON SCHEMA
   test("bad request if missing data", async function () {
     const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-        })
-        .set("authorization", `Bearer ${adminToken}`);
+      .post("/users")
+      .send({
+        username: "u-new",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
   });
 
-  //NEEDS JSON SCHEMA
   test("bad request if invalid data", async function () {
     const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-          firstName: "First-new",
-          lastName: "Last-newL",
-          password: "password-new",
-          email: "not-an-email",
-          isAdmin: true,
-        })
-        .set("authorization", `Bearer ${adminToken}`);
+      .post("/users")
+      .send({
+        username: "u-new",
+        firstName: "First-new",
+        lastName: "Last-newL",
+        password: "password-new",
+        email: "not-an-email",
+        isAdmin: true,
+      })
+      .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
   });
 });
@@ -332,7 +330,7 @@ describe("PATCH /users/:username", () => {
         username: "u1",
         firstName: "u1F",
         lastName: "u1L",
-        phone:"111222333",
+        phone: "111222333",
         email: "u1@email.com",
         isAdmin: false,
       },
@@ -347,35 +345,34 @@ describe("PATCH /users/:username", () => {
 describe("DELETE /users/:username", function () {
   test("works for admin", async function () {
     const resp = await request(app)
-        .delete(`/users/u1`)
-        .set("authorization", `Bearer ${adminToken}`);
+      .delete(`/users/u1`)
+      .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({ deleted: "u1" });
   });
 
   test("works for same user", async function () {
     const resp = await request(app)
-        .delete(`/users/u1`)
-        .set("authorization", `Bearer ${u1Token}`);
+      .delete(`/users/u1`)
+      .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({ deleted: "u1" });
   });
 
   test("unauth if not same user", async function () {
     const resp = await request(app)
-        .delete(`/users/u1`)
-        .set("authorization", `Bearer ${u2Token}`);
+      .delete(`/users/u1`)
+      .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
-    const resp = await request(app)
-        .delete(`/users/u1`);
+    const resp = await request(app).delete(`/users/u1`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("not found if user missing", async function () {
     const resp = await request(app)
-        .delete(`/users/nope`)
-        .set("authorization", `Bearer ${adminToken}`);
+      .delete(`/users/nope`)
+      .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
   });
 });

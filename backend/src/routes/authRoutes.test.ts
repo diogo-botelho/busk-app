@@ -26,98 +26,81 @@ afterAll(commonAfterAll);
 
 describe("POST /auth/login", function () {
   test("works", async function () {
-    const resp = await request(app)
-        .post("/auth/login")
-        .send({
-          username: "u1",
-          password: "password1",
-        });
+    const resp = await request(app).post("/auth/login").send({
+      username: "u1",
+      password: "password1",
+    });
     expect(resp.body).toEqual({
-      "token": expect.any(String),
+      token: expect.any(String),
     });
   });
 
   test("unauth with non-existent user", async function () {
-    const resp = await request(app)
-        .post("/auth/login")
-        .send({
-          username: "no-such-user",
-          password: "password1",
-        });
+    const resp = await request(app).post("/auth/login").send({
+      username: "no-such-user",
+      password: "password1",
+    });
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth with wrong password", async function () {
-    const resp = await request(app)
-        .post("/auth/login")
-        .send({
-          username: "u1",
-          password: "nope",
-        });
+    const resp = await request(app).post("/auth/login").send({
+      username: "u1",
+      password: "nope",
+    });
     expect(resp.statusCode).toEqual(401);
   });
 
-    //NEEDS JSON SCHEMA
-//   test("bad request with missing data", async function () {
-//     const resp = await request(app)
-//         .post("/auth/login")
-//         .send({
-//           username: "u1",
-//         });
-//     expect(resp.statusCode).toEqual(400);
-//   });
+  test("bad request with missing data", async function () {
+    const resp = await request(app).post("/auth/login").send({
+      username: "u1",
+    });
+    expect(resp.statusCode).toEqual(400);
+  });
 
-//   test("bad request with invalid data", async function () {
-//     const resp = await request(app)
-//         .post("/auth/login")
-//         .send({
-//           username: 42,
-//           password: "above-is-a-number",
-//         });
-//     expect(resp.statusCode).toEqual(400);
-//   });
+  test("bad request with invalid data", async function () {
+    const resp = await request(app).post("/auth/login").send({
+      username: 42,
+      password: "above-is-a-number",
+    });
+    expect(resp.statusCode).toEqual(400);
+  });
 });
 
 /************************************** POST /auth/signup */
 
 describe("POST /auth/signup", function () {
   test("works for anon", async function () {
-    const resp = await request(app)
-        .post("/auth/signup")
-        .send({
-          username: "new",
-          firstName: "first",
-          lastName: "last",
-          password: "password",
-          phone: "123456789",
-          email: "new@email.com",
-        });
+    const resp = await request(app).post("/auth/signup").send({
+      username: "new",
+      firstName: "first",
+      lastName: "last",
+      password: "password",
+      phone: "1234567890",
+      email: "new@email.com",
+    });
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
-      "token": expect.any(String),
+      token: expect.any(String),
     });
   });
-  //NEEDS JSON SCHEMA
-//   test("bad request with missing fields", async function () {
-//     const resp = await request(app)
-//         .post("/auth/signup")
-//         .send({
-//           username: "new",
-//         });
-//     expect(resp.statusCode).toEqual(400);
-//   });
 
-//   test("bad request with invalid data", async function () {
-//     const resp = await request(app)
-//         .post("/auth/signup")
-//         .send({
-//           username: "new",
-//           firstName: "first",
-//           lastName: "last",
-//           password: "password",
-//           phone: "123456789",
-//           email: "not-an-email",
-//         });
-//     expect(resp.statusCode).toEqual(400);
-//   });
+  test("bad request with missing fields", async function () {
+    const resp = await request(app).post("/auth/signup").send({
+      username: "new",
+    });
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("bad request with invalid data", async function () {
+    const resp = await request(app).post("/auth/signup").send({
+      username: "new",
+      firstName: "first",
+      lastName: "last",
+      password: "password",
+      phone: "123456789",
+      email: "not-an-email",
+    });
+    expect(resp.statusCode).toEqual(400);
+  });
 });

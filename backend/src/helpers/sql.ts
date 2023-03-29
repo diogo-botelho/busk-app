@@ -1,5 +1,8 @@
 import { BadRequestError } from "../expressError";
 
+import { UserData } from "../interfaces/UserData";
+import { BuskerData } from "../interfaces/BuskerData";
+
 /**
  * Helper for making selective update queries.
  *
@@ -23,19 +26,12 @@ interface EventData {
   type?: string;
 }
 
-interface UserData {
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  email?: string;
-}
-
 interface JsToSql {
   [key: string]: string;
 }
 
 export function sqlForPartialUpdate(
-  dataToUpdate: UserData | EventData,
+  dataToUpdate: UserData | EventData | BuskerData,
   jsToSql: JsToSql
 ) {
   const keys = Object.keys(dataToUpdate);

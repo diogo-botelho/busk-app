@@ -15,7 +15,9 @@ CREATE TABLE users(
 CREATE TABLE buskers (
   id SERIAL PRIMARY KEY,
   userId INTEGER NOT NULL REFERENCES users ON DELETE CASCADE,
-  type TEXT NOT NULL
+  buskerName TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT
 );
 
 /* EVENTS TABLE */

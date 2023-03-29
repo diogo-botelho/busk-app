@@ -20,7 +20,7 @@ const router = express.Router();
  * admin.
  *
  * This returns the newly created user and an authentication token for them:
- *  {user: { username, firstName, lastName, email, phone, isAdmin }, token }
+ *  {user: { id, email, firstName, lastName, phone, isAdmin }, token }
  *
  * Authorization required: admin
  **/
@@ -42,7 +42,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
   }
 });
 
-/** GET / => { users: [ {username, firstName, lastName, email, phone }, ... ] }
+/** GET / => { users: [ {email, firstName, lastName, phone }, ... ] }
  *
  * Returns list of all users.
  *
@@ -66,14 +66,14 @@ router.get(
   }
 );
 
-/** GET /[username] => { user }
+/** GET /[id] => { user }
  *
- * Returns { username, firstName, lastName, email, phone, isAdmin }
+ * Returns { id, email, firstName, lastName, phone, isAdmin }
  *
- * Authorization required: admin or same user-as-:username
+ * Authorization required: admin or same user-as-:id
  **/
 router.get(
-  "/:username",
+  "/:id",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -81,8 +81,8 @@ router.get(
     next: express.NextFunction
   ) {
     try {
-      const { username } = req.params;
-      const user = await User.get(username);
+      const { id } = req.params;
+      const user = await User.get(+id);
       return res.json(user);
     } catch (err) {
       return next(err);
@@ -90,18 +90,18 @@ router.get(
   }
 );
 
-/** PATCH /[username] { user } => { user }
+/** PATCH /[id] { user } => { user }
  *
  * Data can include:
- *   { username, password, firstName, lastName, email, phone }
+ *   { id, email, password, firstName, lastName, phone }
  *
- * Returns { username, firstName, lastName, email, phone, isAdmin }
+ * Returns { id, email, firstName, lastName, phone, isAdmin }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or same-user-as-:id
  **/
 
 router.patch(
-  "/:username",
+  "/:id",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -114,9 +114,9 @@ router.patch(
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(...errs);
       }
-      const { username } = req.params;
+      const { id } = req.params;
 
-      const user = await User.update(username, req.body);
+      const user = await User.update(id, req.body);
 
       return res.json({ user });
     } catch (err) {
@@ -125,12 +125,12 @@ router.patch(
   }
 );
 
-/** DELETE /[username]  =>  { deleted: username }
+/** DELETE /[id]  =>  { deleted: id }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or same-user-as-:id
  **/
 router.delete(
-  "/:username",
+  "/:id",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -138,9 +138,9 @@ router.delete(
     next: express.NextFunction
   ) {
     try {
-      const { username } = req.params;
-      await User.remove(username);
-      return res.json({ deleted: username });
+      const { id } = req.params;
+      await User.remove(id);
+      return res.json({ deleted: id });
     } catch (err) {
       return next(err);
     }

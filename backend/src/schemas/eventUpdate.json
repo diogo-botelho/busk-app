@@ -3,9 +3,6 @@
   "$id": "http://example.com/example.json",
   "type": "object",
   "properties": {
-    "buskerId": {
-      "type": "number"
-    },
     "title": {
       "type": "string",
       "minLength": 1,

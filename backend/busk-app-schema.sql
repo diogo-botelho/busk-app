@@ -14,15 +14,11 @@ CREATE TABLE users(
 /* BUSKERS TABLE */
 CREATE TABLE buskers (
   id SERIAL PRIMARY KEY,
-<<<<<<< HEAD
-  userId INTEGER NOT NULL REFERENCES users,
+  userId INTEGER NOT NULL REFERENCES users ON DELETE CASCADE,
   buskerName TEXT NOT NULL,
   category TEXT NOT NULL,
   description TEXT
-=======
-  userId INTEGER NOT NULL REFERENCES users ON DELETE CASCADE,
   type TEXT NOT NULL
->>>>>>> main
 );
 
 /* EVENTS TABLE */

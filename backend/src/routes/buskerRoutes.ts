@@ -10,7 +10,7 @@ import { BuskerData } from "../interfaces/BuskerData";
 const router = express.Router();
 
 
-/** GET / => { buskers: [ {buskerId, buskerName, category, descritpion }, ... ] }
+/** GET / => { buskers: [ {buskerId, buskerName, category, description }, ... ] }
  *
  * Returns list of all buskers.
  *
@@ -19,7 +19,6 @@ const router = express.Router();
 
 router.get(
   "/",
-  ensureAdmin,
   async function (
     req: express.Request,
     res: express.Response,
@@ -34,23 +33,22 @@ router.get(
   }
 );
 
-/** GET /[buskerId] => { user }
+/** GET /[buskerName] => { busker }
  *
  * Returns { buskerId, buskerName, category, description }
  *
  * Authorization required: admin or same user-as-:id
  **/
 router.get(
-  "/:buskerId",
-  ensureCorrectUserOrAdmin,
+  "/:buskerName",
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     try {
-      const { buskerId } = req.params;
-      const busker = await Busker.get(+buskerId);
+      const { buskerName } = req.params;
+      const busker = await Busker.get(buskerName);
       return res.json(busker);
     } catch (err) {
       return next(err);
@@ -58,7 +56,7 @@ router.get(
   }
 );
 
-/** PATCH /[buskerId] { busker } => { busker }
+/** PATCH /[buskerName] { busker } => { busker }
  *
  * Data can include:
  *   { buskerName, category, description }
@@ -69,7 +67,7 @@ router.get(
  **/
 
 router.patch(
-  "/:buskerId",
+  "/:buskerName",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -77,11 +75,11 @@ router.patch(
     next: express.NextFunction
   ) {
     try {
-      const { buskerId } = req.params;
+      const { buskerName } = req.params;
 
-      const busker = await Busker.update(+buskerId, req.body);
+      const busker = await Busker.update(buskerName, req.body);
 
-      return res.json({ buskerId });
+      return res.json({ buskerName });
     } catch (err) {
       return next(err);
     }
@@ -89,22 +87,22 @@ router.patch(
 );
 
 
-/** DELETE /[buskerId]  =>  { deleted: buskerId }
+/** DELETE /[buskerName]  =>  { deleted: buskerName }
  *
  * Authorization required: admin or same-user-as-:username
  **/
 router.delete(
-  "/:buskerId",
+  "/:buskerName",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { buskerId } = req.params;
+    const { buskerName } = req.params;
 
-    await Busker.remove(+buskerId);
-    return res.json({ message: `User ${buskerId} deleted.` });
+    await Busker.remove(buskerName);
+    return res.json({ message: `User ${buskerName} deleted.` });
   }
 );
 

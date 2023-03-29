@@ -18,7 +18,6 @@ CREATE TABLE buskers (
   buskerName TEXT NOT NULL,
   category TEXT NOT NULL,
   description TEXT
-  type TEXT NOT NULL
 );
 
 /* EVENTS TABLE */

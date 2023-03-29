@@ -1,19 +1,17 @@
 -- both test users have the password "password"
 
-INSERT INTO users (username, password, first_name, last_name, phone, email, is_admin)
-VALUES  ('diogobotelho',
+INSERT INTO users (email, password, first_name, last_name, phone, is_admin)
+VALUES  ('diogo@email.com',
          '$2b$12$XBq75DYu9Ly0qkTwBENIXuKa4kNrmNP5GVcLGsTEi9OjVBd2s0Y9C',
          'Diogo',
          'Botelho', 
          '1234567890', 
-         'test@email.com',
          TRUE),
-        ('samau',
+        ('samau@email.com',
          '$2b$12$XBq75DYu9Ly0qkTwBENIXuKa4kNrmNP5GVcLGsTEi9OjVBd2s0Y9C', 
          'Sammy',
          'Au', 
          '11111111',
-         'test2@email.com',
          TRUE);
 
 INSERT INTO buskers (userId, buskerName, category, description)

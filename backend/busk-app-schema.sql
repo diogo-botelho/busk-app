@@ -1,13 +1,12 @@
 /* USERS TABLE */
 CREATE TABLE users(
   id SERIAL PRIMARY KEY,
-  username VARCHAR(25) NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE
+    CHECK (position('@' IN email) > 1),
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   phone TEXT NOT NULL UNIQUE,
-  email TEXT NOT NULL UNIQUE
-    CHECK (position('@' IN email) > 1),
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 

@@ -26,13 +26,6 @@ interface EventData {
   type?: string;
 }
 
-// interface UserData {
-//   firstName?: string;
-//   lastName?: string;
-//   phone?: string;
-//   email?: string;
-// }
-
 interface JsToSql {
   [key: string]: string;
 }

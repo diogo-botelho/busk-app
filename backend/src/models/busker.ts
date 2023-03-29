@@ -6,15 +6,11 @@ import db from "../db";
 import bcrypt from "bcrypt";
 
 import { sqlForPartialUpdate } from "../helpers/sql";
-import {
-  NotFoundError,
-  BadRequestError,
-  UnauthorizedError,
-} from "../expressError";
+import { NotFoundError } from "../expressError";
 import { BuskerData } from "../interfaces/BuskerData";
 
 export class Busker {
-  /** Signup busker with data.
+  /** Register busker with data.
    *
    * Takes BuskerData { userId, buskerName, category, description }
    *
@@ -23,7 +19,7 @@ export class Busker {
    * Throws BadRequestError on duplicates.
    **/
 
-  static async signup(buskerData: BuskerData) {
+  static async register(buskerData: BuskerData) {
     const { userId, buskerName, category, description } = buskerData;
 
     const result = await db.query(
@@ -44,7 +40,7 @@ export class Busker {
 
   /** Get all buskers.
    *
-   *  Returns [{id, buskerName, category, description }, ...]
+   *  Returns [{buskerId, buskerName, category, description }, ...]
    * */
 
   static async getAll() {
@@ -59,26 +55,24 @@ export class Busker {
     return result.rows;
   }
 
-  /** Get busker by id.
+  /** Get busker by buskerName.
    *
-   *  Returns {id, buskerName, category, description }
+   *  Returns {buskerId, buskerName, category, description }
    * */
 
-  static async get(buskerId: number) {
+  static async get(buskerName: string) {
     const result = await db.query(
       `SELECT id AS "buskerId",
               busker_name AS "buskerName", 
               category,
               description
               FROM buskers
-            WHERE id = $1`,
-      [buskerId]
+            WHERE buskerName = $1`,
+      [buskerName]
     );
     const busker = result.rows[0];
 
-    if (!busker) throw new NotFoundError(`No such busker: ${buskerId}`);
-
-    delete busker.buskerId;
+    if (!busker) throw new NotFoundError(`No such busker: ${buskerName}`);
 
     return busker;
   }
@@ -91,7 +85,7 @@ export class Busker {
    * Data can include:
    *   { buskerName, category, description }
    *
-   * Returns { id, buskerName, category, description }
+   * Returns { buskerId, buskerName, category, description }
    *
    * Throws NotFoundError if not found.
    *
@@ -100,24 +94,27 @@ export class Busker {
    * or a serious security risks are opened.
    * */
 
-  static async update(buskerId: number, data: BuskerData): Promise<BuskerData> {
+  static async update(
+    buskerName: string,
+    data: BuskerData
+  ): Promise<BuskerData> {
     const { setCols, values } = sqlForPartialUpdate(data, {
       buskerName: "busker_name",
     });
-    const idVarIdx = "$" + (values.length + 1);
+    const buskerNameVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE buskers
             SET ${setCols} 
-            WHERE id = ${idVarIdx} 
+            WHERE buskerName = ${buskerNameVarIdx} 
             RETURNING id AS "buskerId", 
                       busker_name as "buskerName",
                       category,
                       description"`;
 
-    const result = await db.query(querySql, [...values, buskerId]);
+    const result = await db.query(querySql, [...values, buskerName]);
     const busker = result.rows[0];
 
-    if (!busker) throw new NotFoundError(`No busker: ${buskerId}`);
+    if (!busker) throw new NotFoundError(`No busker: ${buskerName}`);
 
     return busker;
   }
@@ -125,17 +122,17 @@ export class Busker {
   /** Delete busker from database given id; returns undefined.
    */
 
-  static async remove(buskerId: number) {
+  static async remove(buskerName: string) {
     const result = await db.query(
       `DELETE
             FROM buskers
-            WHERE id = $1
+            WHERE buskerName = $1
             RETURNING id AS "buskerId"`,
-      [buskerId]
+      [buskerName]
     );
 
     const busker = result.rows[0];
 
-    if (!busker) throw new NotFoundError(`No such busker: ${1}`);
+    if (!busker) throw new NotFoundError(`No such busker: ${buskerName}`);
   }
-};
+}

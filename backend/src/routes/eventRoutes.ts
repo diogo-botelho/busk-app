@@ -1,6 +1,11 @@
 import express from "express";
+import jsonschema from "jsonschema";
 
+import eventNewSchema from "../schemas/eventNew.json";
+import eventUpdateSchema from "../schemas/eventUpdate.json";
 import { Event } from "../models/event";
+import { BadRequestError } from "../expressError";
+
 const router = express.Router();
 
 /** Get events: [event, event, event] */
@@ -11,12 +16,8 @@ router.get(
     res: express.Response,
     next: express.NextFunction
   ) {
-    try {
-      const events = await Event.getAll();
-      return res.json(events);
-    } catch (err) {
-      return next(err);
-    }
+    const events = await Event.getAll();
+    return res.json(events);
   }
 );
 
@@ -49,12 +50,16 @@ router.post(
     next: express.NextFunction
   ) {
     try {
+      const validator = jsonschema.validate(req.body, eventNewSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(...errs);
+      }
       const eventDetails = req.body;
       const event = await Event.create(eventDetails);
 
       return res.status(201).json({ event });
     } catch (err) {
-      
       return next(err);
     }
   }
@@ -70,11 +75,15 @@ router.patch(
     next: express.NextFunction
   ) {
     try {
+      const validator = jsonschema.validate(req.body, eventUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(...errs);
+      }
       const { id } = req.params;
 
       const event = await Event.update(+id, req.body);
 
-      if (!event) return res.status(404);
       return res.status(201).json({ event });
     } catch (err) {
       return next(err);

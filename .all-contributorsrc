@@ -1,0 +1,28 @@
+{
+  "projectName": "busk-app",
+  "projectOwner": "diogobotelho",
+  "files": [
+    "README.md",
+    "CONTRIBUTORS.md"
+  ],
+  "imageSize": 100,
+  "contributorsPerLine": 6,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "diogobotelho",
+      "name": "Diogo Botelho",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41216155?v=4",
+      "profile": "https://github.com/diogo-botelho/",
+      "contributions": []
+    },
+    {
+      "login": "samau3",
+      "name": "Sammy Au",
+      "avatar_url": "https://avatars.githubusercontent.com/u/69769431?v=4",
+      "profile": "https://github.com/samau3",
+      "contributions": []
+    }
+  ],
+  "repoType": "github"
+}

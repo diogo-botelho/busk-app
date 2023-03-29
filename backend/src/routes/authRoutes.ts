@@ -1,11 +1,13 @@
 import express from "express";
+import jsonschema from "jsonschema";
 
-import db from "../db";
 import { User } from "../models/user";
 export const router = express.Router();
 import { UserData } from "../interfaces/UserData";
 import { createToken } from "../helpers/tokens";
 import { BadRequestError } from "../expressError";
+import userLoginSchema from "../schemas/userLogin.json";
+import userSignupSchema from "../schemas/userSignup.json";
 
 /** Logs in a user, return user */
 router.post(
@@ -15,12 +17,13 @@ router.post(
     res: express.Response,
     next: express.NextFunction
   ) {
-    // const validator = jsonschema.validate(req.body, userAuthSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
     try {
+      const validator = jsonschema.validate(req.body, userLoginSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(...errs);
+      }
+
       const { username, password } = req.body;
       const user = await User.authenticate(username, password);
       const token = createToken(user);
@@ -40,6 +43,12 @@ router.post(
     next: express.NextFunction
   ) {
     try {
+      const validator = jsonschema.validate(req.body, userSignupSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(...errs);
+      }
+
       const newUserData: UserData = req.body;
 
       const newUser = await User.signup({ ...newUserData, isAdmin: false });

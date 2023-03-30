@@ -35,7 +35,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     const newUserData: UserData = req.body;
 
     const user = await User.signup(newUserData);
-    const token = createToken(user);
+    const token = createToken(user.id, user.isAdmin);
     return res.status(201).json({ user, token });
   } catch (err) {
     return next(err);
@@ -82,6 +82,7 @@ router.get(
   ) {
     try {
       const { id } = req.params;
+      if (Number.isNaN(+id)) throw new BadRequestError("Invalid user id");
       const user = await User.get(+id);
       return res.json(user);
     } catch (err) {

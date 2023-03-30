@@ -26,7 +26,8 @@ router.post(
 
       const { username, password } = req.body;
       const user = await User.authenticate(username, password);
-      const token = createToken(user);
+      delete user.isAdmin;
+      const token = createToken(user.id, false);
       return res.json({ token });
     } catch (error) {
       next(error);
@@ -53,7 +54,7 @@ router.post(
 
       const newUser = await User.signup({ ...newUserData, isAdmin: false });
       delete newUser.isAdmin;
-      const token = createToken(newUser);
+      const token = createToken(newUser.id, false);
       return res.status(201).json({ token });
     } catch (error) {
       next(error);

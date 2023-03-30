@@ -15,6 +15,7 @@ import {
 } from "../expressError";
 import { BCRYPT_WORK_FACTOR } from "../config";
 import { UserData } from "../interfaces/UserData";
+import { Busker } from "./busker";
 
 export class User {
   /** authenticate user with email, password.
@@ -58,8 +59,7 @@ export class User {
    **/
 
   static async signup(userData: UserData) {
-    const { email, password, firstName, lastName, phone, isAdmin } =
-      userData;
+    const { email, password, firstName, lastName, phone, isAdmin } = userData;
     const duplicateCheck = await db.query(
       `SELECT email
        FROM users
@@ -80,7 +80,7 @@ export class User {
         last_name,
         phone,
         is_admin)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id, email, first_name AS "firstName", last_name AS "lastName", phone, is_admin as "isAdmin"`,
       [email, hashedPassword, firstName, lastName, phone, isAdmin]
     );
@@ -110,7 +110,7 @@ export class User {
   /** Get user by id.
    *
    *  Returns {id, email, first_name, last_name, phone, isAdmin }
-   *  
+   *
    *  If user has busker accounts, returns
    *  {id, email, first_name, last_name, phone, isAdmin, [buskerName, buskerName]}
    * */
@@ -131,16 +131,7 @@ export class User {
 
     if (!user) throw new NotFoundError(`No such user: ${id}`);
 
-    const buskerResults = await db.query(
-      `SELECT buskerName
-        FROM buskers
-        WHERE userId = $1`,
-      [user.id]
-    );
-
-    const buskerNames = buskerResults.rows;
-
-    if (buskerNames.length > 0) user.buskerNames = buskerNames;
+    user.buskerNames = await Busker.getAllBuskerNamesByUserId(id);
 
     return user;
   }

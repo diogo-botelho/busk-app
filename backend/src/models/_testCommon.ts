@@ -16,9 +16,9 @@ export async function commonBeforeAll() {
 
   const resultUsers = await db.query(
     `
-  INSERT INTO users (username, password, first_name, last_name, phone, email)
-  VALUES ('u1',$1,'u1F', 'u1L', '111222333', 'u1@email.com'),
-         ('u2',$2,'u2F', 'u2L', '999888777', 'u2@email.com')
+  INSERT INTO users (email, password, first_name, last_name, phone)
+  VALUES ('u1@email.com',$1,'u1F', 'u1L', '111222333'),
+         ('u2@email.com',$2,'u2F', 'u2L', '999888777')
          returning id`,
     [
       await bcrypt.hash("password1", BCRYPT_WORK_FACTOR),
@@ -27,11 +27,22 @@ export async function commonBeforeAll() {
   );
   testUsers.splice(0, 0, ...resultUsers.rows.map((r) => r.id));
 
-  const resultBuskers = await db.query(
-    `INSERT INTO buskers (userId, type)
-  VALUES ($1, 'musician')
+  await db.query(
+    `INSERT INTO buskers (user_id, busker_name, category, description)
+  VALUES ($1, 'u1BuskerName1', 'musician', 'A fun performer')
   RETURNING id`,
     [testUsers[0]]
+  );
+  await db.query(
+    `INSERT INTO buskers (user_id, busker_name, category, description)
+  VALUES ($1, 'u1BuskerName2', 'juggler', 'A great performer')
+  RETURNING id`,
+    [testUsers[0]]
+  );
+
+  const resultBuskers = await db.query(
+    `SELECT * 
+      FROM buskers`
   );
   testBuskers.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
 

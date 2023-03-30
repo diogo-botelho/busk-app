@@ -10,7 +10,7 @@ export function createToken(user: UserData) {
   );
 
   let payload = {
-    username: user.username,
+    username: user.email,
     isAdmin: user.isAdmin || false,
   };
 

@@ -99,8 +99,7 @@ export class User {
       `SELECT email, 
               first_name as "firstName", 
               last_name as "lastName", 
-              phone,
-              is_admin as "isAdmin"
+              phone
              FROM users
              ORDER BY id`
     );
@@ -121,8 +120,7 @@ export class User {
               email, 
               first_name as "firstName", 
               last_name as "lastName", 
-              phone,
-              is_admin as "isAdmin"
+              phone
             FROM users
             WHERE id = $1`,
       [id]
@@ -153,7 +151,7 @@ export class User {
    * or a serious security risks are opened.
    * */
 
-  static async update(email: string, data: UserData): Promise<UserData> {
+  static async update(id: number, data: UserData): Promise<UserData> {
     if (!data) throw new BadRequestError("Invalid Data.");
 
     if (data.password) {
@@ -165,20 +163,19 @@ export class User {
       lastName: "last_name",
       isAdmin: "is_admin",
     });
-    const emailVarIdx = "$" + (values.length + 1);
+    const idVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE users
             SET ${setCols} 
-            WHERE email = ${emailVarIdx} 
+            WHERE id = ${idVarIdx} 
             RETURNING email, 
                       first_name as "firstName",
                       last_name AS "lastName", 
-                      phone,
-                      is_admin AS "isAdmin"`;
+                      phone`;
 
-    const result = await db.query(querySql, [...values, email]);
+    const result = await db.query(querySql, [...values, id]);
     const user = result.rows[0];
-    if (!user) throw new NotFoundError(`No user: ${email}`);
+    if (!user) throw new NotFoundError(`No user: ${id}`);
 
     delete user.password;
     return user;
@@ -186,13 +183,13 @@ export class User {
 
   /** Delete user from database given id; returns undefined.
    */
-  static async remove(email: string) {
+  static async remove(id: number) {
     const result = await db.query(
       `DELETE
             FROM users
-            WHERE email = $1
-            RETURNING email`,
-      [email]
+            WHERE id = $1
+            RETURNING id`,
+      [id]
     );
     const deletedUser = result.rows[0];
 

@@ -109,14 +109,12 @@ describe("getAll", function () {
         firstName: "u1F",
         lastName: "u1L",
         phone: "111222333",
-        isAdmin: false,
       },
       {
         email: "u2@email.com",
         firstName: "u2F",
         lastName: "u2L",
         phone: "999888777",
-        isAdmin: false,
       },
     ]);
   });
@@ -133,7 +131,6 @@ describe("get", function () {
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      isAdmin: false,
       buskerNames: ["u1BuskerName1", "u1BuskerName2"],
     });
   });
@@ -168,24 +165,22 @@ describe("update", function () {
   };
 
   test("works", async function () {
-    let user = await User.update("u1@email.com", updateData);
+    let user = await User.update(testUsers[0], updateData);
     expect(user).toEqual({
       email: "new@email.com",
       firstName: "NewF",
       lastName: "NewL",
       phone: "000000000",
-      isAdmin: false,
     });
   });
 
   test("works: set password", async function () {
-    let user = await User.update("u1@email.com", { password: "new" });
+    let user = await User.update(testUsers[0], { password: "new" });
     expect(user).toEqual({
       email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      isAdmin: false,
     });
     const found = await db.query(
       "SELECT * FROM users WHERE email = 'u1@email.com'"
@@ -195,16 +190,15 @@ describe("update", function () {
   });
 
   test("works: set password", async function () {
-    let user = await User.update("u1@email.com", { password: "new" });
+    let user = await User.update(testUsers[0], { password: "new" });
     expect(user).toEqual({
       email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      isAdmin: false,
     });
     const found = await db.query(
-      "SELECT * FROM users WHERE email = 'u1@email.com'"
+      `SELECT * FROM users WHERE id = ${testUsers[0]}`
     );
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
@@ -212,7 +206,7 @@ describe("update", function () {
 
   test("not found if no such user", async function () {
     try {
-      await User.update("nope", {
+      await User.update(0, {
         firstName: "test",
       });
     } catch (err) {
@@ -223,7 +217,7 @@ describe("update", function () {
   test("bad request if no data", async function () {
     expect.assertions(1);
     try {
-      await User.update("u1", null);
+      await User.update(testUsers[0], null);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
@@ -234,7 +228,7 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    const removeMessage = await User.remove("u2@email.com");
+    const removeMessage = await User.remove(testUsers[1]);
     const res = await db.query(
       "SELECT * FROM users WHERE email='u2@email.com'"
     );
@@ -244,7 +238,7 @@ describe("remove", function () {
 
   test("not found if no such user", async function () {
     try {
-      await User.remove("noSuchUser");
+      await User.remove(0);
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }

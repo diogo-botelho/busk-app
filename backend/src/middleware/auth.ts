@@ -22,6 +22,7 @@ export function authenticateJWT(
     if (authHeader) {
       const token = authHeader.replace(/^[Bb]earer /, "").trim();
       res.locals.user = jwt.verify(token, SECRET_KEY);
+      console.log("authJWT", res.locals.user);
     }
     return next();
   } catch (err) {
@@ -83,7 +84,7 @@ export function ensureCorrectUserOrAdmin(
 ) {
   try {
     const user = res.locals.user;
-    if (!(user && (user.isAdmin || user.username === req.params.username))) {
+    if (!(user && (user.isAdmin || user.id === +req.params.id))) {
       throw new UnauthorizedError();
     }
     return next();

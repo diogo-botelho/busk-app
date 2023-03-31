@@ -9,8 +9,8 @@ import {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testBuskers,
-  testEvents,
+  testBuskerIds,
+  testEventIds,
 } from "./_testCommon";
 
 beforeAll(commonBeforeAll);
@@ -28,13 +28,13 @@ describe("create", function () {
   };
 
   test("works", async function () {
-    newEvent["buskerId"] = `${testBuskers[0]}`;
+    newEvent["buskerId"] = `${testBuskerIds[0]}`;
 
     let event = await Event.create(newEvent);
     expect(event).toEqual({
       ...newEvent,
-      buskerId: testBuskers[0],
-      id: testEvents[0] + 1,
+      buskerId: testBuskerIds[0],
+      id: testEventIds[0] + 1,
     });
   });
 
@@ -49,7 +49,7 @@ describe("create", function () {
   });
 
   test("bad request with missing title", async function () {
-    newEvent["buskerId"] = `${testBuskers[0]}`;
+    newEvent["buskerId"] = `${testBuskerIds[0]}`;
     try {
       delete newEvent.title;
       await Event.create(newEvent);
@@ -81,7 +81,7 @@ describe("getAll", function () {
   };
 
   test("works", async function () {
-    newEvent["buskerId"] = `${testBuskers[0]}`;
+    newEvent["buskerId"] = `${testBuskerIds[0]}`;
 
     const events1 = await Event.getAll();
     expect(events1.length).toEqual(1);
@@ -96,10 +96,10 @@ describe("getAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let event = await Event.getById(testEvents[0]);
+    let event = await Event.getById(testEventIds[0]);
     expect(event).toEqual({
-      id: testEvents[0],
-      buskerId: testBuskers[0],
+      id: testEventIds[0],
+      buskerId: testBuskerIds[0],
       title: "e1",
       type: "E1",
       coordinates: { lat: 0, lng: 0 },
@@ -132,26 +132,26 @@ describe("update", function () {
   };
 
   test("works", async function () {
-    updateData["buskerId"] = `${testBuskers[0]}`;
-    const oldEvent = await Event.getById(testEvents[0]);
-    let event = await Event.update(testEvents[0], updateData);
+    updateData["buskerId"] = `${testBuskerIds[0]}`;
+    const oldEvent = await Event.getById(testEventIds[0]);
+    let event = await Event.update(testEventIds[0], updateData);
     expect(oldEvent).not.toEqual(event);
     expect(event).toEqual({
       ...updateData,
-      id: testEvents[0],
-      buskerId: testBuskers[0],
+      id: testEventIds[0],
+      buskerId: testBuskerIds[0],
     });
   });
 
   test("works with partial data", async function () {
-    updateData2["buskerId"] = `${testBuskers[0]}`;
-    const oldEvent = await Event.getById(testEvents[0]);
-    let event = await Event.update(testEvents[0], updateData2);
+    updateData2["buskerId"] = `${testBuskerIds[0]}`;
+    const oldEvent = await Event.getById(testEventIds[0]);
+    let event = await Event.update(testEventIds[0], updateData2);
     expect(oldEvent).not.toEqual(event);
     expect(event).toEqual({
       ...oldEvent,
-      id: testEvents[0],
-      buskerId: testBuskers[0],
+      id: testEventIds[0],
+      buskerId: testBuskerIds[0],
       title: updateData2.title,
     });
   });
@@ -179,9 +179,9 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    await Event.remove(testEvents[0]);
+    await Event.remove(testEventIds[0]);
     const res = await db.query(
-      `SELECT * FROM events WHERE busker_id=${testBuskers[0]}`
+      `SELECT * FROM events WHERE busker_id=${testBuskerIds[0]}`
     );
     expect(res.rows.length).toEqual(0);
   });

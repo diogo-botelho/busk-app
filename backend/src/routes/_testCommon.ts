@@ -5,8 +5,13 @@ import { Event } from "../models/event";
 import { createToken } from "../helpers/tokens";
 
 export let testUserIds: number[] = [];
+export let testBuskerNames: string[] = [];
 export let testBuskerIds: number[] = [];
 export let testEventIds: number[] = [];
+
+export let u1Token: string;
+export let u2Token: string;
+export const adminToken = createToken(-1, true);
 
 export async function commonBeforeAll() {
   await db.query("DELETE FROM events");
@@ -17,35 +22,47 @@ export async function commonBeforeAll() {
 
   testUserIds[0] = (
     await User.signup({
-      username: "u1",
+      email: "u1@email.com",
       password: "password1",
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      email: "u1@email.com",
       isAdmin: false,
     })
   ).id;
   testUserIds[1] = (
     await User.signup({
-      username: "u2",
+      email: "u2@email.com",
       password: "password2",
       firstName: "u2F",
       lastName: "u2L",
       phone: "999888777",
-      email: "u2@email.com",
       isAdmin: false,
     })
   ).id;
 
-  const resultBuskers = await db.query(
-    `INSERT INTO buskers (userId, type)
-    VALUES ($1, 'musician')
-    RETURNING id`,
+  u1Token = createToken(testUserIds[0], false);
+  u2Token = createToken(testUserIds[1], false);
+
+  await db.query(
+    `INSERT INTO buskers (user_id, busker_name, category, description)
+  VALUES ($1, 'u1BuskerName1', 'musician', 'A fun performer')
+  RETURNING id`,
+    [testUserIds[0]]
+  );
+  await db.query(
+    `INSERT INTO buskers (user_id, busker_name, category, description)
+  VALUES ($1, 'u1BuskerName2', 'juggler', 'A great performer')
+  RETURNING id`,
     [testUserIds[0]]
   );
 
+  const resultBuskers = await db.query(
+    `SELECT id, busker_name AS "buskerName"
+      FROM buskers`
+  );
   testBuskerIds.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
+  testBuskerNames.splice(0, 0, ...resultBuskers.rows.map((r) => r.buskerName));
 
   testEventIds[0] = (
     await Event.create({
@@ -68,7 +85,3 @@ export async function commonAfterEach() {
 export async function commonAfterAll() {
   await db.end();
 }
-
-export const u1Token = createToken({ username: "u1", isAdmin: false });
-export const u2Token = createToken({ username: "u2", isAdmin: false });
-export const adminToken = createToken({ username: "admin", isAdmin: true });

@@ -66,7 +66,7 @@ export class Busker {
               busker_name AS "buskerName", 
               category,
               description
-              FROM buskers
+            FROM buskers
             WHERE buskerName = $1`,
       [buskerName]
     );
@@ -75,6 +75,22 @@ export class Busker {
     if (!busker) throw new NotFoundError(`No such busker: ${buskerName}`);
 
     return busker;
+  }
+
+  static async getAllBuskerNamesByUserId(userId: number) {
+    const result = await db.query(
+      `SELECT busker_name AS "buskerName"
+            FROM buskers
+            WHERE user_id = $1`,
+      [userId]
+    );
+
+    let buskerNames = [];
+    for (const buskerName of result.rows) {
+      buskerNames.push(buskerName.buskerName);
+    }
+
+    return buskerNames;
   }
 
   /** Update busker data with `data`.

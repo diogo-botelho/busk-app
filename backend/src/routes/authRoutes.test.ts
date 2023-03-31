@@ -8,13 +8,7 @@ import {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
-  commonAfterAll,
-  testUserIds,
-  testBuskerIds,
-  testEventIds,
-  u1Token,
-  u2Token,
-  adminToken,
+  commonAfterAll
 } from "./_testCommon";
 
 beforeAll(commonBeforeAll);
@@ -27,7 +21,7 @@ afterAll(commonAfterAll);
 describe("POST /auth/login", function () {
   test("works", async function () {
     const resp = await request(app).post("/auth/login").send({
-      username: "u1",
+      email: "u1@email.com",
       password: "password1",
     });
     expect(resp.body).toEqual({
@@ -37,7 +31,7 @@ describe("POST /auth/login", function () {
 
   test("unauth with non-existent user", async function () {
     const resp = await request(app).post("/auth/login").send({
-      username: "no-such-user",
+      email: "no-such-email@email.com",
       password: "password1",
     });
     expect(resp.statusCode).toEqual(401);
@@ -45,7 +39,7 @@ describe("POST /auth/login", function () {
 
   test("unauth with wrong password", async function () {
     const resp = await request(app).post("/auth/login").send({
-      username: "u1",
+      email: "u1@email.com",
       password: "nope",
     });
     expect(resp.statusCode).toEqual(401);
@@ -53,14 +47,14 @@ describe("POST /auth/login", function () {
 
   test("bad request with missing data", async function () {
     const resp = await request(app).post("/auth/login").send({
-      username: "u1",
+      email: "u1@email.com",
     });
     expect(resp.statusCode).toEqual(400);
   });
 
   test("bad request with invalid data", async function () {
     const resp = await request(app).post("/auth/login").send({
-      username: 42,
+      email: 42,
       password: "above-is-a-number",
     });
     expect(resp.statusCode).toEqual(400);
@@ -72,12 +66,11 @@ describe("POST /auth/login", function () {
 describe("POST /auth/signup", function () {
   test("works for anon", async function () {
     const resp = await request(app).post("/auth/signup").send({
-      username: "new",
+      email: "new@email.com",
       firstName: "first",
       lastName: "last",
       password: "password",
       phone: "1234567890",
-      email: "new@email.com",
     });
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
@@ -87,19 +80,18 @@ describe("POST /auth/signup", function () {
 
   test("bad request with missing fields", async function () {
     const resp = await request(app).post("/auth/signup").send({
-      username: "new",
+      email: "new@email.com",
     });
     expect(resp.statusCode).toEqual(400);
   });
 
   test("bad request with invalid data", async function () {
     const resp = await request(app).post("/auth/signup").send({
-      username: "new",
+      email: "not-an-email",
       firstName: "first",
       lastName: "last",
       password: "password",
       phone: "123456789",
-      email: "not-an-email",
     });
     expect(resp.statusCode).toEqual(400);
   });

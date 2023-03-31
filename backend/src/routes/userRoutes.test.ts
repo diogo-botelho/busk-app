@@ -10,7 +10,6 @@ import {
   commonAfterAll,
   testUserIds,
   testBuskerNames,
-  testBuskerIds,
   u1Token,
   u2Token,
   adminToken,
@@ -35,7 +34,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: false,
+        isAdmin: false
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -46,7 +45,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: false,
+        isAdmin: false
       },
       token: expect.any(String),
     });
@@ -61,7 +60,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: true,
+        isAdmin: true
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -72,7 +71,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: true,
+        isAdmin: true
       },
       token: expect.any(String),
     });
@@ -87,7 +86,6 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "111111111",
-        isAdmin: true,
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
@@ -100,7 +98,7 @@ describe("POST /users", function () {
       firstName: "First-new",
       lastName: "Last-newL",
       phone: "111111111",
-      isAdmin: true,
+      isAdmin: false
     });
     expect(resp.statusCode).toEqual(401);
   });
@@ -123,7 +121,6 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         password: "password-new",
-        isAdmin: true,
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -143,14 +140,12 @@ describe("GET /users", function () {
         firstName: "u1F",
         lastName: "u1L",
         phone: "111222333",
-        isAdmin: false,
       },
       {
         email: "u2@email.com",
         firstName: "u2F",
         lastName: "u2L",
         phone: "999888777",
-        isAdmin: false,
       },
     ]);
   });
@@ -192,7 +187,6 @@ describe("GET /users/:id", function () {
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      isAdmin: false,
       buskerNames: testBuskerNames,
     });
   });
@@ -207,7 +201,6 @@ describe("GET /users/:id", function () {
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      isAdmin: false,
       buskerNames: testBuskerNames,
     });
   });
@@ -255,7 +248,6 @@ describe("PATCH /users/:id", () => {
         lastName: "u1L",
         phone: "111222333",
         email: "u1@email.com",
-        isAdmin: false,
       },
     });
   });
@@ -269,12 +261,10 @@ describe("PATCH /users/:id", () => {
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
       user: {
-        username: "u1",
+        email: "u1@email.com",
         firstName: "New",
         lastName: "u1L",
         phone: "111222333",
-        email: "u1@email.com",
-        isAdmin: false,
       },
     });
   });
@@ -298,7 +288,7 @@ describe("PATCH /users/:id", () => {
 
   test("not found if no such user", async function () {
     const resp = await request(app)
-      .patch(`/users/nope`)
+      .patch(`/users/0`)
       .send({
         firstName: "Nope",
       })
@@ -319,58 +309,56 @@ describe("PATCH /users/:id", () => {
 
   test("works: can set new password", async function () {
     const resp = await request(app)
-      .patch(`/users/u1`)
+      .patch(`/users/${testUserIds[0]}`)
       .send({
         password: "new-password",
       })
-      .set("authorization", `Bearer ${adminToken}`);
+      .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
       user: {
-        username: "u1",
+        email: "u1@email.com",
         firstName: "u1F",
         lastName: "u1L",
         phone: "111222333",
-        email: "u1@email.com",
-        isAdmin: false,
       },
     });
-    const isSuccessful = await User.authenticate("u1", "new-password");
+    const isSuccessful = await User.authenticate("u1@email.com", "new-password");
     expect(isSuccessful).toBeTruthy();
   });
 });
 
-/************************************** DELETE /users/:username */
+/************************************** DELETE /users/:id */
 
-describe("DELETE /users/:username", function () {
+describe("DELETE /users/:id", function () {
   test("works for admin", async function () {
     const resp = await request(app)
-      .delete(`/users/u1`)
+      .delete(`/users/${testUserIds[0]}`)
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({ deleted: "u1" });
+    expect(resp.body).toEqual({ deleted: testUserIds[0] });
   });
 
   test("works for same user", async function () {
     const resp = await request(app)
-      .delete(`/users/u1`)
+      .delete(`/users/${testUserIds[0]}`)
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({ deleted: "u1" });
+    expect(resp.body).toEqual({ deleted: testUserIds[0] });
   });
 
   test("unauth if not same user", async function () {
     const resp = await request(app)
-      .delete(`/users/u1`)
+      .delete(`/users/${testUserIds[0]}`)
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
-    const resp = await request(app).delete(`/users/u1`);
+    const resp = await request(app).delete(`/users/${testUserIds[0]}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("not found if user missing", async function () {
     const resp = await request(app)
-      .delete(`/users/nope`)
+      .delete(`/users/0`)
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
   });

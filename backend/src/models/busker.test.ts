@@ -8,6 +8,7 @@ import {
   commonAfterEach,
   commonAfterAll,
   testBuskers,
+  testUsers,
 } from "./_testCommon";
 
 import {
@@ -86,7 +87,7 @@ describe("get", function () {
     expect(busker).toEqual({});
   });
 
-  test("not found if no such user", async function () {
+  test("not found if no such busker", async function () {
     try {
       await Busker.get("noSuchBusker");
       fail();
@@ -104,24 +105,56 @@ describe("update", function () {
     category: "painter",
     description: "different description",
   };
-
-  test("works", async function () {});
-
-  test("works: set password", async function () {});
-
-  test("works: set password", async function () {});
-
-  test("not found if no such user", async function () {});
-
-  test("bad request if no data", async function () {});
+  
+    test("works", async function () {
+      let busker = await Busker.update(testBuskerNames[0], updateData);
+      expect(busker).toEqual({
+        buskerId: testUserIds[0],
+        buskerName: "anotherBusker",
+        category: "painter",
+        description: "different description"
+      });
+    });
+  
+    test("not found if no such busker", async function () {
+      try {
+        await Busker.update("nope", {
+          buskerName: "anotherBusker",
+        });
+      } catch (err) {
+        expect(err instanceof NotFoundError).toBeTruthy();
+      }
+    });
+  
+    test("bad request if no data", async function () {
+      expect.assertions(1);
+      try {
+        await Busker.update(testBuskerNames[0], null);
+      } catch (err) {
+        expect(err instanceof BadRequestError).toBeTruthy();
+      }
+    });
 });
 
 /************************************** remove */
 
 describe("remove", function () {
   test("works", async function () {
+  const removeMessage = await Busker.remove(testBuskerNames[0]);
+  const res = await db.query(`SELECT * FROM buskers WHERE buskerName=${testBuskerNames[0]}`);
+  expect(res.rows.length).toEqual(0);
+  expect(removeMessage).toEqual(`Busker ${testBuskernames[0]} was successfully deleted.`;);
   });
 
-  test("not found if no such user", async function () {
+  test("not found if no such busker", async function () {
   });
+  test("works", async function () {
+      });
+
+  test("not found if no such user", async function () {
+    try {
+      await Busker.remove("noSuchUser");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
 })

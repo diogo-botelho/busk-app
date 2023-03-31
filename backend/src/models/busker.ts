@@ -131,5 +131,7 @@ export class Busker {
     const busker = result.rows[0];
 
     if (!busker) throw new NotFoundError(`No such busker: ${buskerName}`);
+
+    return `Busker ${buskerName} was successfully deleted.`;
   }
 }

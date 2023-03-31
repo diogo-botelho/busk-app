@@ -7,7 +7,7 @@ import {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testBuskers,
+  testUserIds,
 } from "./_testCommon";
 
 import {
@@ -25,12 +25,11 @@ afterAll(commonAfterAll);
 
 describe("authenticate", function () {
   test("works", async function () {
-    const user = await User.authenticate("u1", "password1");
+    const user = await User.authenticate("u1@email.com", "password1");
     expect(user).toEqual({
-      username: "u1",
+      email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
-      email: "u1@email.com",
       phone: "111222333",
       isAdmin: false,
     });
@@ -59,16 +58,15 @@ describe("authenticate", function () {
 
 describe("signup", function () {
   const newUser = {
-    username: "new",
+    email: "test@test.com",
     password: "password",
     firstName: "Test",
     lastName: "Tester",
     phone: "123456789",
-    email: "test@test.com",
     isAdmin: false,
   };
 
-  const { username, password, firstName, lastName, phone, email } = newUser;
+  // const { email, password, firstName, lastName, phone  } = newUser;
 
   test("works", async function () {
     let user = await User.signup(newUser);
@@ -80,7 +78,9 @@ describe("signup", function () {
       ...newUserCopy,
     });
 
-    const found = await db.query("SELECT * FROM users WHERE username = 'new'");
+    const found = await db.query(
+      "SELECT * FROM users WHERE email = 'test@test.com'"
+    );
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].is_admin).toEqual(false);
     expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
@@ -104,20 +104,16 @@ describe("getAll", function () {
     const users = await User.getAll();
     expect(users).toEqual([
       {
-        username: "u1",
+        email: "u1@email.com",
         firstName: "u1F",
         lastName: "u1L",
         phone: "111222333",
-        email: "u1@email.com",
-        isAdmin: false,
       },
       {
-        username: "u2",
+        email: "u2@email.com",
         firstName: "u2F",
         lastName: "u2L",
         phone: "999888777",
-        email: "u2@email.com",
-        isAdmin: false,
       },
     ]);
   });
@@ -127,29 +123,28 @@ describe("getAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let user = await User.get("u1");
+    let user = await User.get(testUserIds[0]);
     expect(user).toEqual({
-      username: "u1",
+      id: testUserIds[0],
+      email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      email: "u1@email.com",
-      isAdmin: false,
-      buskerId: testBuskers[0],
+      buskerNames: ["u1BuskerName1", "u1BuskerName2"],
     });
   });
 
-  test("user with buskerId shows buskerId", async function () {
-    let user1 = await User.get("u1");
-    let user2 = await User.get("u2");
+  test("user with buskerName(s) shows buskerName(s)", async function () {
+    let user1 = await User.get(testUserIds[0]);
+    let user2 = await User.get(testUserIds[1]);
 
-    expect(user1.buskerId).toBeTruthy();
-    expect(user2.buskerId).toBeFalsy();
+    expect(user1.buskerNames.length).toEqual(2);
+    expect(user2.buskerNames.length).toEqual(0);
   });
 
   test("not found if no such user", async function () {
     try {
-      await User.get("noSuchUser");
+      await User.get(0);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -161,59 +156,56 @@ describe("get", function () {
 
 describe("update", function () {
   const updateData = {
-    username: "newUsername",
+    email: "new@email.com",
     password: "newPassword",
     firstName: "NewF",
     lastName: "NewL",
     phone: "000000000",
-    email: "new@email.com",
   };
 
   test("works", async function () {
-    let user = await User.update("u1", updateData);
+    let user = await User.update(testUserIds[0], updateData);
     expect(user).toEqual({
-      username: "newUsername",
+      email: "new@email.com",
       firstName: "NewF",
       lastName: "NewL",
       phone: "000000000",
-      email: "new@email.com",
-      isAdmin: false,
     });
   });
 
   test("works: set password", async function () {
-    let user = await User.update("u1", { password: "new" });
+    let user = await User.update(testUserIds[0], { password: "new" });
     expect(user).toEqual({
-      username: "u1",
+      email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      email: "u1@email.com",
-      isAdmin: false,
     });
-    const found = await db.query("SELECT * FROM users WHERE username = 'u1'");
+    const found = await db.query(
+      "SELECT * FROM users WHERE email = 'u1@email.com'"
+    );
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
   });
 
   test("works: set password", async function () {
-    let user = await User.update("u1", { password: "new" });
+    let user = await User.update(testUserIds[0], { password: "new" });
     expect(user).toEqual({
-      username: "u1",
+      email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
       phone: "111222333",
-      email: "u1@email.com",
-      isAdmin: false,
     });
-    const found = await db.query("SELECT * FROM users WHERE username = 'u1'");
+    const found = await db.query(
+      `SELECT * FROM users WHERE id = ${testUserIds[0]}`
+    );
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
   });
 
   test("not found if no such user", async function () {
     try {
-      await User.update("nope", {
+      await User.update(0, {
         firstName: "test",
       });
     } catch (err) {
@@ -224,7 +216,7 @@ describe("update", function () {
   test("bad request if no data", async function () {
     expect.assertions(1);
     try {
-      await User.update("u1", null);
+      await User.update(testUserIds[0], null);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
@@ -235,15 +227,17 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    const removeMessage = await User.remove("u2");
-    const res = await db.query("SELECT * FROM users WHERE username='u2'");
+    const removeMessage = await User.remove(testUserIds[1]);
+    const res = await db.query(
+      "SELECT * FROM users WHERE email='u2@email.com'"
+    );
     expect(res.rows.length).toEqual(0);
     expect(removeMessage).toEqual("This user was successfully deleted.");
   });
 
   test("not found if no such user", async function () {
     try {
-      await User.remove("noSuchUser");
+      await User.remove(0);
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }

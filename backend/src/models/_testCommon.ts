@@ -3,9 +3,9 @@ import db from "../db";
 
 import { BCRYPT_WORK_FACTOR } from "../config";
 
-export let testUsers: number[] = [];
-export let testBuskers: number[] = [];
-export let testEvents: number[] = [];
+export let testUserIds: number[] = [];
+export let testBuskerIds: number[] = [];
+export let testEventIds: number[] = [];
 
 export async function commonBeforeAll() {
   await db.query("DELETE FROM events");
@@ -25,35 +25,35 @@ export async function commonBeforeAll() {
       await bcrypt.hash("password2", BCRYPT_WORK_FACTOR),
     ]
   );
-  testUsers.splice(0, 0, ...resultUsers.rows.map((r) => r.id));
+  testUserIds.splice(0, 0, ...resultUsers.rows.map((r) => r.id));
 
   await db.query(
     `INSERT INTO buskers (user_id, busker_name, category, description)
   VALUES ($1, 'u1BuskerName1', 'musician', 'A fun performer')
   RETURNING id`,
-    [testUsers[0]]
+    [testUserIds[0]]
   );
   await db.query(
     `INSERT INTO buskers (user_id, busker_name, category, description)
   VALUES ($1, 'u1BuskerName2', 'juggler', 'A great performer')
   RETURNING id`,
-    [testUsers[0]]
+    [testUserIds[0]]
   );
 
   const resultBuskers = await db.query(
     `SELECT * 
       FROM buskers`
   );
-  testBuskers.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
+  testBuskerIds.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
 
   const resultEvents = await db.query(
     `
     INSERT INTO events(busker_id, title, type, coordinates)
     VALUES ($1, 'e1', 'E1', '{"lat":0,"lng":0}')
     RETURNING id`,
-    [testBuskers[0]]
+    [testBuskerIds[0]]
   );
-  testEvents.splice(0, 0, ...resultEvents.rows.map((r) => r.id));
+  testEventIds.splice(0, 0, ...resultEvents.rows.map((r) => r.id));
 }
 
 export async function commonBeforeEach() {

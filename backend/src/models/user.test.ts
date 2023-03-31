@@ -7,8 +7,7 @@ import {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testBuskers,
-  testUsers,
+  testUserIds,
 } from "./_testCommon";
 
 import {
@@ -124,9 +123,9 @@ describe("getAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let user = await User.get(testUsers[0]);
+    let user = await User.get(testUserIds[0]);
     expect(user).toEqual({
-      id: testUsers[0],
+      id: testUserIds[0],
       email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",
@@ -136,8 +135,8 @@ describe("get", function () {
   });
 
   test("user with buskerName(s) shows buskerName(s)", async function () {
-    let user1 = await User.get(testUsers[0]);
-    let user2 = await User.get(testUsers[1]);
+    let user1 = await User.get(testUserIds[0]);
+    let user2 = await User.get(testUserIds[1]);
 
     expect(user1.buskerNames.length).toEqual(2);
     expect(user2.buskerNames.length).toEqual(0);
@@ -165,7 +164,7 @@ describe("update", function () {
   };
 
   test("works", async function () {
-    let user = await User.update(testUsers[0], updateData);
+    let user = await User.update(testUserIds[0], updateData);
     expect(user).toEqual({
       email: "new@email.com",
       firstName: "NewF",
@@ -175,7 +174,7 @@ describe("update", function () {
   });
 
   test("works: set password", async function () {
-    let user = await User.update(testUsers[0], { password: "new" });
+    let user = await User.update(testUserIds[0], { password: "new" });
     expect(user).toEqual({
       email: "u1@email.com",
       firstName: "u1F",
@@ -190,7 +189,7 @@ describe("update", function () {
   });
 
   test("works: set password", async function () {
-    let user = await User.update(testUsers[0], { password: "new" });
+    let user = await User.update(testUserIds[0], { password: "new" });
     expect(user).toEqual({
       email: "u1@email.com",
       firstName: "u1F",
@@ -198,7 +197,7 @@ describe("update", function () {
       phone: "111222333",
     });
     const found = await db.query(
-      `SELECT * FROM users WHERE id = ${testUsers[0]}`
+      `SELECT * FROM users WHERE id = ${testUserIds[0]}`
     );
     expect(found.rows.length).toEqual(1);
     expect(found.rows[0].password.startsWith("$2b$")).toEqual(true);
@@ -217,7 +216,7 @@ describe("update", function () {
   test("bad request if no data", async function () {
     expect.assertions(1);
     try {
-      await User.update(testUsers[0], null);
+      await User.update(testUserIds[0], null);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
@@ -228,7 +227,7 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    const removeMessage = await User.remove(testUsers[1]);
+    const removeMessage = await User.remove(testUserIds[1]);
     const res = await db.query(
       "SELECT * FROM users WHERE email='u2@email.com'"
     );

@@ -24,8 +24,8 @@ router.post(
         throw new BadRequestError(...errs);
       }
 
-      const { username, password } = req.body;
-      const user = await User.authenticate(username, password);
+      const { email, password } = req.body;
+      const user = await User.authenticate(email, password);
       delete user.isAdmin;
       const token = createToken(user.id, false);
       return res.json({ token });

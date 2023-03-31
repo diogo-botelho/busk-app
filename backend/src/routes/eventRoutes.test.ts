@@ -57,7 +57,7 @@ describe("GET /events/:id", function () {
   });
 });
 
-/************************************** POSgit T /events */
+/************************************** POST /events */
 
 describe("POST /events", function () {
   test("works for admins", async function () {

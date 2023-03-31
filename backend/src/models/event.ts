@@ -5,18 +5,7 @@
 import db from "../db";
 import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-interface EventData {
-  buskerId?: string;
-  title?: string;
-  type?: string;
-  coordinates?: Coordinates;
-}
+import { EventData } from "../interfaces/EventData";
 
 export class Event {
   /** Get all events

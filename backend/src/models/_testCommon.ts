@@ -6,6 +6,7 @@ import { BCRYPT_WORK_FACTOR } from "../config";
 export let testUserIds: number[] = [];
 export let testBuskerIds: number[] = [];
 export let testEventIds: number[] = [];
+export let testBuskerNames: string[] = [];
 
 export async function commonBeforeAll() {
   await db.query("DELETE FROM events");
@@ -41,10 +42,11 @@ export async function commonBeforeAll() {
   );
 
   const resultBuskers = await db.query(
-    `SELECT * 
+    `SELECT id, busker_name AS "buskerName"
       FROM buskers`
   );
   testBuskerIds.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
+  testBuskerNames.splice(0, 0, ...resultBuskers.rows.map((r) => r.buskerName));
 
   const resultEvents = await db.query(
     `

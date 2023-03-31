@@ -63,7 +63,7 @@ router.get(
  *
  * Returns { buskerId, buskerName, category, description }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or same-user-as-:user.id
  **/
 
 router.patch(
@@ -89,7 +89,7 @@ router.patch(
 
 /** DELETE /[buskerName]  =>  { deleted: buskerName }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or same-user-as-:user.id
  **/
 router.delete(
   "/:buskerName",

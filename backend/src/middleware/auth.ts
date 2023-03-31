@@ -7,7 +7,7 @@ import { UnauthorizedError } from "../expressError";
 /** Middleware: Authenticate user.
  *
  * If a token was provided, verify it, and, if valid, store the token payload
- * on res.locals (this will include the username and isAdmin field.)
+ * on res.locals (this will include the email and isAdmin field.)
  *
  * It's not an error if no token was provided or if the token is not valid.
  */
@@ -22,7 +22,6 @@ export function authenticateJWT(
     if (authHeader) {
       const token = authHeader.replace(/^[Bb]earer /, "").trim();
       res.locals.user = jwt.verify(token, SECRET_KEY);
-      console.log("authJWT", res.locals.user);
     }
     return next();
   } catch (err) {
@@ -42,7 +41,6 @@ export function ensureLoggedIn(
 ) {
   try {
     if (!res.locals.user) {
-      // console.log("Unauthorized User");
       throw new UnauthorizedError();
     }
     return next();
@@ -72,7 +70,7 @@ export function ensureAdmin(
 }
 
 /** Middleware to use when they must provide a valid token & be user matching
- *  username provided as route param.
+ *  id provided as route param.
  *
  *  If not, raises Unauthorized.
  */

@@ -117,7 +117,7 @@ router.patch(
       }
       const { id } = req.params;
 
-      const user = await User.update(id, req.body);
+      const user = await User.update(+id, req.body);
 
       return res.json({ user });
     } catch (err) {
@@ -140,8 +140,8 @@ router.delete(
   ) {
     try {
       const { id } = req.params;
-      await User.remove(id);
-      return res.json({ deleted: id });
+      await User.remove(+id)
+      return res.json({ deleted: +id });
     } catch (err) {
       return next(err);
     }

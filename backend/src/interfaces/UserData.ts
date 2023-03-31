@@ -1,8 +1,8 @@
 export interface UserData {
+  email?: string;
   password?: string;
   firstName?: string;
   lastName?: string;
   phone?: string;
-  email?: string;
-  isAdmin?: boolean;
+  isAdmin?: boolean
 }

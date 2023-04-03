@@ -82,6 +82,28 @@ describe("POST /events", function () {
     });
   });
 
+  test("works for same user", async function () {
+    const resp = await request(app)
+      .post(`/events/create`)
+      .send({
+        buskerId: testBuskerIds[0],
+        title: "test event title",
+        type: "test event type",
+        coordinates: { lat: 1, lng: 1 },
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(201);
+    expect(resp.body).toEqual({
+      event: {
+        id: expect.any(Number),
+        buskerId: testBuskerIds[0],
+        title: "test event title",
+        type: "test event type",
+        coordinates: { lat: 1, lng: 1 },
+      },
+    });
+  });
+
   test("bad request with missing data", async function () {
     const resp = await request(app)
       .post(`/events/create`)

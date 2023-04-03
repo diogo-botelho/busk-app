@@ -34,7 +34,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: false
+        isAdmin: false,
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -45,7 +45,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: false
+        isAdmin: false,
       },
       token: expect.any(String),
     });
@@ -60,7 +60,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: true
+        isAdmin: true,
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -71,7 +71,7 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         phone: "1111111111",
-        isAdmin: true
+        isAdmin: true,
       },
       token: expect.any(String),
     });
@@ -98,7 +98,7 @@ describe("POST /users", function () {
       firstName: "First-new",
       lastName: "Last-newL",
       phone: "111111111",
-      isAdmin: false
+      isAdmin: false,
     });
     expect(resp.statusCode).toEqual(401);
   });
@@ -296,7 +296,6 @@ describe("PATCH /users/:id", () => {
     expect(resp.statusCode).toEqual(404);
   });
 
-  //NEEDS JSON SCHEMA
   test("bad request if invalid data", async function () {
     const resp = await request(app)
       .patch(`/users/u1`)
@@ -322,7 +321,10 @@ describe("PATCH /users/:id", () => {
         phone: "111222333",
       },
     });
-    const isSuccessful = await User.authenticate("u1@email.com", "new-password");
+    const isSuccessful = await User.authenticate(
+      "u1@email.com",
+      "new-password"
+    );
     expect(isSuccessful).toBeTruthy();
   });
 });

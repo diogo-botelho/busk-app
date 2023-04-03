@@ -9,15 +9,14 @@ export let testBuskerNames: string[] = [];
 export let testBuskerIds: number[] = [];
 export let testEventIds: number[] = [];
 
-export let u1Token: string;
-export let u2Token: string;
-export const adminToken = createToken(-1, true);
+export let u1Token: string = "";
+export let u2Token: string = "";
+export let adminToken = createToken(-1, true);
 
 export async function commonBeforeAll() {
+
   await db.query("DELETE FROM events");
-
   await db.query("DELETE FROM buskers");
-
   await db.query("DELETE FROM users");
 
   testUserIds[0] = (
@@ -66,7 +65,7 @@ export async function commonBeforeAll() {
 
   testEventIds[0] = (
     await Event.create({
-      buskerId: `${testBuskerIds[0]}`,
+      buskerId: testBuskerIds[0],
       title: "test event",
       type: "test type",
       coordinates: { lat: 0, lng: 0 },

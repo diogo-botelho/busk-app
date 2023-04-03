@@ -4,8 +4,7 @@ import db from "../db";
 /** Routes for buskers. */
 
 import { Busker } from "../models/busker";
-import { ensureCorrectUserOrAdmin, ensureAdmin } from "../middleware/auth";
-import { BuskerData } from "../interfaces/BuskerData";
+import { ensureCorrectUserOrAdmin } from "../middleware/auth";
 
 const router = express.Router();
 

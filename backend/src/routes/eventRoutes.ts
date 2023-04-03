@@ -5,6 +5,7 @@ import eventNewSchema from "../schemas/eventNew.json";
 import eventUpdateSchema from "../schemas/eventUpdate.json";
 import { Event } from "../models/event";
 import { BadRequestError } from "../expressError";
+import {  ensureCorrectUserOrAdmin } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -44,6 +45,7 @@ router.get(
 
 router.post(
   "/create",
+  ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,
@@ -69,6 +71,7 @@ router.post(
 
 router.patch(
   "/:id",
+  ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,
@@ -95,6 +98,7 @@ router.patch(
 
 router.delete(
   "/:id",
+  ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,

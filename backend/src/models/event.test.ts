@@ -21,14 +21,14 @@ afterAll(commonAfterAll);
 /************************************** create */
 describe("create", function () {
   const newEvent = {
-    buskerId: "",
+    buskerId: 0,
     title: "Test title",
     type: "Test type",
     coordinates: { lat: 1, lng: 1 },
   };
 
   test("works", async function () {
-    newEvent["buskerId"] = `${testBuskerIds[0]}`;
+    newEvent["buskerId"] = testBuskerIds[0];
 
     let event = await Event.create(newEvent);
     expect(event).toEqual({
@@ -49,7 +49,7 @@ describe("create", function () {
   });
 
   test("bad request with missing title", async function () {
-    newEvent["buskerId"] = `${testBuskerIds[0]}`;
+    newEvent["buskerId"] = testBuskerIds[0];
     try {
       delete newEvent.title;
       await Event.create(newEvent);
@@ -74,14 +74,14 @@ describe("create", function () {
 
 describe("getAll", function () {
   const newEvent = {
-    buskerId: "",
+    buskerId: 0,
     title: "Test title",
     type: "Test type",
     coordinates: { lat: 1, lng: 1 },
   };
 
   test("works", async function () {
-    newEvent["buskerId"] = `${testBuskerIds[0]}`;
+    newEvent["buskerId"] = testBuskerIds[0];
 
     const events1 = await Event.getAll();
     expect(events1.length).toEqual(1);
@@ -120,19 +120,19 @@ describe("get", function () {
 
 describe("update", function () {
   const updateData = {
-    buskerId: "",
+    buskerId: 0,
     title: "newTitle",
     type: "NewType",
     coordinates: { lat: 45, lng: 45 },
   };
 
   const updateData2 = {
-    buskerId: "",
+    buskerId: 0,
     title: "newTitle2",
   };
 
   test("works", async function () {
-    updateData["buskerId"] = `${testBuskerIds[0]}`;
+    updateData["buskerId"] = testBuskerIds[0];
     const oldEvent = await Event.getById(testEventIds[0]);
     let event = await Event.update(testEventIds[0], updateData);
     expect(oldEvent).not.toEqual(event);
@@ -144,7 +144,7 @@ describe("update", function () {
   });
 
   test("works with partial data", async function () {
-    updateData2["buskerId"] = `${testBuskerIds[0]}`;
+    updateData2["buskerId"] = testBuskerIds[0];
     const oldEvent = await Event.getById(testEventIds[0]);
     let event = await Event.update(testEventIds[0], updateData2);
     expect(oldEvent).not.toEqual(event);

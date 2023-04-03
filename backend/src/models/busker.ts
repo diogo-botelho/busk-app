@@ -6,7 +6,7 @@ import db from "../db";
 import bcrypt from "bcrypt";
 
 import { sqlForPartialUpdate } from "../helpers/sql";
-import { NotFoundError } from "../expressError";
+import { NotFoundError, BadRequestError } from "../expressError";
 import { BuskerData } from "../interfaces/BuskerData";
 
 export class Busker {
@@ -22,6 +22,22 @@ export class Busker {
   static async register(buskerData: BuskerData) {
     const { userId, buskerName, category, description } = buskerData;
 
+    const duplicateCheck = await db.query(
+      `SELECT busker_name, category
+       FROM buskers
+       WHERE user_id = $1
+       AND busker_name = $2
+       AND category=$3
+       `,
+      [userId, buskerName, category]
+    );
+
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(
+        `Please select a different buskerName or category.`
+      );
+    }
+
     const result = await db.query(
       `INSERT INTO buskers (
         user_id,
@@ -29,7 +45,7 @@ export class Busker {
         category,
         description)
       VALUES ($1, $2, $3, $4)
-      RETURNING id AS "buskerId", busker_name AS "buskerName", category, description`,
+      RETURNING id, user_id AS "userId", busker_name AS "buskerName", category, description`,
       [userId, buskerName, category, description]
     );
 
@@ -45,7 +61,8 @@ export class Busker {
 
   static async getAll() {
     const result = await db.query(
-      `SELECT id AS "buskerId",
+      `SELECT id,
+              user_id AS "userId",
               busker_name AS "buskerName", 
               category,
               description
@@ -62,12 +79,13 @@ export class Busker {
 
   static async get(buskerName: string) {
     const result = await db.query(
-      `SELECT id AS "buskerId",
+      `SELECT id,
+              user_id AS "userId",
               busker_name AS "buskerName", 
               category,
               description
             FROM buskers
-            WHERE buskerName = $1`,
+            WHERE busker_name = $1`,
       [buskerName]
     );
     const busker = result.rows[0];
@@ -111,6 +129,8 @@ export class Busker {
     buskerName: string,
     data: BuskerData
   ): Promise<BuskerData> {
+    if (!data) throw new BadRequestError("Invalid Data.");
+
     const { setCols, values } = sqlForPartialUpdate(data, {
       buskerName: "busker_name",
     });
@@ -118,11 +138,12 @@ export class Busker {
 
     const querySql = `UPDATE buskers
             SET ${setCols} 
-            WHERE buskerName = ${buskerNameVarIdx} 
-            RETURNING id AS "buskerId", 
+            WHERE busker_name = ${buskerNameVarIdx} 
+            RETURNING id, 
+                      user_id AS "userId",
                       busker_name as "buskerName",
                       category,
-                      description"`;
+                      description`;
 
     const result = await db.query(querySql, [...values, buskerName]);
     const busker = result.rows[0];
@@ -139,13 +160,15 @@ export class Busker {
     const result = await db.query(
       `DELETE
             FROM buskers
-            WHERE buskerName = $1
-            RETURNING id AS "buskerId"`,
+            WHERE busker_name = $1
+            RETURNING id`,
       [buskerName]
     );
 
     const busker = result.rows[0];
 
     if (!busker) throw new NotFoundError(`No such busker: ${buskerName}`);
+
+    return `Busker ${buskerName} was successfully deleted.`;
   }
 }

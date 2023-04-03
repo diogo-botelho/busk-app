@@ -2,6 +2,7 @@ import { BadRequestError } from "../expressError";
 
 import { UserData } from "../interfaces/UserData";
 import { BuskerData } from "../interfaces/BuskerData";
+import { EventData } from "../interfaces/EventData";
 
 /**
  * Helper for making selective update queries.
@@ -19,12 +20,6 @@ import { BuskerData } from "../interfaces/BuskerData";
  *   { setCols: '"first_name"=$1, "phone"=$2',
  *     values: ['Aliya', "111"] }
  */
-
-interface EventData {
-  buskerId?: string;
-  title?: string;
-  type?: string;
-}
 
 interface JsToSql {
   [key: string]: string;

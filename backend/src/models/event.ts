@@ -40,12 +40,12 @@ export class Event {
   /** get all event ids for a particular busker id:
    * returns [eventId, eventId,...]
    * */
-  static async getAllEventIdsByBuskerName(buskerName: string) {
+  static async getAllEventIdsByBuskerId(buskerId: number) {
     const result = await db.query(
       `SELECT id
             FROM events
             WHERE busker_id = $1`,
-      [buskerName]
+      [buskerId]
     );
 
     let eventIds = [];
@@ -114,6 +114,6 @@ export class Event {
 
     const event = result.rows[0];
 
-    if (!event) throw new NotFoundError(`No such event: ${1}`);
+    if (!event) throw new NotFoundError(`No such event.`);
   }
 }

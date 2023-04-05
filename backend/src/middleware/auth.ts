@@ -136,7 +136,9 @@ export async function ensureUserOwnsBuskerAccount(
     await createResLocalsBuskers(req.body.userId, res);
 
     const buskers = res.locals.buskers;
-    if (buskers.indexOf(req.params.buskerName) < 0) {
+    const targetBusker = req.params.buskerName || req.body.buskerName;
+    
+    if (buskers.indexOf(targetBusker) < 0) {
       throw new UnauthorizedError();
     }
     return next();
@@ -160,9 +162,9 @@ export async function ensureBuskerOwnsEvent(
 ) {
   try {
     await createResLocalsEvents(req.body.buskerName, res);
-
+    
     const events = res.locals.events;
-    if (events.indexOf(req.params.eventId) < 0) {
+    if (events.indexOf(+req.params.id) < 0) {
       throw new UnauthorizedError();
     }
     return next();

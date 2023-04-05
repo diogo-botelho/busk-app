@@ -48,7 +48,7 @@ describe("GET /buskers/", function () {
     ]);
   });
 
-  test("works for no busker", async function () {
+  test("works for anon", async function () {
     const resp = await request(app).get(`/buskers`);
     expect(resp.body).toEqual([
       {
@@ -96,7 +96,7 @@ describe("GET /buskers/:id", function () {
     });
   });
 
-  test("works for same busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .get(`/buskers/${testBuskerNames[0]}`)
       .set("authorization", `Bearer ${u1Token}`);
@@ -109,7 +109,7 @@ describe("GET /buskers/:id", function () {
     });
   });
 
-  test("works for no busker", async function () {
+  test("works for anon", async function () {
     const resp = await request(app).get(`/buskers/${testBuskerNames[0]}`);
     expect(resp.body).toEqual({
       buskerName: testBuskerNames[0],
@@ -131,7 +131,7 @@ describe("GET /buskers/:id", function () {
 /************************************** POST /buskers */
 
 describe("POST /buskers", function () {
-  test("works for admins: create busker", async function () {
+  test("works for admins", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
@@ -153,7 +153,7 @@ describe("POST /buskers", function () {
     });
   });
 
-  test("works for correct user: create busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
@@ -204,7 +204,7 @@ describe("POST /buskers", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("bad request if missing userId", async function () {
+  test("unauth if missing userId to authorize", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
@@ -214,8 +214,8 @@ describe("POST /buskers", function () {
           description: "A new performer",
         },
       })
-      .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(400);
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 
   test("bad request if missing data", async function () {
@@ -271,7 +271,7 @@ describe("PATCH /buskers/:buskerName", () => {
     });
   });
 
-  test("works for same busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
@@ -292,7 +292,7 @@ describe("PATCH /buskers/:buskerName", () => {
     });
   });
 
-  test("unauth if not same busker", async function () {
+  test("unauth if not correct user", async function () {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
@@ -317,7 +317,12 @@ describe("PATCH /buskers/:buskerName", () => {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("fails if no such busker", async function () {
+  //Doesn't throw 404 because we don't want to give too much information if
+  // a user doesn't own a busker account. If we change our mind in the future,
+  // getting this to throw an 404 would require refactoring our middleware
+  // because right now it fails auth middleware even before checking if busker
+  // account exists.
+  test("unauth if no such user", async function () {
     const resp = await request(app)
       .patch(`/buskers/0`)
       .send({
@@ -357,7 +362,7 @@ describe("DELETE /buskers/:buskerName", function () {
     );
   });
 
-  test("works for same busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
       .send({ userId: testUserIds[0] })
@@ -375,7 +380,7 @@ describe("DELETE /buskers/:buskerName", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("unauth if not same busker", async function () {
+  test("unauth if not correct user", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
       .send({ userId: testUserIds[0] })
@@ -390,7 +395,12 @@ describe("DELETE /buskers/:buskerName", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("fails if busker doesn't exist", async function () {
+  //Doesn't throw 404 because we don't want to give too much information if
+  // a user doesn't own a busker account. If we change our mind in the future,
+  // getting this to throw an 404 would require refactoring our middleware
+  // because right now it fails auth middleware even before checking if busker
+  // account exists.
+  test("unauth if busker doesn't exist", async function () {
     const resp = await request(app)
       .delete(`/buskers/0`)
       .send({ userId: testUserIds[0] })

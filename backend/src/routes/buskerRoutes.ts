@@ -81,9 +81,9 @@ router.post(
         throw new BadRequestError(...errs);
       }
 
-      const newBuskerData = req.body;
-
-      const busker = await Busker.register(newBuskerData);
+      const userId = req.body.userId;
+      const newBuskerData = req.body.buskerData;
+      const busker = await Busker.register(userId, newBuskerData);
 
       if (!res.locals.buskers) {
         res.locals.buskers = [busker.buskerName];
@@ -118,7 +118,10 @@ router.patch(
     next: express.NextFunction
   ) {
     try {
-      const validator = jsonschema.validate(req.body.updateData, buskerUpdateSchema);
+      const validator = jsonschema.validate(
+        req.body.updateData,
+        buskerUpdateSchema
+      );
       if (!validator.valid) {
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(...errs);

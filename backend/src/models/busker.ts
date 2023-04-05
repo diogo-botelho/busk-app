@@ -19,8 +19,8 @@ export class Busker {
    * Throws BadRequestError on duplicates.
    **/
 
-  static async register(buskerData: BuskerData) {
-    const { userId, buskerName, category, description } = buskerData;
+  static async register(userId: number, buskerData: BuskerData) {
+    const { buskerName, category, description } = buskerData;
 
     const duplicateCheck = await db.query(
       `SELECT busker_name, category
@@ -50,7 +50,6 @@ export class Busker {
     );
 
     const busker = result.rows[0];
-
 
     return busker;
   }

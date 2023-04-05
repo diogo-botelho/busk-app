@@ -51,6 +51,7 @@ export class Busker {
 
     const busker = result.rows[0];
 
+
     return busker;
   }
 
@@ -104,8 +105,8 @@ export class Busker {
     );
 
     let buskerNames = [];
-    for (const buskerName of result.rows) {
-      buskerNames.push(buskerName.buskerName);
+    for (const busker of result.rows) {
+      buskerNames.push(busker.buskerName);
     }
 
     return buskerNames;

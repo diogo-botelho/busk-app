@@ -40,7 +40,7 @@ describe("register", function () {
     });
   });
 
-  test("bad request with dup buskerName and category", async function () {
+  test("bad request with dup buskerName", async function () {
     try {
       const newBuskerCopy = { ...newBusker, userId: testUserIds[0] };
       await Busker.register(newBuskerCopy);
@@ -52,50 +52,6 @@ describe("register", function () {
         "Please select a different buskerName or category."
       );
     }
-  });
-
-  test("works dup buskerName and different category", async function () {
-    const newBuskerCopy = { ...newBusker, userId: testUserIds[1] };
-
-    const busker1 = await Busker.register(newBuskerCopy);
-
-    newBuskerCopy["category"] = "painter";
-    const busker2 = await Busker.register(newBuskerCopy);
-
-    expect(busker2).toEqual({
-      id: expect.any(Number),
-      userId: testUserIds[1],
-      buskerName: "newBusker",
-      category: "painter",
-      description: "test description",
-    });
-
-    const result = await db.query(
-      `SELECT * FROM buskers WHERE user_id = ${testUserIds[1]}`
-    );
-    expect(result.rows.length).toEqual(2);
-  });
-
-  test("works with dup category and different buskerName", async function () {
-    const newBuskerCopy = { ...newBusker, userId: testUserIds[1] };
-
-    const busker3 = await Busker.register(newBuskerCopy);
-
-    newBuskerCopy["buskerName"] = "differentBusker";
-    const busker4 = await Busker.register(newBuskerCopy);
-
-    expect(busker4).toEqual({
-      id: expect.any(Number),
-      userId: testUserIds[1],
-      buskerName: "differentBusker",
-      category: "musician",
-      description: "test description",
-    });
-
-    const result = await db.query(
-      `SELECT * FROM buskers WHERE user_id = ${testUserIds[1]}`
-    );
-    expect(result.rows.length).toEqual(2);
   });
 });
 

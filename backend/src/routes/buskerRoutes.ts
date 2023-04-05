@@ -4,6 +4,7 @@ import jsonschema from "jsonschema";
 import { BadRequestError } from "../expressError";
 import buskerNewSchema from "../schemas/buskerNew.json";
 import buskerUpdateSchema from "../schemas/buskerUpdate.json";
+import { createResLocalsBuskers } from "../helpers/resLocals";
 
 /** Routes for buskers. */
 
@@ -81,15 +82,9 @@ router.post(
         throw new BadRequestError(...errs);
       }
 
-      const userId = req.body.userId;
-      const newBuskerData = req.body.buskerData;
-      const busker = await Busker.register(userId, newBuskerData);
-
-      if (!res.locals.buskers) {
-        res.locals.buskers = [busker.buskerName];
-      } else {
-        res.locals.buskers.push(busker.buskerName);
-      }
+      const { userId, buskerData } = req.body;
+      const busker = await Busker.register(userId, buskerData);
+      res.locals.buskers = await createResLocalsBuskers(userId, res);
 
       return res.status(201).json(busker);
     } catch (err) {
@@ -151,14 +146,10 @@ router.delete(
     res: express.Response,
     next: express.NextFunction
   ) {
-    try {
-      const { buskerName } = req.params;
+    const { buskerName } = req.params;
 
-      const result = await Busker.remove(buskerName);
-      return res.json(result);
-    } catch (err) {
-      return next(err);
-    }
+    const result = await Busker.remove(buskerName);
+    return res.json(result);
   }
 );
 

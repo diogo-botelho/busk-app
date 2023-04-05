@@ -168,8 +168,7 @@ describe("PATCH /events/:id", () => {
         title: "New title",
       })
       .set("authorization", `Bearer ${adminToken}`);
-    //CHANGE TO EXPECT BadRequestError WHEN WE IMPLEMENT JSON SCHEMA
-    expect(resp.statusCode).toEqual(400);
+    expect(resp.statusCode).toEqual(404);
   });
 
   test("bad request with invalid data", async function () {

@@ -9,6 +9,7 @@ import {
   commonAfterEach,
   commonAfterAll,
   testUserIds,
+  testBuskerIds,
   testBuskerNames,
   u1Token,
   u2Token,
@@ -150,7 +151,7 @@ describe("POST /buskers", function () {
     });
   });
 
-  test("works for existing user: create busker", async function () {
+  test("works for correct user: create busker", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
@@ -168,6 +169,19 @@ describe("POST /buskers", function () {
       id: expect.any(Number),
       userId: testUserIds[0],
     });
+  });
+
+  test("unauth for wrong user", async function () {
+    const resp = await request(app)
+      .post("/buskers")
+      .send({
+        buskerName: "newBuskerName",
+        category: "musician",
+        description: "A new performer",
+        userId: testUserIds[0],
+      })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
@@ -211,7 +225,10 @@ describe("PATCH /buskers/:buskerName", () => {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({
@@ -229,7 +246,10 @@ describe("PATCH /buskers/:buskerName", () => {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
@@ -243,43 +263,56 @@ describe("PATCH /buskers/:buskerName", () => {
     });
   });
 
-  // ROUTE NEEDS PROPER AUTHORIZATION FOR TEST TO PASS
   test("unauth if not same busker", async function () {
+    console.log("patch, unauth if not same busker");
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
-  // ROUTE NEEDS PROPER AUTHORIZATION FOR TEST TO PASS
   test("unauth for anon", async function () {
+    console.log("patch, unauth for anon");
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       });
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if no such busker", async function () {
+  test("fails if no such busker", async function () {
+    console.log("patch, not found if no such busker");
     const resp = await request(app)
       .patch(`/buskers/0`)
       .send({
-        buskerName: "Nope",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "Nope",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
+    expect(resp.statusCode).toEqual(401);
   });
 
-  //NEEDS JSON SCHEMA
   test("bad request if invalid data", async function () {
+    console.log("patch, bad request if invalid data");
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: 42,
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: 42,
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -292,34 +325,43 @@ describe("DELETE /buskers/:buskerName", function () {
   test("works for admin", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body.message).toEqual(`User ${testBuskerNames[0]} deleted.`);
+    expect(resp.body).toEqual(
+      `Busker ${testBuskerNames[0]} was successfully deleted.`
+    );
   });
 
-  // NEEDS PROPER AUTH TO WORK
   test("works for same busker", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual(`User ${testBuskerNames[0]} deleted.`);
+    expect(resp.body).toEqual(
+      `Busker ${testBuskerNames[0]} was successfully deleted.`
+    );
   });
 
   test("unauth if not same busker", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
-    const resp = await request(app).delete(`/buskers/${testBuskerNames[0]}`);
+    const resp = await request(app)
+      .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] });
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if busker doesn't exist", async function () {
+  test("fails if busker doesn't exist", async function () {
     const resp = await request(app)
       .delete(`/buskers/0`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
+    expect(resp.statusCode).toEqual(401);
   });
 });

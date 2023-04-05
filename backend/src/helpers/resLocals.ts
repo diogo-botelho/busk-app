@@ -7,7 +7,6 @@ export async function createResLocalsBuskers(
   userId: number,
   res: express.Response
 ) {
-  // const user = res.locals.user;
   res.locals.buskers = await Busker.getAllBuskerNamesByUserId(userId);
 }
 
@@ -16,5 +15,6 @@ export async function createResLocalsEvents(
   buskerName: string,
   res: express.Response
 ) {
-  res.locals.events = await Event.getAllEventIdsByBuskerName(buskerName);
+  const busker = await Busker.get(buskerName);
+  res.locals.events = await Event.getAllEventIdsByBuskerId(busker.id);
 }

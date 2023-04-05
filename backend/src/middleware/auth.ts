@@ -3,6 +3,10 @@ import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config";
 
 import { UnauthorizedError } from "../expressError";
+import {
+  createResLocalsBuskers,
+  createResLocalsEvents,
+} from "../helpers/resLocals";
 
 /** Middleware: Authenticate user.
  *
@@ -83,6 +87,71 @@ export function ensureCorrectUserOrAdmin(
   try {
     const user = res.locals.user;
     if (!(user && (user.isAdmin || user.id === +req.params.id))) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/** Middleware to use when they must provide a valid token & be user matching
+ *  id provided as route param.
+ *
+ *  If not, raises Unauthorized.
+ */
+
+export function ensureCorrectUserOrAdminForBuskers(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  try {
+    console.log("ensureCorrectUserOrAdminForBuskers");
+
+    const user = res.locals.user;
+    console.log(user, req.body);
+    if (!(user && (user.isAdmin || user.id === +req.body.userId))) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    
+    console.log("fail");
+    return next(err);
+  }
+}
+
+export async function ensureUserOwnsBuskerAccount(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  try {
+    console.log("ensureUserOwnsBuskerAccount", req.params.buskerName);
+    await createResLocalsBuskers(req.body.userId, res);
+    console.log("after awaiting", res.locals.buskers);
+    const buskers = res.locals.buskers;
+    if (buskers.indexOf(req.params.buskerName) < 0) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+export async function ensureBuskerOwnsEvent(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  try {
+    // const buskerId = req.body.buskerId;
+    await createResLocalsEvents(req.body.buskerName, res);
+
+    const events = res.locals.events;
+    if (events.indexOf(req.params.eventId) < 0) {
       throw new UnauthorizedError();
     }
     return next();

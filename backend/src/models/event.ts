@@ -37,6 +37,25 @@ export class Event {
     return event;
   }
 
+  /** get all event ids for a particular busker id:
+   * returns [eventId, eventId,...]
+   * */
+  static async getAllEventIdsByBuskerName(buskerName: string) {
+    const result = await db.query(
+      `SELECT id
+            FROM events
+            WHERE busker_id = $1`,
+      [buskerName]
+    );
+
+    let eventIds = [];
+    for (const event of result.rows) {
+      eventIds.push(event.id);
+    }
+
+    return eventIds;
+  }
+
   /** create an event: returns { id, bukserId, title, type } */
   static async create(eventData: EventData) {
     if (Object.keys(eventData).length < 4) {

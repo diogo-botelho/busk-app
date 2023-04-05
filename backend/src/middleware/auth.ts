@@ -73,8 +73,8 @@ export function ensureAdmin(
   }
 }
 
-/** Middleware to use when they must provide a valid token & be user matching
- *  id provided as route param.
+/** Middleware to use when they must provide a valid token & be user matching.
+ *  user id provided as route param.
  *
  *  If not, raises Unauthorized.
  */
@@ -95,8 +95,8 @@ export function ensureCorrectUserOrAdmin(
   }
 }
 
-/** Middleware to use when they must provide a valid token & be user matching
- *  id provided as route param.
+/** Middleware to use when they must provide a valid token & be user matching.
+ *  user id provided in req.body
  *
  *  If not, raises Unauthorized.
  */
@@ -107,30 +107,34 @@ export function ensureCorrectUserOrAdminForBuskers(
   next: express.NextFunction
 ) {
   try {
-    console.log("ensureCorrectUserOrAdminForBuskers");
-
     const user = res.locals.user;
-    console.log(user, req.body);
+
     if (!(user && (user.isAdmin || user.id === +req.body.userId))) {
       throw new UnauthorizedError();
     }
     return next();
   } catch (err) {
-    
-    console.log("fail");
     return next(err);
   }
 }
 
+/** Middleware to check if id of user making request is associated with busker
+ *  account.
+ *
+ *  user id provided in req.body.
+ *
+ *  Runs createResLocalsBuskers function to build res.locals.buskers array.
+ *
+ *  If buskerName not in res.locals.buskers, raises Unauthorized.
+ */
 export async function ensureUserOwnsBuskerAccount(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   try {
-    console.log("ensureUserOwnsBuskerAccount", req.params.buskerName);
     await createResLocalsBuskers(req.body.userId, res);
-    console.log("after awaiting", res.locals.buskers);
+
     const buskers = res.locals.buskers;
     if (buskers.indexOf(req.params.buskerName) < 0) {
       throw new UnauthorizedError();
@@ -141,13 +145,20 @@ export async function ensureUserOwnsBuskerAccount(
   }
 }
 
+/** Middleware to check if id of busker making request is associated with event.
+ *
+ *  user id provided in req.body.
+ *
+ *  Runs createResLocalsBuskers function to build res.locals.buskers array.
+ *
+ *  If buskerName not in res.locals.buskers, raises Unauthorized.
+ */
 export async function ensureBuskerOwnsEvent(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   try {
-    // const buskerId = req.body.buskerId;
     await createResLocalsEvents(req.body.buskerName, res);
 
     const events = res.locals.events;

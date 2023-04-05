@@ -6,20 +6,27 @@
     "userId": {
       "type": "number"
     },
-    "buskerName": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 30
-    },
-    "category": {
-      "type": "string",
-      "enum": ["musician", "painter", "juggler", "other"]
-    },
-    "description": {
-      "type": "string",
-      "maxLength": 200
+    "buskerData": {
+      "type": "object",
+      "properties": {
+        "buskerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "category": {
+          "type": "string",
+          "enum": ["musician", "painter", "juggler", "other"]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 200
+        }
+      },
+      "additionalProperties": false,
+      "required": ["buskerName", "category"]
     }
   },
   "additionalProperties": false,
-  "required": ["buskerName", "category"]
+  "required": ["userId", "buskerData"]
 }

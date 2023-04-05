@@ -135,10 +135,12 @@ describe("POST /buskers", function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "musician",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -155,10 +157,12 @@ describe("POST /buskers", function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "musician",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(201);
@@ -175,30 +179,53 @@ describe("POST /buskers", function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "musician",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
-    const resp = await request(app).post("/buskers").send({
-      buskerName: "newBuskerName",
-      category: "musician",
-      description: "A new performer",
-      userId: testUserIds[0],
-    });
+    const resp = await request(app)
+      .post("/buskers")
+      .send({
+        userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
+      });
     expect(resp.statusCode).toEqual(401);
+  });
+
+  test("bad request if missing userId", async function () {
+    const resp = await request(app)
+      .post("/buskers")
+      .send({
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
   });
 
   test("bad request if missing data", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
+        userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -208,10 +235,12 @@ describe("POST /buskers", function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "non-exisitent-category",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "non-exisitent-category",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -264,7 +293,6 @@ describe("PATCH /buskers/:buskerName", () => {
   });
 
   test("unauth if not same busker", async function () {
-    console.log("patch, unauth if not same busker");
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
@@ -278,7 +306,6 @@ describe("PATCH /buskers/:buskerName", () => {
   });
 
   test("unauth for anon", async function () {
-    console.log("patch, unauth for anon");
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
@@ -291,7 +318,6 @@ describe("PATCH /buskers/:buskerName", () => {
   });
 
   test("fails if no such busker", async function () {
-    console.log("patch, not found if no such busker");
     const resp = await request(app)
       .patch(`/buskers/0`)
       .send({
@@ -305,7 +331,6 @@ describe("PATCH /buskers/:buskerName", () => {
   });
 
   test("bad request if invalid data", async function () {
-    console.log("patch, bad request if invalid data");
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
@@ -340,6 +365,14 @@ describe("DELETE /buskers/:buskerName", function () {
     expect(resp.body).toEqual(
       `Busker ${testBuskerNames[0]} was successfully deleted.`
     );
+  });
+
+  test("unauth if missing userId", async function () {
+    const resp = await request(app)
+      .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth if not same busker", async function () {

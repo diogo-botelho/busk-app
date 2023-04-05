@@ -23,28 +23,25 @@ afterAll(commonAfterAll);
 
 describe("register", function () {
   const newBusker = {
-    userId: 0,
     buskerName: "newBusker",
     category: "musician",
     description: "test description",
   };
 
   test("works", async function () {
-    const newBuskerCopy = { ...newBusker, userId: testUserIds[0] };
-
-    let busker = await Busker.register(newBuskerCopy);
+    let busker = await Busker.register(testUserIds[0], newBusker);
 
     expect(busker).toEqual({
       id: expect.any(Number),
-      ...newBuskerCopy,
+      ...newBusker,
+      userId: testUserIds[0],
     });
   });
 
   test("bad request with dup buskerName", async function () {
     try {
-      const newBuskerCopy = { ...newBusker, userId: testUserIds[0] };
-      await Busker.register(newBuskerCopy);
-      await Busker.register(newBuskerCopy);
+      await Busker.register(testUserIds[0], newBusker);
+      await Busker.register(testUserIds[0], newBusker);
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();

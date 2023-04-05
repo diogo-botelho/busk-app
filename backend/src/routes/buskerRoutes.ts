@@ -8,7 +8,10 @@ import buskerUpdateSchema from "../schemas/buskerUpdate.json";
 /** Routes for buskers. */
 
 import { Busker } from "../models/busker";
-import { ensureCorrectUserOrAdmin } from "../middleware/auth";
+import {
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
+} from "../middleware/auth";
 
 const router = express.Router();
 
@@ -61,8 +64,11 @@ router.get(
  * Returns { buskerId, buskerName, category, description }
  *
  **/
+// POST localhost:3000/buskers/userId
+// GET localhost:3000/buskers/buskerName
 router.post(
   "/",
+  ensureCorrectUserOrAdminForBuskers,
   async function (
     req: express.Request,
     res: express.Response,
@@ -78,6 +84,13 @@ router.post(
       const newBuskerData = req.body;
 
       const busker = await Busker.register(newBuskerData);
+
+      if (!res.locals.buskers) {
+        res.locals.buskers = [busker.buskerName];
+      } else {
+        res.locals.buskers.push(busker.buskerName);
+      }
+
       return res.status(201).json(busker);
     } catch (err) {
       return next(err);
@@ -97,14 +110,15 @@ router.post(
 
 router.patch(
   "/:buskerName",
-  ensureCorrectUserOrAdmin,
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     try {
-      const validator = jsonschema.validate(req.body, buskerUpdateSchema);
+      const validator = jsonschema.validate(req.body.updateData, buskerUpdateSchema);
       if (!validator.valid) {
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(...errs);
@@ -112,7 +126,7 @@ router.patch(
 
       const { buskerName } = req.params;
 
-      const busker = await Busker.update(buskerName, req.body);
+      const busker = await Busker.update(buskerName, req.body.updateData);
 
       return res.json({ busker });
     } catch (err) {
@@ -127,7 +141,8 @@ router.patch(
  **/
 router.delete(
   "/:buskerName",
-  ensureCorrectUserOrAdmin,
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
     res: express.Response,
@@ -136,8 +151,8 @@ router.delete(
     try {
       const { buskerName } = req.params;
 
-      await Busker.remove(buskerName);
-      return res.json({ message: `User ${buskerName} deleted.` });
+      const result = await Busker.remove(buskerName);
+      return res.json(result);
     } catch (err) {
       return next(err);
     }

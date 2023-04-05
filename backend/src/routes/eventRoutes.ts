@@ -5,7 +5,11 @@ import eventNewSchema from "../schemas/eventNew.json";
 import eventUpdateSchema from "../schemas/eventUpdate.json";
 import { Event } from "../models/event";
 import { BadRequestError } from "../expressError";
-import {  ensureCorrectUserOrAdmin } from "../middleware/auth";
+import {
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
+  ensureBuskerOwnsEvent,
+} from "../middleware/auth";
 
 const router = express.Router();
 
@@ -45,7 +49,8 @@ router.get(
 
 router.post(
   "/create",
-  ensureCorrectUserOrAdmin,
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
     res: express.Response,
@@ -71,7 +76,9 @@ router.post(
 
 router.patch(
   "/:id",
-  ensureCorrectUserOrAdmin,
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
+  ensureBuskerOwnsEvent,
   async function (
     req: express.Request,
     res: express.Response,
@@ -98,7 +105,9 @@ router.patch(
 
 router.delete(
   "/:id",
-  ensureCorrectUserOrAdmin,
+  ensureCorrectUserOrAdminForBuskers,
+  ensureUserOwnsBuskerAccount,
+  ensureBuskerOwnsEvent,
   async function (
     req: express.Request,
     res: express.Response,

@@ -65,8 +65,6 @@ router.get(
  * Returns { buskerId, buskerName, category, description }
  *
  **/
-// POST localhost:3000/buskers/userId
-// GET localhost:3000/buskers/buskerName
 router.post(
   "/",
   ensureCorrectUserOrAdminForBuskers,

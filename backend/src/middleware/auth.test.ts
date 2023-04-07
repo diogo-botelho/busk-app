@@ -4,29 +4,14 @@ import {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
-  ensureCorrectUserOrAdmin,
-  ensureUserOwnsBuskerAccount,
-  ensureBuskerOwnsEvent,
+  ensureCorrectUserOrAdmin
 } from "./auth";
 import { Request, Response, NextFunction } from "express";
-
-import {
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
-} from "./_testCommon";
-
-beforeAll(commonBeforeAll);
-beforeEach(commonBeforeEach);
-afterEach(commonAfterEach);
-afterAll(commonAfterAll);
 
 import { SECRET_KEY } from "../config";
 
 const testJwt = jwt.sign({ id: 1, isAdmin: false }, SECRET_KEY);
 const badJwt = jwt.sign({ id: 1, isAdmin: false }, "wrong");
-
 
 describe("authenticateJWT", function () {
   test("works: via header", function () {

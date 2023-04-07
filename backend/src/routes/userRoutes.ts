@@ -73,7 +73,7 @@ router.get(
  * Authorization required: admin or same user-as-:id
  **/
 router.get(
-  "/:id",
+  "/:userId",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -81,9 +81,10 @@ router.get(
     next: express.NextFunction
   ) {
     try {
-      const { id } = req.params;
-      if (Number.isNaN(+id)) throw new BadRequestError("Invalid user id");
-      const user = await User.get(+id);
+      const userId = +req.params.userId;
+
+      if (Number.isNaN(userId)) throw new BadRequestError("Invalid user id");
+      const user = await User.get(userId);
       return res.json(user);
     } catch (err) {
       return next(err);
@@ -102,7 +103,7 @@ router.get(
  **/
 
 router.patch(
-  "/:id",
+  "/:userId",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -115,9 +116,9 @@ router.patch(
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(...errs);
       }
-      const { id } = req.params;
+      const userId = +req.params.userId;
 
-      const user = await User.update(+id, req.body);
+      const user = await User.update(userId, req.body);
 
       return res.json({ user });
     } catch (err) {
@@ -131,7 +132,7 @@ router.patch(
  * Authorization required: admin or same-user-as-:id
  **/
 router.delete(
-  "/:id",
+  "/:userId",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -139,9 +140,10 @@ router.delete(
     next: express.NextFunction
   ) {
     try {
-      const { id } = req.params;
-      await User.remove(+id)
-      return res.json({ deleted: +id });
+      const userId = +req.params.userId;
+
+      await User.remove(userId);
+      return res.json({ deleted: userId });
     } catch (err) {
       return next(err);
     }

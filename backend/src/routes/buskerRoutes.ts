@@ -10,7 +10,7 @@ import { createResLocalsBuskers } from "../helpers/resLocals";
 
 import { Busker } from "../models/busker";
 import {
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
 } from "../middleware/auth";
 
@@ -67,7 +67,7 @@ router.get(
  **/
 router.post(
   "/",
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,
@@ -103,7 +103,7 @@ router.post(
 
 router.patch(
   "/:buskerName",
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
@@ -137,7 +137,7 @@ router.patch(
  **/
 router.delete(
   "/:buskerName",
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,

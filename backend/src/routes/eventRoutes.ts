@@ -6,7 +6,7 @@ import eventUpdateSchema from "../schemas/eventUpdate.json";
 import { Event } from "../models/event";
 import { BadRequestError } from "../expressError";
 import {
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
   ensureBuskerOwnsEvent,
 } from "../middleware/auth";
@@ -49,7 +49,7 @@ router.get(
 
 router.post(
   "/create",
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
@@ -76,7 +76,7 @@ router.post(
 
 router.patch(
   "/:id",
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
   ensureBuskerOwnsEvent,
   async function (
@@ -108,7 +108,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  ensureCorrectUserOrAdminForBuskers,
+  ensureCorrectUserOrAdmin,
   ensureUserOwnsBuskerAccount,
   ensureBuskerOwnsEvent,
   async function (

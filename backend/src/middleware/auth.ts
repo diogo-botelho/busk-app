@@ -86,30 +86,9 @@ export function ensureCorrectUserOrAdmin(
 ) {
   try {
     const user = res.locals.user;
-    if (!(user && (user.isAdmin || user.id === +req.params.id))) {
-      throw new UnauthorizedError();
-    }
-    return next();
-  } catch (err) {
-    return next(err);
-  }
-}
+    const targetUser = req.params.userId || req.body.userId;
 
-/** Middleware to use when they must provide a valid token & be user matching.
- *  user id provided in req.body
- *
- *  If not, raises Unauthorized.
- */
-
-export function ensureCorrectUserOrAdminForBuskers(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  try {
-    const user = res.locals.user;
-
-    if (!(user && (user.isAdmin || user.id === +req.body.userId))) {
+    if (!(user && (user.isAdmin || user.id === +targetUser))) {
       throw new UnauthorizedError();
     }
     return next();
@@ -137,7 +116,7 @@ export async function ensureUserOwnsBuskerAccount(
 
     const buskers = res.locals.buskers;
     const targetBusker = req.params.buskerName || req.body.buskerName;
-    
+
     if (buskers.indexOf(targetBusker) < 0) {
       throw new UnauthorizedError();
     }
@@ -162,7 +141,7 @@ export async function ensureBuskerOwnsEvent(
 ) {
   try {
     await createResLocalsEvents(req.body.buskerName, res);
-    
+
     const events = res.locals.events;
     if (events.indexOf(+req.params.id) < 0) {
       throw new UnauthorizedError();

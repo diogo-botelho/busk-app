@@ -11,10 +11,10 @@ CREATE TABLE users(
 );
 
 /* BUSKERS TABLE */
-CREATE TABLE buskers (
+CREATE TABLE buskers(
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users ON DELETE CASCADE,
-  busker_name TEXT NOT NULL,
+  busker_name TEXT NOT NULL UNIQUE,
   category TEXT NOT NULL,
   description TEXT
 );

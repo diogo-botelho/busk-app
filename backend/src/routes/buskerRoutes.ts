@@ -4,11 +4,15 @@ import jsonschema from "jsonschema";
 import { BadRequestError } from "../expressError";
 import buskerNewSchema from "../schemas/buskerNew.json";
 import buskerUpdateSchema from "../schemas/buskerUpdate.json";
+import { createResLocalsBuskers } from "../helpers/resLocals";
 
 /** Routes for buskers. */
 
 import { Busker } from "../models/busker";
-import { ensureCorrectUserOrAdmin } from "../middleware/auth";
+import {
+  ensureCorrectUserOrAdmin,
+  ensureUserOwnsBuskerAccount,
+} from "../middleware/auth";
 
 const router = express.Router();
 
@@ -63,6 +67,7 @@ router.get(
  **/
 router.post(
   "/",
+  ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,
@@ -75,9 +80,10 @@ router.post(
         throw new BadRequestError(...errs);
       }
 
-      const newBuskerData = req.body;
+      const { userId, buskerData } = req.body;
+      const busker = await Busker.register(userId, buskerData);
+      res.locals.buskers = await createResLocalsBuskers(userId, res);
 
-      const busker = await Busker.register(newBuskerData);
       return res.status(201).json(busker);
     } catch (err) {
       return next(err);
@@ -98,13 +104,17 @@ router.post(
 router.patch(
   "/:buskerName",
   ensureCorrectUserOrAdmin,
+  ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     try {
-      const validator = jsonschema.validate(req.body, buskerUpdateSchema);
+      const validator = jsonschema.validate(
+        req.body.updateData,
+        buskerUpdateSchema
+      );
       if (!validator.valid) {
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(...errs);
@@ -112,7 +122,7 @@ router.patch(
 
       const { buskerName } = req.params;
 
-      const busker = await Busker.update(buskerName, req.body);
+      const busker = await Busker.update(buskerName, req.body.updateData);
 
       return res.json({ busker });
     } catch (err) {
@@ -128,19 +138,16 @@ router.patch(
 router.delete(
   "/:buskerName",
   ensureCorrectUserOrAdmin,
+  ensureUserOwnsBuskerAccount,
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    try {
-      const { buskerName } = req.params;
+    const { buskerName } = req.params;
 
-      await Busker.remove(buskerName);
-      return res.json({ message: `User ${buskerName} deleted.` });
-    } catch (err) {
-      return next(err);
-    }
+    const result = await Busker.remove(buskerName);
+    return res.json(result);
   }
 );
 

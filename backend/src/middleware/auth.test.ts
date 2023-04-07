@@ -5,13 +5,28 @@ import {
   ensureLoggedIn,
   ensureAdmin,
   ensureCorrectUserOrAdmin,
+  ensureUserOwnsBuskerAccount,
+  ensureBuskerOwnsEvent,
 } from "./auth";
 import { Request, Response, NextFunction } from "express";
+
+import {
+  commonBeforeAll,
+  commonBeforeEach,
+  commonAfterEach,
+  commonAfterAll,
+} from "./_testCommon";
+
+beforeAll(commonBeforeAll);
+beforeEach(commonBeforeEach);
+afterEach(commonAfterEach);
+afterAll(commonAfterAll);
 
 import { SECRET_KEY } from "../config";
 
 const testJwt = jwt.sign({ id: 1, isAdmin: false }, SECRET_KEY);
 const badJwt = jwt.sign({ id: 1, isAdmin: false }, "wrong");
+
 
 describe("authenticateJWT", function () {
   test("works: via header", function () {
@@ -117,7 +132,7 @@ describe("ensureAdmin", function () {
 describe("ensureCorrectUserOrAdmin", function () {
   test("works: admin", function () {
     expect.assertions(1);
-    const req: unknown = { params: { id: 1 } };
+    const req: unknown = { params: { userId: 1 } };
     const res: unknown = {
       locals: { user: { id: 1, isAdmin: true } },
     };
@@ -131,9 +146,9 @@ describe("ensureCorrectUserOrAdmin", function () {
     );
   });
 
-  test("works: same user", function () {
+  test("works: same user in req.params", function () {
     expect.assertions(1);
-    const req: unknown = { params: { id: 1 } };
+    const req: unknown = { params: { userId: 1 } };
     const res: unknown = {
       locals: { user: { id: 1, isAdmin: false } },
     };
@@ -147,9 +162,41 @@ describe("ensureCorrectUserOrAdmin", function () {
     );
   });
 
-  test("unauth: mismatch", function () {
+  test("works: same user in in req.body", function () {
     expect.assertions(1);
-    const req: unknown = { params: { id: 0 } };
+    const req: unknown = { params: {}, body: { userId: 1 } };
+    const res: unknown = {
+      locals: { user: { id: 1, isAdmin: false } },
+    };
+    const next = function (err: ExpressError) {
+      expect(err).toBeFalsy();
+    };
+    ensureCorrectUserOrAdmin(
+      req as Request,
+      res as Response,
+      next as NextFunction
+    );
+  });
+
+  test("auth unauth: user mismatch in req.params", function () {
+    expect.assertions(1);
+    const req: unknown = { params: { userId: 2 } };
+    const res: unknown = {
+      locals: { user: { id: 1, isAdmin: false } },
+    };
+    const next = function (err: ExpressError) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureCorrectUserOrAdmin(
+      req as Request,
+      res as Response,
+      next as NextFunction
+    );
+  });
+
+  test("auth unauth: user mismatch in req.body", function () {
+    expect.assertions(1);
+    const req: unknown = { params: {}, body: { userId: 2 } };
     const res: unknown = {
       locals: { user: { id: 1, isAdmin: false } },
     };
@@ -165,7 +212,7 @@ describe("ensureCorrectUserOrAdmin", function () {
 
   test("unauth: if anon", function () {
     expect.assertions(1);
-    const req: unknown = { params: { id: 1 } };
+    const req: unknown = { params: { userId: 1 } };
     const res = { locals: {} };
     const next = function (err: ExpressError) {
       expect(err instanceof UnauthorizedError).toBeTruthy();

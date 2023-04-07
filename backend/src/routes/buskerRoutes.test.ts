@@ -9,6 +9,7 @@ import {
   commonAfterEach,
   commonAfterAll,
   testUserIds,
+  testBuskerIds,
   testBuskerNames,
   u1Token,
   u2Token,
@@ -47,7 +48,7 @@ describe("GET /buskers/", function () {
     ]);
   });
 
-  test("works for no busker", async function () {
+  test("works for anon", async function () {
     const resp = await request(app).get(`/buskers`);
     expect(resp.body).toEqual([
       {
@@ -95,7 +96,7 @@ describe("GET /buskers/:id", function () {
     });
   });
 
-  test("works for same busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .get(`/buskers/${testBuskerNames[0]}`)
       .set("authorization", `Bearer ${u1Token}`);
@@ -108,7 +109,7 @@ describe("GET /buskers/:id", function () {
     });
   });
 
-  test("works for no busker", async function () {
+  test("works for anon", async function () {
     const resp = await request(app).get(`/buskers/${testBuskerNames[0]}`);
     expect(resp.body).toEqual({
       buskerName: testBuskerNames[0],
@@ -130,14 +131,16 @@ describe("GET /buskers/:id", function () {
 /************************************** POST /buskers */
 
 describe("POST /buskers", function () {
-  test("works for admins: create busker", async function () {
+  test("works for admins", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "musician",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
@@ -150,14 +153,16 @@ describe("POST /buskers", function () {
     });
   });
 
-  test("works for existing user: create busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "musician",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(201);
@@ -170,13 +175,46 @@ describe("POST /buskers", function () {
     });
   });
 
+  test("unauth for wrong user", async function () {
+    const resp = await request(app)
+      .post("/buskers")
+      .send({
+        userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
+      })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
   test("unauth for anon", async function () {
-    const resp = await request(app).post("/buskers").send({
-      buskerName: "newBuskerName",
-      category: "musician",
-      description: "A new performer",
-      userId: testUserIds[0],
-    });
+    const resp = await request(app)
+      .post("/buskers")
+      .send({
+        userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
+      });
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth if missing userId to authorize", async function () {
+    const resp = await request(app)
+      .post("/buskers")
+      .send({
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "musician",
+          description: "A new performer",
+        },
+      })
+      .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
@@ -184,7 +222,10 @@ describe("POST /buskers", function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
+        userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -194,10 +235,12 @@ describe("POST /buskers", function () {
     const resp = await request(app)
       .post("/buskers")
       .send({
-        buskerName: "newBuskerName",
-        category: "non-exisitent-category",
-        description: "A new performer",
         userId: testUserIds[0],
+        buskerData: {
+          buskerName: "newBuskerName",
+          category: "non-exisitent-category",
+          description: "A new performer",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -211,7 +254,10 @@ describe("PATCH /buskers/:buskerName", () => {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({
@@ -225,11 +271,14 @@ describe("PATCH /buskers/:buskerName", () => {
     });
   });
 
-  test("works for same busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
@@ -243,43 +292,57 @@ describe("PATCH /buskers/:buskerName", () => {
     });
   });
 
-  // ROUTE NEEDS PROPER AUTHORIZATION FOR TEST TO PASS
-  test("unauth if not same busker", async function () {
+  test("unauth if not correct user", async function () {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
-  // ROUTE NEEDS PROPER AUTHORIZATION FOR TEST TO PASS
   test("unauth for anon", async function () {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: "New",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "New",
+        },
       });
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if no such busker", async function () {
+  //Doesn't throw 404 because we don't want to give too much information if
+  // a user doesn't own a busker account. If we change our mind in the future,
+  // getting this to throw an 404 would require refactoring our middleware
+  // because right now it fails auth middleware even before checking if busker
+  // account exists.
+  test("unauth if no such user", async function () {
     const resp = await request(app)
       .patch(`/buskers/0`)
       .send({
-        buskerName: "Nope",
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: "Nope",
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
+    expect(resp.statusCode).toEqual(401);
   });
 
-  //NEEDS JSON SCHEMA
   test("bad request if invalid data", async function () {
     const resp = await request(app)
       .patch(`/buskers/${testBuskerNames[0]}`)
       .send({
-        buskerName: 42,
+        userId: testUserIds[0],
+        updateData: {
+          buskerName: 42,
+        },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
@@ -292,34 +355,56 @@ describe("DELETE /buskers/:buskerName", function () {
   test("works for admin", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body.message).toEqual(`User ${testBuskerNames[0]} deleted.`);
+    expect(resp.body).toEqual(
+      `Busker ${testBuskerNames[0]} was successfully deleted.`
+    );
   });
 
-  // NEEDS PROPER AUTH TO WORK
-  test("works for same busker", async function () {
+  test("works for correct user", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual(`User ${testBuskerNames[0]} deleted.`);
+    expect(resp.body).toEqual(
+      `Busker ${testBuskerNames[0]} was successfully deleted.`
+    );
   });
 
-  test("unauth if not same busker", async function () {
+  test("unauth if missing userId", async function () {
     const resp = await request(app)
       .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth if not correct user", async function () {
+    const resp = await request(app)
+      .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
-    const resp = await request(app).delete(`/buskers/${testBuskerNames[0]}`);
+    const resp = await request(app)
+      .delete(`/buskers/${testBuskerNames[0]}`)
+      .send({ userId: testUserIds[0] });
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if busker doesn't exist", async function () {
+  //Doesn't throw 404 because we don't want to give too much information if
+  // a user doesn't own a busker account. If we change our mind in the future,
+  // getting this to throw an 404 would require refactoring our middleware
+  // because right now it fails auth middleware even before checking if busker
+  // account exists.
+  test("unauth if busker doesn't exist", async function () {
     const resp = await request(app)
       .delete(`/buskers/0`)
+      .send({ userId: testUserIds[0] })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.statusCode).toEqual(404);
+    expect(resp.statusCode).toEqual(401);
   });
 });

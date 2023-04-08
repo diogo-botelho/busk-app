@@ -1,7 +1,20 @@
-name: PostgreSQL Setup
+name: Build and Test
 on: push
 
 jobs:
+  # Label for build job
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
   # Label of the container job
   container-job:
     # Containers must run in Linux based operating systems
@@ -17,6 +30,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
+          POSTGRES_DB: busk_app_test
           POSTGRES_PASSWORD: postgres
         # Set health checks to wait until postgres has started
         options: >-
@@ -26,17 +40,29 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+
       - name: Initiate database
-        run: psql -f backend/busk-app.sql postgresql://postgres:password@localhost:5432/postgres
+        run: psql -f backend/busk-app.sql postgresql://postgres:password@localhost:5432/busk_app_test
 
       # Downloads a copy of the code in your repository before running CI tests
       - name: Check out repository code
         uses: actions/checkout@v3
 
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
 
       # - name: Connect to PostgreSQL
       #   # Runs a script that creates a PostgreSQL table, populates

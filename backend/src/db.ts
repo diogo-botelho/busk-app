@@ -4,7 +4,7 @@ import { Client } from "pg";
 
 const db = new Client({
   connectionString: getDatabaseUri(),
-  password: PGPASSWORD,
+  password: "password",
 });
 
 db.connect();

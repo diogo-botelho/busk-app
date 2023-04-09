@@ -1,32 +1,19 @@
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+
 import { UnauthorizedError, ExpressError } from "../expressError";
 import {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
   ensureCorrectUserOrAdmin,
-  ensureUserOwnsBuskerAccount,
-  ensureBuskerOwnsEvent,
 } from "./auth";
-import { Request, Response, NextFunction } from "express";
 
-import {
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
-} from "./_testCommon";
-
-beforeAll(commonBeforeAll);
-beforeEach(commonBeforeEach);
-afterEach(commonAfterEach);
-afterAll(commonAfterAll);
-
+import db from "../db";
 import { SECRET_KEY } from "../config";
 
 const testJwt = jwt.sign({ id: 1, isAdmin: false }, SECRET_KEY);
 const badJwt = jwt.sign({ id: 1, isAdmin: false }, "wrong");
-
 
 describe("authenticateJWT", function () {
   test("works: via header", function () {
@@ -223,4 +210,8 @@ describe("ensureCorrectUserOrAdmin", function () {
       next as NextFunction
     );
   });
+});
+
+afterAll(function () {
+  db.end();
 });

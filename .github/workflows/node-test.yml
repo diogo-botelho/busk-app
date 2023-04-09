@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Node Server Tests
 
 on:
   # Whenever changes are pushed to main, run this workflow

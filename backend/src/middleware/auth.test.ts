@@ -1,15 +1,15 @@
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+
 import { UnauthorizedError, ExpressError } from "../expressError";
 import {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdmin,
   ensureCorrectUserOrAdmin,
-  ensureUserOwnsBuskerAccount,
-  ensureBuskerOwnsEvent,
 } from "./auth";
-import { Request, Response, NextFunction } from "express";
 
+import db from "../db";
 import { SECRET_KEY } from "../config";
 
 const testJwt = jwt.sign({ id: 1, isAdmin: false }, SECRET_KEY);
@@ -210,4 +210,8 @@ describe("ensureCorrectUserOrAdmin", function () {
       next as NextFunction
     );
   });
+});
+
+afterAll(function () {
+  db.end();
 });

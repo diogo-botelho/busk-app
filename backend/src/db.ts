@@ -1,9 +1,10 @@
 /** Database for Busk */
-import { getDatabaseUri } from "./config";
+import { getDatabaseUri, PGPASSWORD } from "./config";
 import { Client } from "pg";
 
 const db = new Client({
   connectionString: getDatabaseUri(),
+  password: PGPASSWORD,
 });
 
 db.connect();

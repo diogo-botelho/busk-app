@@ -68,8 +68,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: busk_app_test
           POSTGRES_PASSWORD: postgres
-          ports:
-            - "5432:5432"
 
       - name: Initiate database
         run: psql -f backend/busk-app.sql postgresql://postgres:password@localhost:5432/busk_app_test

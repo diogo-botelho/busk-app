@@ -11,7 +11,7 @@ on:
 
 jobs:
   # Label for build job
-  build:
+  test-node-backend:
     runs-on: ubuntu-latest
 
     defaults:

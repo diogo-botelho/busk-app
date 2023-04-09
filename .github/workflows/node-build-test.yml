@@ -68,6 +68,8 @@ jobs:
         run: npm ci
 
       - name: Initiate database
+        env:
+          POSTGRES_PASSWORD: postgres
         run: psql -f busk-app.sql postgresql://postgres:password@localhost:5432/busk_app_test
 
       - name: Build Node if needed

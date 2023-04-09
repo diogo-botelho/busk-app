@@ -75,5 +75,6 @@ jobs:
 
       - name: Run tests
         env:
+          PGPASSWORD: password
           DATABASE_URL: postgresql://postgres:password@localhost:5432/busk_app_test
         run: npm test

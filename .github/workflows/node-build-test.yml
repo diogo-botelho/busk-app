@@ -75,7 +75,7 @@ jobs:
       #     POSTGRES_PASSWORD: postgres
 
       - name: Initiate database
-        run: psql -f backend/busk-app.sql postgresql://postgres:postgres@localhost:5432/busk_app_test
+        run: psql -f busk-app.sql postgresql://postgres:postgres@localhost:5432/busk_app_test
 
       - name: Build Node if needed
         run: npm run build --if-present

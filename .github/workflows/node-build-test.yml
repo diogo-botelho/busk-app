@@ -62,10 +62,8 @@ jobs:
           cache: "npm"
           cache-dependency-path: backend/package-lock.json
 
-      - name: Install PostgreSQL client
-        run: |
-          apt-get update
-          apt-get install --yes postgresql-client
+      - name: Set up Postgres
+        uses: docker://postgres:13-alpine
 
       - name: Initiate database
         run: psql -f backend/busk-app.sql postgresql://postgres:password@localhost:5432/busk_app_test

@@ -181,15 +181,12 @@ describe("POST /events", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("bad request if missing eventData", async function () {
+  test("jest bad request if missing eventData", async function () {
     const resp = await request(app)
       .post(`/events/create`)
       .send({
         userId: testUserIds[0],
-        buskerName: testBuskerNames[0],
-        eventData: {
-          title: "test event title",
-        },
+        buskerName: testBuskerNames[0]
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);

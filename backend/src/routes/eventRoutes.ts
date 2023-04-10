@@ -58,8 +58,12 @@ router.post(
   ) {
     try {
       const validator = jsonschema.validate(req.body.eventData, eventNewSchema);
-      if (!validator.valid) {
-        const errs = validator.errors.map((e) => e.stack);
+
+      if (!validator.valid || !req.body.eventData) {
+        const errs =
+          validator.errors.length > 0
+            ? validator.errors.map((e) => e.stack)
+            : "eventData is not defined.";
         throw new BadRequestError(...errs);
       }
       const eventDetails = req.body.eventData;

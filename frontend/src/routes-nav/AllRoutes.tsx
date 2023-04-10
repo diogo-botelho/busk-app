@@ -31,7 +31,7 @@ function AllRoutes({ login, signup }: AllRoutesParams) {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/users" element={<UserList />} />
-      <Route path="/users/:username" element={<User />} />
+      <Route path="/users/:id" element={<User />} />
       <Route path="/events" element={<EventList />} />
       <Route path="/events/:id" element={<EventDetail />} />
       <Route path="/login" element={<LoginForm login={login} />} />

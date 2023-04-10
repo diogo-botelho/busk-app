@@ -1,8 +1,7 @@
 export interface SignupFormData {
-  username: string;
+  email: string;
   password: string;
   firstName: string;
   lastName: string;
   phone: string;
-  email: string;
 }

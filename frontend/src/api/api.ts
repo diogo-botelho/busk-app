@@ -47,7 +47,7 @@ class BuskApi {
   /** Get the current user. Takes email.
    * Returns user object {userId, email, firstName, lastName, phone}
    */
-  static async getCurrentUser(id: string) {
+  static async getCurrentUser(id: number) {
     let res = await this.request(`users/${id}`);
     return res;
   }

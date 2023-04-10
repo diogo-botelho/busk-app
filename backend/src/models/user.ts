@@ -28,7 +28,8 @@ export class User {
   static async authenticate(email: string, password: string) {
     // try to find the user first
     const result = await db.query(
-      `SELECT email,
+      `SELECT id,
+              email,
               password,
               first_name AS "firstName",
               last_name AS "lastName",

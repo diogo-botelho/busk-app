@@ -27,6 +27,7 @@ describe("authenticate", function () {
   test("works", async function () {
     const user = await User.authenticate("u1@email.com", "password1");
     expect(user).toEqual({
+      id: expect.any(Number),
       email: "u1@email.com",
       firstName: "u1F",
       lastName: "u1L",

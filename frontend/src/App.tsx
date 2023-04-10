@@ -59,14 +59,12 @@ function App() {
       async function getCurrentUser() {
         if (token) {
           try {
-            const username = jwt_decode(token);
-            const decodedUsername = JSON.parse(
-              JSON.stringify(username)
-            ).username;
+            const user = jwt_decode(token);
+            const decodedUser = JSON.parse(JSON.stringify(user)).id;
 
             // put the token on the Api class so it can use it to call the API.
             BuskApi.token = token;
-            const currentUser = await BuskApi.getCurrentUser(decodedUsername);
+            const currentUser = await BuskApi.getCurrentUser(decodedUser);
 
             setCurrentUser(currentUser);
           } catch (err) {
@@ -110,7 +108,6 @@ function App() {
     const token = await BuskApi.signup(signupData);
     localStorage.setItem("token", token);
     setToken(token);
-    console.log(token.username + " was successfully signed up.");
     return navigate("/events", { replace: true });
   }
 

@@ -12,7 +12,7 @@ import ErrorMessage from "../common/ErrorMessage";
 import { LoginFormData } from "../interfaces/LoginFormData";
 
 interface LoginFormParams {
-  login: (username: LoginFormData) => void;
+  login: (email: LoginFormData) => void;
 }
 
 /**Login form.
@@ -35,7 +35,7 @@ interface LoginFormParams {
 
 function LoginForm({ login }: LoginFormParams) {
   const [formData, setFormData] = useState<LoginFormData>({
-    username: "",
+    email: "",
     password: "",
   });
   const [formErrors, setFormErrors] = useState<string[] | []>([]);
@@ -50,7 +50,7 @@ function LoginForm({ login }: LoginFormParams) {
       await login(formData);
     } catch (err) {
       if (Array.isArray(err)) {
-        setFormErrors(["Invalid username or password."]);
+        setFormErrors(["Invalid email or password."]);
       } else {
         setFormErrors([`${err}`]);
       }
@@ -72,14 +72,14 @@ function LoginForm({ login }: LoginFormParams) {
         <Row className="justify-content-center">
           <Col xs={6} className="">
             <Form.Group className="">
-              <FloatingLabel label="Username" className="mb-3">
+              <FloatingLabel label="Email" className="mb-3">
                 <Form.Control
                   className="form-control"
-                  id="username"
-                  name="username"
-                  value={formData.username}
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleChange}
-                  placeholder="Username"
+                  placeholder="Email"
                 />
               </FloatingLabel>
             </Form.Group>

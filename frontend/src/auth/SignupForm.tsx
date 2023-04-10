@@ -35,12 +35,11 @@ interface SignupFormParams {
 
 function SignupForm({ signup }: SignupFormParams) {
   const [formData, setFormData] = useState<SignupFormData>({
-    username: "",
+    email: "",
     password: "",
     firstName: "",
     lastName: "",
     phone: "",
-    email: "",
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
@@ -76,14 +75,15 @@ function SignupForm({ signup }: SignupFormParams) {
         <Row className="justify-content-center">
           <Col xs={6}>
             <Form.Group className="">
-              <FloatingLabel label="Username" className="mb-2">
+              <FloatingLabel label="Email" className="mb-2">
                 <Form.Control
                   className="form-control"
-                  id="username"
-                  name="username"
-                  value={formData.username}
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleChange}
-                  placeholder="Username"
+                  placeholder="Email"
                 />
               </FloatingLabel>
             </Form.Group>
@@ -136,19 +136,6 @@ function SignupForm({ signup }: SignupFormParams) {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="Phone"
-                />
-              </FloatingLabel>
-            </Form.Group>
-            <Form.Group className="">
-              <FloatingLabel label="Email" className="mb-2">
-                <Form.Control
-                  className="form-control"
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
                 />
               </FloatingLabel>
             </Form.Group>

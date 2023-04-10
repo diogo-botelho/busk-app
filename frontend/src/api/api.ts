@@ -44,22 +44,22 @@ class BuskApi {
 
   /** User API Routes */
 
-  /** Get the current user. Takes username.
-   * Returns user object {userId, username, firstName, lastName, phone, email}
+  /** Get the current user. Takes email.
+   * Returns user object {userId, email, firstName, lastName, phone}
    */
-  static async getCurrentUser(username: string) {
-    let res = await this.request(`users/${username}`);
+  static async getCurrentUser(id: number) {
+    let res = await this.request(`users/${id}`);
     return res;
   }
 
-  /** Log in a user. Takes an object {username, password}. Returns token */
+  /** Log in a user. Takes an object {email, password}. Returns token */
   static async login(loginData: LoginFormData) {
     const res = await this.request("auth/login", loginData, "post");
     return res.token;
   }
 
   /** Signup a new user.
-   *  Takes an object { username, password, firstName, lastName, phone, email }.
+   *  Takes an object { email, password, firstName, lastName, phone }.
    *  Returns token */
   static async signup(signupData: SignupFormData) {
     const res = await this.request("auth/signup", signupData, "post");

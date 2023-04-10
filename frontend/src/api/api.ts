@@ -5,7 +5,7 @@ import { BACKEND_BASE_URL } from "../config";
 import { LoginFormData } from "../interfaces/LoginFormData";
 import { SignupFormData } from "../interfaces/SignupFormData";
 
-interface EventDetailsInterface {
+interface EventDataInterface {
   buskerId: number | undefined;
   title: string;
   type: string;
@@ -85,16 +85,33 @@ class BuskApi {
   /** Create a new event.
    *  Takes an object eventDetails { title, type, coordinates }.
    *  Returns event. */
-  static async createEvent(eventDetails: EventDetailsInterface) {
-    const res = await this.request("events/create", eventDetails, "post");
+  static async createEvent(
+    userId: number,
+    buskerName: string,
+    eventData: EventDataInterface
+  ) {
+    const res = await this.request(
+      "events/create",
+      { userId, buskerName, eventData },
+      "post"
+    );
     return res.event;
   }
 
   /** Update an event.
    *  Takes eventId and an object eventDetails { title, type, coordinates }.
    *  Returns event */
-  static async updateEvent(eventId: number, updateData: EventDetailsInterface) {
-    const res = await this.request(`events/${eventId}`, updateData, "patch");
+  static async updateEvent(
+    eventId: number,
+    userId: number,
+    buskerName: string,
+    updateData: EventDataInterface
+  ) {
+    const res = await this.request(
+      `events/${eventId}`,
+      { userId, buskerName, updateData },
+      "patch"
+    );
 
     return res.event;
   }
@@ -102,8 +119,16 @@ class BuskApi {
   /** Get an event.
    *  Takes eventId.
    *  Returns event */
-  static async removeEvent(eventId: number) {
-    const res = await this.request(`events/${eventId}`, {}, "delete");
+  static async removeEvent(
+    eventId: number,
+    userId: number,
+    buskerName: string
+  ) {
+    const res = await this.request(
+      `events/${eventId}`,
+      { userId, buskerName },
+      "delete"
+    );
 
     return res;
   }

@@ -79,7 +79,11 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function updateEvent(event: Event, formData: UpdateEventFormData) {
+  async function updateEvent(
+    event: Event,
+    userId: number,
+    formData: UpdateEventFormData
+  ) {
     const eventDetails = {
       buskerId: 1,
       title: formData.title,
@@ -98,7 +102,12 @@ export function EventDetail() {
     const eventId = event.id;
 
     try {
-      const updatedEvent = await BuskApi.updateEvent(eventId, eventDetails);
+      const updatedEvent = await BuskApi.updateEvent(
+        eventId,
+        userId,
+        "Saxiogo",
+        eventDetails
+      );
       setEvent((previousData) => updatedEvent);
       setErrors([]);
     } catch (err) {
@@ -119,9 +128,9 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function removeEvent(eventId: number) {
+  async function removeEvent(eventId: number, userId: number) {
     try {
-      await BuskApi.removeEvent(eventId);
+      await BuskApi.removeEvent(eventId, userId, "Saxiogo");
       return navigate("/events", { replace: true });
     } catch (err) {
       if (Array.isArray(err)) {
@@ -145,8 +154,8 @@ export function EventDetail() {
   }
 
   async function handleRemove() {
-    if (id) {
-      await removeEvent(+id);
+    if (id && currentUser) {
+      await removeEvent(+id, currentUser.id);
     }
   }
 

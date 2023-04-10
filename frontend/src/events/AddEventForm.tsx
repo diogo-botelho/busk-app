@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useContext } from "react";
 import {
   Button,
   Container,
@@ -8,10 +8,16 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
+import { UserContext } from "../users/UserContext";
+
 import { AddEventFormData } from "../interfaces/AddEventFormData";
 
 interface AddEventFormParams {
-  submitEvent: (formData: AddEventFormData) => void;
+  submitEvent: (
+    userId: number,
+    buskerName: string,
+    formData: AddEventFormData
+  ) => void;
 }
 
 /**Add Event Form.
@@ -30,6 +36,7 @@ interface AddEventFormParams {
  * EventList -> AddEventForm
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
+  const currentUser = useContext(UserContext);
   const [formData, setFormData] = useState<AddEventFormData>({
     title: "",
     type: "concert",
@@ -41,7 +48,11 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    submitEvent(formData);
+    if (!currentUser) {
+      console.log("Please log in.");
+    } else {
+      submitEvent(currentUser.id, "Saxiogo", formData);
+    }
   }
 
   /** Update form data field */

@@ -136,7 +136,11 @@ function EventList() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function submitEvent(formData: AddEventFormData) {
+  async function submitEvent(
+    userId: number,
+    buskerName: string,
+    formData: AddEventFormData
+  ) {
     if (!newCoordinates) {
       setErrors(["Please select a location"]);
     } else {
@@ -150,7 +154,11 @@ function EventList() {
         },
       };
       try {
-        const newEvent = await BuskApi.createEvent(eventDetails);
+        const newEvent = await BuskApi.createEvent(
+          userId,
+          buskerName,
+          eventDetails
+        );
         setEvents((previousData) => [...previousData, newEvent]);
         setErrors([]);
       } catch (err) {

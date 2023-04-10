@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useContext } from "react";
 import {
   Button,
   Container,
@@ -10,10 +10,15 @@ import {
 
 import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
 import { Event } from "../interfaces/Event";
+import { UserContext } from "../users/UserContext";
 
 interface UpdateEventFormParams {
   event: Event;
-  updateEvent: (event: Event, formData: UpdateEventFormData) => void;
+  updateEvent: (
+    event: Event,
+    userId: number,
+    formData: UpdateEventFormData
+  ) => void;
 }
 
 /**Update Event form.
@@ -34,6 +39,7 @@ interface UpdateEventFormParams {
  * */
 
 export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
+  const currentUser = useContext(UserContext);
   const [formData, setFormData] = useState<UpdateEventFormData>({
     title: event.title,
     type: event.type,
@@ -45,7 +51,11 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    updateEvent(event, formData);
+    if (!currentUser) {
+      console.log("Please log in to update the event.");
+    } else {
+      updateEvent(event, currentUser.id, formData);
+    }
   }
 
   /** Update form data field */

@@ -6,7 +6,6 @@ import { LoginFormData } from "../interfaces/LoginFormData";
 import { SignupFormData } from "../interfaces/SignupFormData";
 
 interface EventDataInterface {
-  buskerId: number | undefined;
   title: string;
   type: string;
   coordinates: LatLngExpression;

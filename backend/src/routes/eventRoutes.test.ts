@@ -48,6 +48,7 @@ describe("GET /events/:id", function () {
       event: {
         id: testEventIds[0],
         buskerId: testBuskerIds[0],
+        buskerName: testBuskerNames[0],
         title: "test event",
         type: "test type",
         coordinates: { lat: 0, lng: 0 },
@@ -228,6 +229,7 @@ describe("PATCH /events/:id", () => {
       event: {
         id: testEventIds[0],
         buskerId: testBuskerIds[0],
+        buskerName: testBuskerNames[0],
         title: "New title",
         type: "test type",
         coordinates: { lat: 0, lng: 0 },
@@ -250,6 +252,7 @@ describe("PATCH /events/:id", () => {
       event: {
         id: testEventIds[0],
         buskerId: testBuskerIds[0],
+        buskerName: testBuskerNames[0],
         title: "New title",
         type: "test type",
         coordinates: { lat: 0, lng: 0 },

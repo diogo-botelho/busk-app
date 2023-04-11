@@ -6,6 +6,7 @@ import { MemoryRouter } from "react-router";
 const demoEvent = {
     id: 1,
     buskerId: 1,
+    buskerName: "demoBusker",
     title: "demo title",
     type: "demo type",
     coordinates: {lat: 1,lng: 1}

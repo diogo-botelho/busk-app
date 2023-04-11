@@ -4,12 +4,11 @@ import { createContext } from "react";
 
 export interface UserContextType {
   id: number;
-  buskerId: number;
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
-  isAdmin: boolean;
+  buskerNames: string[];
 }
 
 export const UserContext = createContext<UserContextType | undefined>(

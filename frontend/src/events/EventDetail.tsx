@@ -84,8 +84,7 @@ export function EventDetail() {
     userId: number,
     formData: UpdateEventFormData
   ) {
-    const eventDetails = {
-      buskerId: 1,
+    const eventData = {
       title: formData.title,
       type: formData.type,
       coordinates: newCoordinates
@@ -106,7 +105,7 @@ export function EventDetail() {
         eventId,
         userId,
         "Saxiogo",
-        eventDetails
+        eventData
       );
       setEvent((previousData) => updatedEvent);
       setErrors([]);
@@ -185,7 +184,7 @@ export function EventDetail() {
                 {" "}
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.type}</Card.Text>
-                {event.buskerId === currentUser?.buskerId ? (
+                {currentUser && currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
                   <Container>
                     <Button onClick={toggleUpdateEvent}>Update</Button>
                     <Button onClick={handleRemove}>Remove</Button>

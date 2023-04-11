@@ -181,10 +181,10 @@ export function EventDetail() {
           ) : (
             <Container>
               <Card.Body>
-                {" "}
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.type}</Card.Text>
-                {currentUser && currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
+                {currentUser &&
+                currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
                   <Container>
                     <Button onClick={toggleUpdateEvent}>Update</Button>
                     <Button onClick={handleRemove}>Remove</Button>

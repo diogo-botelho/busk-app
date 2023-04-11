@@ -3,7 +3,6 @@ import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import EventList from "./EventList";
 
-
 it("renders without crashing", function () {
   render(
     <MemoryRouter>
@@ -15,8 +14,8 @@ it("renders without crashing", function () {
 it("matches snapshot", function () {
   const { asFragment } = render(
     <MemoryRouter>
-        <EventList />
-      </MemoryRouter>
+      <EventList />
+    </MemoryRouter>
   );
   expect(asFragment()).toMatchSnapshot();
 });

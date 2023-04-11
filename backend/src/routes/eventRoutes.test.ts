@@ -187,7 +187,7 @@ describe("POST /events", function () {
       .post(`/events/create`)
       .send({
         userId: testUserIds[0],
-        buskerName: testBuskerNames[0]
+        buskerName: testBuskerNames[0],
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);

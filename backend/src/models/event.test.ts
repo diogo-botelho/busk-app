@@ -142,7 +142,7 @@ describe("update", function () {
       ...updateData,
       id: testEventIds[0],
       buskerId: testBuskerIds[0],
-      buskerName: testBuskerNames[0]
+      buskerName: testBuskerNames[0],
     });
   });
 

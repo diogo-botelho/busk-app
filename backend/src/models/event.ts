@@ -6,6 +6,7 @@ import db from "../db";
 import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
 import { EventData } from "../interfaces/EventData";
+import { Busker } from "./busker";
 
 export class Event {
   /** Get all events
@@ -25,13 +26,22 @@ export class Event {
    * returns {id, busker_id, title, type } */
   static async getById(id: number) {
     const result = await db.query(
-      `SELECT id, busker_id AS "buskerId" , title, type, coordinates
+      `SELECT events.id, 
+              busker_id AS "buskerId",
+              buskers.busker_name as "buskerName",
+              title,
+              type,
+              coordinates
         FROM events
-        WHERE id = $1`,
+        JOIN buskers on buskers.id = events.busker_id
+        WHERE events.id = $1`,
       [id]
     );
 
     const event = result.rows[0];
+
+    // event.buskerName = (await Busker.get(event.buskerId)).rows[0].buskerId;
+    // console.log(event);
 
     if (!event) throw new NotFoundError(`No such event: ${id}`);
     return event;
@@ -89,10 +99,23 @@ export class Event {
 
     const eventVarIdx = "$" + (values.length + 1);
 
-    const querySql = `UPDATE events
-            SET ${setCols} 
-            WHERE id = ${eventVarIdx} 
-            RETURNING id, busker_id as "buskerId", title, type, coordinates`;
+    const querySql = `WITH updated_event as (
+              UPDATE events
+              SET ${setCols} 
+              WHERE id = ${eventVarIdx} 
+              RETURNING id, 
+                        busker_id, 
+                        title, 
+                        type, 
+                        coordinates)
+            SELECT  updated_event.id, 
+                    busker_id AS "buskerId", 
+                    busker_name AS "buskerName",
+                    title, 
+                    type, 
+                    coordinates
+            FROM updated_event
+            JOIN buskers ON buskers.id = updated_event.busker_id`;
 
     const result = await db.query(querySql, [...values, id]);
     const event = result.rows[0];

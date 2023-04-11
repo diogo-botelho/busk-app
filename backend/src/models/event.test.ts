@@ -11,6 +11,7 @@ import {
   commonAfterAll,
   testBuskerIds,
   testEventIds,
+  testBuskerNames,
 } from "./_testCommon";
 
 beforeAll(commonBeforeAll);
@@ -100,6 +101,7 @@ describe("get", function () {
     expect(event).toEqual({
       id: testEventIds[0],
       buskerId: testBuskerIds[0],
+      buskerName: testBuskerNames[0],
       title: "e1",
       type: "E1",
       coordinates: { lat: 0, lng: 0 },
@@ -140,6 +142,7 @@ describe("update", function () {
       ...updateData,
       id: testEventIds[0],
       buskerId: testBuskerIds[0],
+      buskerName: testBuskerNames[0]
     });
   });
 

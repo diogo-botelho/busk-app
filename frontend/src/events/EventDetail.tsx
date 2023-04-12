@@ -79,9 +79,12 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function updateEvent(event: Event, formData: UpdateEventFormData) {
-    const eventDetails = {
-      buskerId: 1,
+  async function updateEvent(
+    event: Event,
+    userId: number,
+    formData: UpdateEventFormData
+  ) {
+    const eventData = {
       title: formData.title,
       type: formData.type,
       coordinates: newCoordinates
@@ -98,7 +101,12 @@ export function EventDetail() {
     const eventId = event.id;
 
     try {
-      const updatedEvent = await BuskApi.updateEvent(eventId, eventDetails);
+      const updatedEvent = await BuskApi.updateEvent(
+        eventId,
+        userId,
+        "Saxiogo",
+        eventData
+      );
       setEvent((previousData) => updatedEvent);
       setErrors([]);
     } catch (err) {
@@ -119,9 +127,9 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function removeEvent(eventId: number) {
+  async function removeEvent(eventId: number, userId: number) {
     try {
-      await BuskApi.removeEvent(eventId);
+      await BuskApi.removeEvent(eventId, userId, "Saxiogo");
       return navigate("/events", { replace: true });
     } catch (err) {
       if (Array.isArray(err)) {
@@ -145,8 +153,8 @@ export function EventDetail() {
   }
 
   async function handleRemove() {
-    if (id) {
-      await removeEvent(+id);
+    if (id && currentUser) {
+      await removeEvent(+id, currentUser.id);
     }
   }
 
@@ -173,10 +181,10 @@ export function EventDetail() {
           ) : (
             <Container>
               <Card.Body>
-                {" "}
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.type}</Card.Text>
-                {event.buskerId === currentUser?.buskerId ? (
+                {currentUser &&
+                currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
                   <Container>
                     <Button onClick={toggleUpdateEvent}>Update</Button>
                     <Button onClick={handleRemove}>Remove</Button>

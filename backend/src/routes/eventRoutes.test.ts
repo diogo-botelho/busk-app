@@ -182,7 +182,7 @@ describe("POST /events", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("jest bad request if missing eventData", async function () {
+  test("bad request if missing eventData", async function () {
     const resp = await request(app)
       .post(`/events/create`)
       .send({

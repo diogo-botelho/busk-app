@@ -40,9 +40,6 @@ export class Event {
 
     const event = result.rows[0];
 
-    // event.buskerName = (await Busker.get(event.buskerId)).rows[0].buskerId;
-    // console.log(event);
-
     if (!event) throw new NotFoundError(`No such event: ${id}`);
     return event;
   }

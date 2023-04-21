@@ -6,6 +6,6 @@ export interface SignupFormData {
   phone: string;
   buskerCheckmark: boolean;
   buskerName: string;
-  buskerCategory: string;
-  buskerDescription: string;
+  category: string;
+  description: string;
 }

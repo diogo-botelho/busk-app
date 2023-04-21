@@ -42,8 +42,8 @@ function SignupForm({ signup }: SignupFormParams) {
     phone: "",
     buskerCheckmark: false,
     buskerName: "",
-    buskerCategory: "musician",
-    buskerDescription: "",
+    category: "musician",
+    description: "",
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
@@ -174,11 +174,11 @@ function SignupForm({ signup }: SignupFormParams) {
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="">
-                  <FloatingLabel label="buskerCategory" className="mb-2">
+                  <FloatingLabel label="category" className="mb-2">
                     <Form.Select
-                      id="buskerCategory"
-                      name="buskerCategory"
-                      value={formData.buskerCategory}
+                      id="category"
+                      name="category"
+                      value={formData.category}
                       onChange={handleChange}
                     >
                       <option>musician</option>
@@ -189,13 +189,13 @@ function SignupForm({ signup }: SignupFormParams) {
                   </FloatingLabel>
                 </Form.Group>
                 <Form.Group className="">
-                  <FloatingLabel label="buskerDescription" className="mb-2">
+                  <FloatingLabel label="description" className="mb-2">
                     <Form.Control
                       className="form-control"
-                      type="buskerDescription"
-                      id="buskerDescription"
-                      name="buskerDescription"
-                      value={formData.buskerDescription}
+                      type="description"
+                      id="description"
+                      name="description"
+                      value={formData.description}
                       onChange={handleChange}
                       placeholder="Description"
                     />

@@ -16,14 +16,18 @@ describe("config can come from env", function () {
     delete process.env.BCRYPT_WORK_FACTOR;
     delete process.env.DATABASE_URL;
 
-    expect(config.getDatabaseUri()).toEqual("busk_app");
+    expect(config.getDatabaseUri()).toEqual(
+      "postgresql://Samau:password@localhost/busk_app"
+    );
     // expect(config.getDatabaseUri()).toEqual(
     //   "postgresql://diogobotelho:password@localhost/busk_app"
     // );
 
     process.env.NODE_ENV = "test";
 
-    expect(config.getDatabaseUri()).toEqual("busk_app_test");
+    expect(config.getDatabaseUri()).toEqual(
+      "postgresql://Samau:password@localhost/busk_app_test"
+    );
     // expect(config.getDatabaseUri()).toEqual(
     //   "postgresql://diogobotelho:password@localhost/busk_app_test"
     // );

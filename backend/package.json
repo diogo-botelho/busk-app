@@ -1,5 +1,8 @@
 {
   "name": "busk-app",
+  "jest": {
+    "openHandlesTimeout": 0
+  },
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",

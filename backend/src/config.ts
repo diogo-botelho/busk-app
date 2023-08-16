@@ -5,9 +5,11 @@ export function getDatabaseUri() {
     ? // ? "postgresql://diogobotelho:password@localhost/busk_app_test"
       // : process.env.DATABASE_URL ||
       //     "postgresql://diogobotelho:password@localhost/busk_app";
-      "postgresql://Samau:password@localhost/busk_app_test"
+      // "postgresql://Samau:password@localhost/busk_app_test"
+      "busk_app_test"
     : process.env.DATABASE_URL ||
-        "postgresql://Samau:password@localhost/busk_app";
+        // "postgresql://Samau:password@localhost/busk_app";
+        "busk_app";
 }
 
 export const SECRET_KEY = process.env.SECRET_KEY || "secret key";

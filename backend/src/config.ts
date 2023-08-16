@@ -1,15 +1,30 @@
 export const PORT = +process.env.PORT || 3001;
 
 export function getDatabaseUri() {
-  return process.env.NODE_ENV === "test"
-    ? // ? "postgresql://diogobotelho:password@localhost/busk_app_test"
-      // : process.env.DATABASE_URL ||
-      //     "postgresql://diogobotelho:password@localhost/busk_app";
-      // "postgresql://Samau:password@localhost/busk_app_test"
-      "busk_app_test"
-    : process.env.DATABASE_URL ||
-        // "postgresql://Samau:password@localhost/busk_app";
-        "busk_app";
+  const dbUser = process.env.DATABASE_USER || "postgres";
+  const dbPass = process.env.DATABASE_PASS
+    ? encodeURI(process.env.DATABASE_PASS)
+    : "postgres";
+  const dbHost = process.env.DATABASE_HOST || "localhost";
+  const dbPort = process.env.DATABASE_PORT || 5432;
+  const dbTestName = process.env.DATABASE_TEST_NAME || "busk_app_test";
+  const dbProdName = process.env.DATABASE_NAME || "busk_app";
+  const dbName = process.env.NODE_ENV === "test" ? dbTestName : dbProdName;
+
+  return (
+    process.env.DATABASE_URL ||
+    `postgresql://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}`
+  );
+
+  // return process.env.NODE_ENV === "test"
+  //   ? // ? "postgresql://diogobotelho:password@localhost/busk_app_test"
+  //     // : process.env.DATABASE_URL ||
+  //     //     "postgresql://diogobotelho:password@localhost/busk_app";
+  //     // "postgresql://Samau:password@localhost/busk_app_test"
+  //     "busk_app_test"
+  //   : process.env.DATABASE_URL ||
+  //       // "postgresql://Samau:password@localhost/busk_app";
+  //       "busk_app";
 }
 
 export const SECRET_KEY = process.env.SECRET_KEY || "secret key";

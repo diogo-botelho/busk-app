@@ -20,10 +20,8 @@ export function getDatabaseUri() {
   //   ? // ? "postgresql://diogobotelho:password@localhost/busk_app_test"
   //     // : process.env.DATABASE_URL ||
   //     //     "postgresql://diogobotelho:password@localhost/busk_app";
-  //     // "postgresql://Samau:password@localhost/busk_app_test"
   //     "busk_app_test"
   //   : process.env.DATABASE_URL ||
-  //       // "postgresql://Samau:password@localhost/busk_app";
   //       "busk_app";
 }
 

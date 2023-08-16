@@ -4,7 +4,7 @@ export function getDatabaseUri() {
   const dbUser = process.env.DATABASE_USER || "postgres";
   const dbPass = process.env.DATABASE_PASS
     ? encodeURI(process.env.DATABASE_PASS)
-    : "postgres";
+    : "password";
   const dbHost = process.env.DATABASE_HOST || "localhost";
   const dbPort = process.env.DATABASE_PORT || 5432;
   const dbTestName = process.env.DATABASE_TEST_NAME || "busk_app_test";

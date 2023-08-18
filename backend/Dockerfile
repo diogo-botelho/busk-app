@@ -1,6 +1,7 @@
 FROM debian:bullseye as builder
 
 ARG NODE_VERSION=16.17.0
+ARG NODE_OPTIONS="--max-old-space-size=192"
 
 RUN apt-get update; apt install -y curl python-is-python3 pkg-config build-essential
 RUN curl https://get.volta.sh | bash
@@ -33,4 +34,4 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV PATH /root/.volta/bin:$PATH
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "./node_modules/.bin/ts-node-dev", "src/server.ts"]

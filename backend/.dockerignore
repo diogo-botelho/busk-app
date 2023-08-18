@@ -3,3 +3,7 @@ Dockerfile
 .dockerignore
 node_modules
 .git
+coverage
+busk-app.sql
+busk-app-seed.sql
+busk-app-schema.sql

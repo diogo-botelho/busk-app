@@ -38,7 +38,7 @@ describe('Custom Error Classes', () => {
 
   test('ForbiddenError should have correct status and default message', () => {
     const error = new ForbiddenError();
-    expect(error.message).toBe('Bad Request'); // Note: This might be a copy-paste mistake in the original code
+    expect(error.message).toBe('Forbidden Error'); 
     expect(error.status).toBe(403);
   });
 });

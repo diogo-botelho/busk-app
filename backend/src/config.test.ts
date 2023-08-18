@@ -24,9 +24,10 @@ describe("config can come from env", function () {
     // );
 
     process.env.NODE_ENV = "test";
+    process.env.DATABASE_PASS = "password2"
 
     expect(config.getDatabaseUri()).toEqual(
-      "postgresql://postgres:password@localhost:5432/busk_app_test"
+      "postgresql://postgres:password2@localhost:5432/busk_app_test"
     );
     // expect(config.getDatabaseUri()).toEqual(
     //   "postgresql://diogobotelho:password@localhost/busk_app_test"

@@ -1,5 +1,9 @@
 import { BadRequestError } from "../expressError";
 
+import { UserData } from "../interfaces/UserData";
+import { BuskerData } from "../interfaces/BuskerData";
+import { EventData } from "../interfaces/EventData";
+
 /**
  * Helper for making selective update queries.
  *
@@ -8,42 +12,27 @@ import { BadRequestError } from "../expressError";
  *
  * @param dataToUpdate {Object} {field1: newVal, field2: newVal, ...}
  * @param jsToSql {Object} maps js-style data fields to database column names,
- *   like { firstName: "first_name", age: "age" }
+ *   like { firstName: "first_name", title: "title" }
  *
  * @returns {Object} {sqlSetCols, dataToUpdate}
  *
- * @example {firstName: 'Aliya', age: 32} =>
- *   { setCols: '"first_name"=$1, "age"=$2',
- *     values: ['Aliya', 32] }
+ * @example {firstName: 'Aliya', phone: "111"} =>
+ *   { setCols: '"first_name"=$1, "phone"=$2',
+ *     values: ['Aliya', "111"] }
  */
-
-interface EventData {
-  buskerId?: string;
-  title?: string;
-  type?: string;
-}
-
-interface UserData {
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  email?: string;
-}
 
 interface JsToSql {
   [key: string]: string;
-  // firstName: string;
-  // lastName: string;
 }
 
 export function sqlForPartialUpdate(
-  dataToUpdate: UserData | EventData,
+  dataToUpdate: UserData | EventData | BuskerData,
   jsToSql: JsToSql
 ) {
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
 
-  // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
+  // {firstName: 'Aliya', phone: "111"} => ['"first_name"=$1', '"phone"=$2']
   const cols = keys.map(
     (colName, idx) => `"${jsToSql[colName] || colName}"=$${idx + 1}`
   );

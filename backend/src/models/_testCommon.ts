@@ -1,26 +1,61 @@
-// const bcrypt = require("bcrypt");
-
+import bcrypt from "bcrypt";
 import db from "../db";
-// const { BCRYPT_WORK_FACTOR } = require("../config");
 
-const testJobIds: Object[] = [];
+import { BCRYPT_WORK_FACTOR } from "../config";
+
+export let testUserIds: number[] = [];
+export let testBuskerIds: number[] = [];
+export let testEventIds: number[] = [];
+export let testBuskerNames: string[] = [];
 
 export async function commonBeforeAll() {
-  // noinspection SqlWithoutWhere
-  await db.query("DELETE FROM companies");
-  // noinspection SqlWithoutWhere
+  await db.query("DELETE FROM events");
+
+  await db.query("DELETE FROM buskers");
+
   await db.query("DELETE FROM users");
 
-  await db.query(`
-    INSERT INTO events(buskerId, title, type, coordinates)
-    VALUES ('b1', 'e1', 'E1', '[0,0]',
-           ('b2', 'e2', 'E2', '[0,1]',`);
+  const resultUsers = await db.query(
+    `
+  INSERT INTO users (email, password, first_name, last_name, phone)
+  VALUES ('u1@email.com',$1,'u1F', 'u1L', '111222333'),
+         ('u2@email.com',$2,'u2F', 'u2L', '999888777')
+         returning id`,
+    [
+      await bcrypt.hash("password1", BCRYPT_WORK_FACTOR),
+      await bcrypt.hash("password2", BCRYPT_WORK_FACTOR),
+    ]
+  );
+  testUserIds.splice(0, 0, ...resultUsers.rows.map((r) => r.id));
 
-  await db.query(`
-    INSERT INTO users (username firstName, lastName, phone, email)
-    VALUES ('u1','u1F', u1L, '111222333', 'u1@email.com'),
-           ('u2','u2F', u2L, '999888777', 'u2@email.com'),
-    RETURNING firstName`);
+  await db.query(
+    `INSERT INTO buskers (user_id, busker_name, category, description)
+  VALUES ($1, 'u1BuskerName1', 'musician', 'A fun performer')
+  RETURNING id`,
+    [testUserIds[0]]
+  );
+  await db.query(
+    `INSERT INTO buskers (user_id, busker_name, category, description)
+  VALUES ($1, 'u1BuskerName2', 'juggler', 'A great performer')
+  RETURNING id`,
+    [testUserIds[0]]
+  );
+
+  const resultBuskers = await db.query(
+    `SELECT id, busker_name AS "buskerName"
+      FROM buskers`
+  );
+  testBuskerIds.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
+  testBuskerNames.splice(0, 0, ...resultBuskers.rows.map((r) => r.buskerName));
+
+  const resultEvents = await db.query(
+    `
+    INSERT INTO events(busker_id, title, type, coordinates)
+    VALUES ($1, 'e1', 'E1', '{"lat":0,"lng":0}')
+    RETURNING id`,
+    [testBuskerIds[0]]
+  );
+  testEventIds.splice(0, 0, ...resultEvents.rows.map((r) => r.id));
 }
 
 export async function commonBeforeEach() {

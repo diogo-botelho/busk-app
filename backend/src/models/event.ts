@@ -3,20 +3,10 @@
  **/
 
 import db from "../db";
-import { NotFoundError } from "../expressError";
+import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-interface EventData {
-  buskerId: string | undefined;
-  title: string | undefined;
-  type: string | undefined;
-  coordinates: Coordinates | undefined;
-}
+import { EventData } from "../interfaces/EventData";
+import { Busker } from "./busker";
 
 export class Event {
   /** Get all events
@@ -36,9 +26,15 @@ export class Event {
    * returns {id, busker_id, title, type } */
   static async getById(id: number) {
     const result = await db.query(
-      `SELECT id, busker_id AS "buskerId" , title, type, coordinates
+      `SELECT events.id, 
+              busker_id AS "buskerId",
+              buskers.busker_name as "buskerName",
+              title,
+              type,
+              coordinates
         FROM events
-        WHERE id = $1`,
+        JOIN buskers on buskers.id = events.busker_id
+        WHERE events.id = $1`,
       [id]
     );
 
@@ -48,36 +44,75 @@ export class Event {
     return event;
   }
 
-  /** create an event: returns { id, bukserId, title, type } */
-  static async create(eventData: EventData | undefined) {
-    if (eventData) {
-      const { buskerId, title, type } = eventData;
-      const coordinates = JSON.stringify(eventData.coordinates);
+  /** get all event ids for a particular busker id:
+   * returns [eventId, eventId,...]
+   * */
+  static async getAllEventIdsByBuskerId(buskerId: number) {
+    const result = await db.query(
+      `SELECT id
+            FROM events
+            WHERE busker_id = $1`,
+      [buskerId]
+    );
 
-      const result = await db.query(
-        `INSERT INTO events (busker_id, title, type, coordinates)
+    let eventIds = [];
+    for (const event of result.rows) {
+      eventIds.push(event.id);
+    }
+
+    return eventIds;
+  }
+
+  /** create an event: returns { id, bukserId, title, type } */
+  static async create(eventData: EventData) {
+    if (Object.keys(eventData).length < 4) {
+      throw new BadRequestError("Invalid Data.");
+    }
+
+    const { buskerId, title, type } = eventData;
+
+    if (title.length === 0) throw new BadRequestError("Empty Title.");
+
+    const coordinates = JSON.stringify(eventData.coordinates);
+
+    const result = await db.query(
+      `INSERT INTO events (busker_id, title, type, coordinates)
         VALUES ($1, $2, $3, $4)
         RETURNING id, busker_id as "buskerId", title, type, coordinates`,
-        [buskerId, title, type, coordinates]
-      );
+      [buskerId, title, type, coordinates]
+    );
 
-      const event = result.rows[0];
-      return event;
-    } else return "Invalid data.";
+    const event = result.rows[0];
+    return event;
   }
 
   /** Update an event: returns { id, buskerId, title, type } */
   static async update(id: number, data: EventData) {
+    if (!data) throw new BadRequestError("Invalid Data.");
+
     const { setCols, values } = sqlForPartialUpdate(data, {
       buskerId: "busker_id",
     });
 
     const eventVarIdx = "$" + (values.length + 1);
 
-    const querySql = `UPDATE events
-            SET ${setCols} 
-            WHERE id = ${eventVarIdx} 
-            RETURNING id, busker_id as "buskerId", title, type, coordinates`;
+    const querySql = `WITH updated_event as (
+              UPDATE events
+              SET ${setCols} 
+              WHERE id = ${eventVarIdx} 
+              RETURNING id, 
+                        busker_id, 
+                        title, 
+                        type, 
+                        coordinates)
+            SELECT  updated_event.id, 
+                    busker_id AS "buskerId", 
+                    busker_name AS "buskerName",
+                    title, 
+                    type, 
+                    coordinates
+            FROM updated_event
+            JOIN buskers ON buskers.id = updated_event.busker_id`;
 
     const result = await db.query(querySql, [...values, id]);
     const event = result.rows[0];
@@ -99,6 +134,6 @@ export class Event {
 
     const event = result.rows[0];
 
-    if (!event) throw new NotFoundError(`No such event: ${1}`);
+    if (!event) throw new NotFoundError(`No such event.`);
   }
 }

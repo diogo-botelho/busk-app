@@ -70,7 +70,7 @@ function EventList() {
       }
       getEventsfromApi();
     },
-    [needsEvents]
+    [needsEvents],
   );
 
   /** Determines what to render depending on whether there's a currentUser and
@@ -139,12 +139,12 @@ function EventList() {
   async function submitEvent(formData: EventFormData) {
     if (!formData.coordinates) {
       setErrors(["Please select a location"]);
-    } else {     
+    } else {
       const eventDetails = {
         buskerId: 1,
         title: formData.title,
         type: formData.type,
-        coordinates: formData.coordinates
+        coordinates: formData.coordinates,
       };
       try {
         //Uncomment when event model starts accepting timestamps

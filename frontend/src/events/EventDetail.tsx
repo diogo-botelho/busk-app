@@ -69,7 +69,7 @@ export function EventDetail() {
       }
       getEvent();
     },
-    [id]
+    [id],
   );
 
   /** Handles updating event.
@@ -88,15 +88,15 @@ export function EventDetail() {
       buskerId: 1,
       title: formData.title,
       type: formData.type,
-      coordinates: formData.coordinates || event.coordinates
-        // ? {
-        //     lat: Object.values(newCoordinates)[0],
-        //     lng: Object.values(newCoordinates)[1],
-        //   }
-        // : {
-        //     lat: Object.values(event.coordinates)[0],
-        //     lng: Object.values(event.coordinates)[1],
-        //   },
+      coordinates: formData.coordinates || event.coordinates,
+      // ? {
+      //     lat: Object.values(newCoordinates)[0],
+      //     lng: Object.values(newCoordinates)[1],
+      //   }
+      // : {
+      //     lat: Object.values(event.coordinates)[0],
+      //     lng: Object.values(event.coordinates)[1],
+      //   },
     };
 
     const eventId = event.id;
@@ -126,9 +126,9 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function removeEvent(eventId: number) {
+  async function removeEvent(eventId: number, userId: number) {
     try {
-      await BuskApi.removeEvent(eventId);
+      await BuskApi.removeEvent(eventId, userId, "Saxiogo");
       return navigate("/events", { replace: true });
     } catch (err) {
       if (Array.isArray(err)) {
@@ -152,8 +152,8 @@ export function EventDetail() {
   }
 
   async function handleRemove() {
-    if (id) {
-      await removeEvent(+id);
+    if (id && currentUser) {
+      await removeEvent(+id, currentUser.id);
     }
   }
 
@@ -180,10 +180,10 @@ export function EventDetail() {
           ) : (
             <Container>
               <Card.Body>
-                {" "}
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.type}</Card.Text>
-                {event.buskerId === currentUser?.buskerId ? (
+                {currentUser &&
+                currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
                   <Container>
                     <Button onClick={toggleUpdateEvent}>Update</Button>
                     <Button onClick={handleRemove}>Remove</Button>

@@ -1,11 +1,13 @@
 /** Database for Busk */
-import { DB_URI } from "./config";
-import { Client } from "pg";
+import { getDatabaseUri } from "./config";
+import { Pool } from "postgres-pool";
 
-const db = new Client({
-  connectionString: DB_URI,
+const db = new Pool({
+  connectionString: getDatabaseUri(),
 });
 
-db.connect();
+db.on("error", (e) => {
+  console.error("DB Error", e);
+});
 
 export default db;

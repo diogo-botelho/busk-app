@@ -5,8 +5,7 @@ import { BACKEND_BASE_URL } from "../config";
 import { LoginFormData } from "../interfaces/LoginFormData";
 import { SignupFormData } from "../interfaces/SignupFormData";
 
-interface EventDetailsInterface {
-  buskerId: number | undefined;
+interface EventDataInterface {
   title: string;
   type: string;
   coordinates: LatLngExpression;
@@ -44,22 +43,22 @@ class BuskApi {
 
   /** User API Routes */
 
-  /** Get the current user. Takes username.
-   * Returns user object {userId, username, firstName, lastName, phone, email}
+  /** Get the current user. Takes email.
+   * Returns user object {userId, email, firstName, lastName, phone}
    */
-  static async getCurrentUser(username: string) {
-    let res = await this.request(`users/${username}`);
+  static async getCurrentUser(id: number) {
+    let res = await this.request(`users/${id}`);
     return res;
   }
 
-  /** Log in a user. Takes an object {username, password}. Returns token */
+  /** Log in a user. Takes an object {email, password}. Returns token */
   static async login(loginData: LoginFormData) {
     const res = await this.request("auth/login", loginData, "post");
     return res.token;
   }
 
   /** Signup a new user.
-   *  Takes an object { username, password, firstName, lastName, phone, email }.
+   *  Takes an object { email, password, firstName, lastName, phone }.
    *  Returns token */
   static async signup(signupData: SignupFormData) {
     const res = await this.request("auth/signup", signupData, "post");
@@ -85,16 +84,33 @@ class BuskApi {
   /** Create a new event.
    *  Takes an object eventDetails { title, type, coordinates }.
    *  Returns event. */
-  static async createEvent(eventDetails: EventDetailsInterface) {
-    const res = await this.request("events/create", eventDetails, "post");
+  static async createEvent(
+    userId: number,
+    buskerName: string,
+    eventData: EventDataInterface
+  ) {
+    const res = await this.request(
+      "events/create",
+      { userId, buskerName, eventData },
+      "post"
+    );
     return res.event;
   }
 
   /** Update an event.
    *  Takes eventId and an object eventDetails { title, type, coordinates }.
    *  Returns event */
-  static async updateEvent(eventId: number, updateData: EventDetailsInterface) {
-    const res = await this.request(`events/${eventId}`, updateData, "patch");
+  static async updateEvent(
+    eventId: number,
+    userId: number,
+    buskerName: string,
+    updateData: EventDataInterface
+  ) {
+    const res = await this.request(
+      `events/${eventId}`,
+      { userId, buskerName, updateData },
+      "patch"
+    );
 
     return res.event;
   }
@@ -102,8 +118,16 @@ class BuskApi {
   /** Get an event.
    *  Takes eventId.
    *  Returns event */
-  static async removeEvent(eventId: number) {
-    const res = await this.request(`events/${eventId}`, {}, "delete");
+  static async removeEvent(
+    eventId: number,
+    userId: number,
+    buskerName: string
+  ) {
+    const res = await this.request(
+      `events/${eventId}`,
+      { userId, buskerName },
+      "delete"
+    );
 
     return res;
   }

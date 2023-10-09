@@ -1,16 +1,16 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config";
-import { UserData } from "../interfaces/UserData";
 /** return signed JWT from user data. */
 
-export function createToken(user: UserData) {
+export function createToken(id: number, isAdmin: boolean) {
   console.assert(
-    user.isAdmin !== undefined,
+    isAdmin !== undefined,
     "createToken passed user without isAdmin property"
   );
 
   let payload = {
-    username: user.username,
+    id: id,
+    isAdmin: isAdmin || false,
   };
 
   return jwt.sign(payload, SECRET_KEY);

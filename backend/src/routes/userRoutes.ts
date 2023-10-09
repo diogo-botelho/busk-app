@@ -1,16 +1,15 @@
 /** Routes for users. */
 
 import express from "express";
-import db from "../db";
-
-// import jsonschema from "jsonschema";
+import jsonschema from "jsonschema";
 
 import { User } from "../models/user";
 import { ensureCorrectUserOrAdmin, ensureAdmin } from "../middleware/auth";
 import { createToken } from "../helpers/tokens";
-// import userNewSchema from "../schemas/userNew.json";
-// import userUpdateSchema from "../schemas/userUpdate.json";
+import userNewSchema from "../schemas/userNew.json";
+import userUpdateSchema from "../schemas/userUpdate.json";
 import { UserData } from "../interfaces/UserData";
+import { BadRequestError } from "../expressError";
 
 const router = express.Router();
 
@@ -21,30 +20,29 @@ const router = express.Router();
  * admin.
  *
  * This returns the newly created user and an authentication token for them:
- *  {user: { username, firstName, lastName, email, phone, isAdmin }, token }
+ *  {user: { id, email, firstName, lastName, phone, isAdmin }, token }
  *
  * Authorization required: admin
  **/
 
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
-    // const validator = jsonschema.validate(req.body, userNewSchema);
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
-
+    const validator = jsonschema.validate(req.body, userNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new BadRequestError(...errs);
+    }
     const newUserData: UserData = req.body;
 
     const user = await User.signup(newUserData);
-    const token = createToken(user);
+    const token = createToken(user.id, user.isAdmin);
     return res.status(201).json({ user, token });
   } catch (err) {
     return next(err);
   }
 });
 
-/** GET / => { users: [ {username, firstName, lastName, email, phone }, ... ] }
+/** GET / => { users: [ {email, firstName, lastName, phone }, ... ] }
  *
  * Returns list of all users.
  *
@@ -68,14 +66,14 @@ router.get(
   }
 );
 
-/** GET /[username] => { user }
+/** GET /[id] => { user }
  *
- * Returns { username, firstName, lastName, email, phone, isAdmin }
+ * Returns { id, email, firstName, lastName, phone, isAdmin }
  *
- * Authorization required: admin or same user-as-:username
+ * Authorization required: admin or same user-as-:id
  **/
 router.get(
-  "/:username",
+  "/:userId",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -83,8 +81,10 @@ router.get(
     next: express.NextFunction
   ) {
     try {
-      const { username } = req.params;
-      const user = await User.get(username);
+      const userId = +req.params.userId;
+
+      if (Number.isNaN(userId)) throw new BadRequestError("Invalid user id");
+      const user = await User.get(userId);
       return res.json(user);
     } catch (err) {
       return next(err);
@@ -92,18 +92,18 @@ router.get(
   }
 );
 
-/** PATCH /[username] { user } => { user }
+/** PATCH /[id] { user } => { user }
  *
  * Data can include:
- *   { username, password, firstName, lastName, email, phone }
+ *   { id, email, password, firstName, lastName, phone }
  *
- * Returns { username, firstName, lastName, email, phone, isAdmin }
+ * Returns { id, email, firstName, lastName, phone, isAdmin }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or same-user-as-:id
  **/
 
 router.patch(
-  "/:username",
+  "/:userId",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
@@ -111,14 +111,14 @@ router.patch(
     next: express.NextFunction
   ) {
     try {
-      // const validator = jsonschema.validate(req.body, userUpdateSchema);
-      // if (!validator.valid) {
-      //   const errs = validator.errors.map(e => e.stack);
-      //   throw new BadRequestError(errs);
-      // }
-      const { username } = req.params;
+      const validator = jsonschema.validate(req.body, userUpdateSchema);
+      if (!validator.valid) {
+        const errs = validator.errors.map((e) => e.stack);
+        throw new BadRequestError(...errs);
+      }
+      const userId = +req.params.userId;
 
-      const user = await User.update(username, req.body);
+      const user = await User.update(userId, req.body);
 
       return res.json({ user });
     } catch (err) {
@@ -127,22 +127,26 @@ router.patch(
   }
 );
 
-/** DELETE /[username]  =>  { deleted: username }
+/** DELETE /[id]  =>  { deleted: id }
  *
- * Authorization required: admin or same-user-as-:username
+ * Authorization required: admin or same-user-as-:id
  **/
 router.delete(
-  "/:username",
+  "/:userId",
   ensureCorrectUserOrAdmin,
   async function (
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
-    const { username } = req.params;
+    try {
+      const userId = +req.params.userId;
 
-    await User.remove(username);
-    return res.json({ message: `User ${username} deleted.` });
+      await User.remove(userId);
+      return res.json({ deleted: userId });
+    } catch (err) {
+      return next(err);
+    }
   }
 );
 

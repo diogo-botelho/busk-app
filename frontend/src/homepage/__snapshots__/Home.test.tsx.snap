@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="text-center container"
+  >
+    <header
+      class="p-3 mb-4 bg-light border rounded-3"
+    >
+      <h1>
+        Welcome To Busk!
+      </h1>
+    </header>
+    <h6
+      class="fs-4"
+    >
+      Find local artists around your location!
+    </h6>
+    <p>
+      <b>
+        busk·er
+      </b>
+       /ˈbəskər/
+    </p>
+    <p>
+      noun: 
+      <b>
+        busker
+      </b>
+      ; plural noun: 
+      <b>
+        buskers
+      </b>
+    </p>
+    <p>
+      <i>
+        "a person who performs music or other entertainment in the street or another public place for monetary donations."
+      </i>
+    </p>
+    <img
+      alt="busker"
+      src="https://media.istockphoto.com/id/1006917342/photo/busking-street-musician.jpg?s=612x612&w=0&k=20&c=XKKyNCLiz4Wq7dnJsj3VlDcthFwvzCJSgbyW2oWxt-Q="
+    />
+    <p>
+      Check out the events from our users 
+      <a
+        href="/events"
+      >
+        here
+      </a>
+      .
+    </p>
+    <p>
+      Do you have any feedback and/or feature requests? Please tell us on our 
+      <a
+        href="https://github.com/diogo-botelho/busk-app"
+      >
+        Github
+      </a>
+      .
+    </p>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`matches snapshot when logged out 1`] = `
+<DocumentFragment>
+  <div
+    class="text-center container"
+  >
+    <header
+      class="p-3 mb-4 bg-light border rounded-3"
+    >
+      <h1>
+        Welcome To Busk!
+      </h1>
+    </header>
+    <h6
+      class="fs-4"
+    >
+      Find local artists around your location!
+    </h6>
+    <p>
+      <b>
+        busk·er
+      </b>
+       /ˈbəskər/
+    </p>
+    <p>
+      noun: 
+      <b>
+        busker
+      </b>
+      ; plural noun: 
+      <b>
+        buskers
+      </b>
+    </p>
+    <p>
+      <i>
+        "a person who performs music or other entertainment in the street or another public place for monetary donations."
+      </i>
+    </p>
+    <img
+      alt="busker"
+      src="https://media.istockphoto.com/id/1006917342/photo/busking-street-musician.jpg?s=612x612&w=0&k=20&c=XKKyNCLiz4Wq7dnJsj3VlDcthFwvzCJSgbyW2oWxt-Q="
+    />
+    <p>
+      Check out the events from our users 
+      <a
+        href="/events"
+      >
+        here
+      </a>
+      .
+    </p>
+    <p>
+      Do you have any feedback and/or feature requests? Please tell us on our 
+      <a
+        href="https://github.com/diogo-botelho/busk-app"
+      >
+        Github
+      </a>
+      .
+    </p>
+  </div>
+</DocumentFragment>
+`;

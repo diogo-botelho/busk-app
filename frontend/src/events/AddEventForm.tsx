@@ -8,6 +8,8 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
+import { UserContext } from "../users/UserContext";
+
 import { EventFormData } from "../interfaces/EventFormData";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
 
@@ -31,6 +33,7 @@ interface AddEventFormParams {
  * EventList -> AddEventForm
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
+  const currentUser = useContext(UserContext);
   const { newCoordinates } = useContext(NewCoordinatesContext);
 
   const [formData, setFormData] = useState<EventFormData>({
@@ -58,7 +61,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
       }
       updateCoordinatesOnClick();
     },
-    [newCoordinates]
+    [newCoordinates],
   );
 
   /** Handle form submit:
@@ -72,7 +75,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
 
   /** Update form data field */
   function handleChange(
-    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>,
   ) {
     console.log(evt);
     const { name, value } = evt.target;

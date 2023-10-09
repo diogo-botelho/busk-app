@@ -20,10 +20,10 @@ function User() {
   const currentUser = useContext(UserContext);
   const params = useParams();
 
-  return currentUser && currentUser.username === params.username ? (
+  return currentUser && `${currentUser.id}` === params.id ? (
     <Container>
       <div>
-        <h1> You must be user {currentUser.username} </h1>
+        <h1> You must be user {currentUser.id} </h1>
       </div>
       Events created by the user will go here.
     </Container>

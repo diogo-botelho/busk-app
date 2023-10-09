@@ -1,14 +1,13 @@
 import request from "supertest";
 
-import db from "../db";
 import app from "../app";
+import { Busker } from "../models/busker";
 
-import { User } from "../models/user";
 import {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
-  commonAfterAll
+  commonAfterAll,
 } from "./_testCommon";
 
 beforeAll(commonBeforeAll);
@@ -76,6 +75,48 @@ describe("POST /auth/signup", function () {
     expect(resp.body).toEqual({
       token: expect.any(String),
     });
+  });
+
+  test("calls busker registration", async function () {
+    const registerSpy = jest.spyOn(Busker, "register");
+    const resp = await request(app).post("/auth/signup").send({
+      email: "newBusker@email.com",
+      firstName: "firstBusker",
+      lastName: "lastBusker",
+      password: "password",
+      phone: "1234567890",
+      buskerCheckmark: true,
+      buskerName: "new busker name",
+      category: "other",
+      description: "new description",
+    });
+    expect(registerSpy).toHaveBeenCalledTimes(1);
+    expect(resp.statusCode).toEqual(201);
+    expect(resp.body).toEqual({
+      token: expect.any(String),
+    });
+    registerSpy.mockRestore();
+  });
+
+  test("does not call busker registration", async function () {
+    const registerSpy = jest.spyOn(Busker, "register");
+    const resp = await request(app).post("/auth/signup").send({
+      email: "newBusker@email.com",
+      firstName: "firstBusker",
+      lastName: "lastBusker",
+      password: "password",
+      phone: "1234567890",
+      buskerCheckmark: false,
+      buskerName: "new busker name",
+      category: "other",
+      description: "new description",
+    });
+    expect(registerSpy).toHaveBeenCalledTimes(0);
+    expect(resp.statusCode).toEqual(201);
+    expect(resp.body).toEqual({
+      token: expect.any(String),
+    });
+    registerSpy.mockRestore();
   });
 
   test("bad request with missing fields", async function () {

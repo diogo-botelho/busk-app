@@ -29,7 +29,7 @@ interface SignupFormParams {
  * On submission:
  *  - calls signup function prop
  *
- * AllRoutes -> LoginForm -> ErrorMessage
+ * AllRoutes -> SignupForm -> ErrorMessage
  * Routed as /signup
  * */
 
@@ -40,6 +40,10 @@ function SignupForm({ signup }: SignupFormParams) {
     firstName: "",
     lastName: "",
     phone: "",
+    buskerCheckmark: false,
+    buskerName: "",
+    category: "musician",
+    description: "",
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
 
@@ -61,8 +65,14 @@ function SignupForm({ signup }: SignupFormParams) {
   }
 
   /** Update form data field */
-  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = evt.target;
+  function handleChange(
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+  ) {
+    const { name } = evt.target;
+
+    const value =
+      name === "buskerCheckmark" ? evt.target.checked : evt.target.value;
+
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
@@ -139,6 +149,60 @@ function SignupForm({ signup }: SignupFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
+            <Form.Group className="">
+              <Form.Check
+                className="form-check"
+                id="buskerCheckmark"
+                name="buskerCheckmark"
+                label={"Do you wish to also create a busker account?"}
+                onChange={handleChange}
+              />
+            </Form.Group>
+            {formData.buskerCheckmark && (
+              <>
+                <Form.Group className="">
+                  <FloatingLabel label="BuskerName" className="mb-2">
+                    <Form.Control
+                      className="form-control"
+                      type="buskerName"
+                      id="buskerName"
+                      name="buskerName"
+                      value={formData.buskerName}
+                      onChange={handleChange}
+                      placeholder="Busker Name"
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="">
+                  <FloatingLabel label="category" className="mb-2">
+                    <Form.Select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                    >
+                      <option>musician</option>
+                      <option>painter</option>
+                      <option>juggler</option>
+                      <option>other</option>
+                    </Form.Select>
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="">
+                  <FloatingLabel label="description" className="mb-2">
+                    <Form.Control
+                      className="form-control"
+                      type="description"
+                      id="description"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
+                      placeholder="Description"
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+              </>
+            )}
             {formErrors.length > 0 && <ErrorMessage messages={formErrors} />}
             <Button type="submit" className="btn btn-primary ">
               Submit

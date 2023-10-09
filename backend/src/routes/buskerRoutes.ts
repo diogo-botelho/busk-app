@@ -74,7 +74,7 @@ router.post(
     next: express.NextFunction
   ) {
     try {
-      const validator = jsonschema.validate(req.body, buskerNewSchema);
+      const validator = jsonschema.validate(req.body.buskerData, buskerNewSchema);
       if (!validator.valid) {
         const errs = validator.errors.map((e) => e.stack);
         throw new BadRequestError(...errs);

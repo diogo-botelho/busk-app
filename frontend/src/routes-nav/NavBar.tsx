@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro"; // <-- import styles to be used
 
 import "./NavBar.css";
 
@@ -77,7 +77,7 @@ function NavBar({ logout }: Logout) {
     <nav className="d-flex navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand me-auto" href="/">
-        <FontAwesomeIcon icon={solid('guitar')} />
+          <FontAwesomeIcon icon={solid("guitar")} />
         </a>
         <button
           onClick={toggle}

@@ -98,6 +98,27 @@ describe("POST /auth/signup", function () {
     registerSpy.mockRestore();
   });
 
+  test("does not call busker registration", async function () {
+    const registerSpy = jest.spyOn(Busker, "register");
+    const resp = await request(app).post("/auth/signup").send({
+      email: "newBusker@email.com",
+      firstName: "firstBusker",
+      lastName: "lastBusker",
+      password: "password",
+      phone: "1234567890",
+      buskerCheckmark: false,
+      buskerName: "new busker name",
+      category: "other",
+      description: "new description",
+    });
+    expect(registerSpy).toHaveBeenCalledTimes(0);
+    expect(resp.statusCode).toEqual(201);
+    expect(resp.body).toEqual({
+      token: expect.any(String),
+    });
+    registerSpy.mockRestore();
+  });
+
   test("bad request with missing fields", async function () {
     const resp = await request(app).post("/auth/signup").send({
       email: "new@email.com",

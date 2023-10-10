@@ -191,7 +191,6 @@ describe("update", function () {
   test("works with partial data", async function () {
     updateData2["buskerId"] = testBuskerIds[0];
     const oldEvent = await Event.getById(testEventIds[0]);
-    console.log(oldEvent);
     let event = await Event.update(testEventIds[0], updateData2);
     expect(oldEvent).not.toEqual(event);
     expect(event).toEqual({

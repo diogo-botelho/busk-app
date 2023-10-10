@@ -14,7 +14,6 @@ export let u2Token: string = "";
 export let adminToken = createToken(-1, true);
 
 export async function commonBeforeAll() {
-
   await db.query("DELETE FROM events");
   await db.query("DELETE FROM buskers");
   await db.query("DELETE FROM users");
@@ -47,18 +46,18 @@ export async function commonBeforeAll() {
     `INSERT INTO buskers (user_id, busker_name, category, description)
   VALUES ($1, 'u1BuskerName1', 'musician', 'A fun performer')
   RETURNING id`,
-    [testUserIds[0]]
+    [testUserIds[0]],
   );
   await db.query(
     `INSERT INTO buskers (user_id, busker_name, category, description)
   VALUES ($1, 'u1BuskerName2', 'juggler', 'A great performer')
   RETURNING id`,
-    [testUserIds[0]]
+    [testUserIds[0]],
   );
 
   const resultBuskers = await db.query(
     `SELECT id, busker_name AS "buskerName"
-      FROM buskers`
+      FROM buskers`,
   );
   testBuskerIds.splice(0, 0, ...resultBuskers.rows.map((r) => r.id));
   testBuskerNames.splice(0, 0, ...resultBuskers.rows.map((r) => r.buskerName));
@@ -68,6 +67,9 @@ export async function commonBeforeAll() {
       buskerId: testBuskerIds[0],
       title: "test event",
       type: "test type",
+      date: "2023-10-10",
+      startTime: "13:00",
+      endTime: "14:00",
       coordinates: { lat: 0, lng: 0 },
     })
   ).id;

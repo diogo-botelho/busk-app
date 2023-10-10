@@ -56,7 +56,6 @@ router.post(
     res: express.Response,
     next: express.NextFunction,
   ) {
-    console.log(req.body.eventData);
     try {
       const validator = jsonschema.validate(req.body.eventData, eventNewSchema);
 

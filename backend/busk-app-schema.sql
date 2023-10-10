@@ -28,5 +28,6 @@ CREATE TABLE events(
   date TEXT NOT NULL,
   start_time TEXT NOT NULL,
   end_time TEXT NOT NULL,
-  coordinates JSON NOT NULL
+  coordinates JSON NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
 );

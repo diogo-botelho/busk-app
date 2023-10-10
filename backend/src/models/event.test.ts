@@ -201,6 +201,17 @@ describe("update", function () {
     });
   });
 
+  test("bad request with empty title", async function () {
+    updateData2.title = "";
+    try {
+      await Event.update(testEventIds[0], updateData2);
+      fail();
+    } catch (err) {
+      console.log(err);
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
   test("not found if no such event", async function () {
     try {
       await Event.update(0, {

@@ -82,7 +82,6 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   function handleChange(
     evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>,
   ) {
-    console.log(newCoordinates);
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }

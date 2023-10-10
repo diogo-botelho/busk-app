@@ -19,11 +19,11 @@ router.get(
   async function (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) {
     const events = await Event.getAll();
     return res.json(events);
-  }
+  },
 );
 
 /** Get event, return event */
@@ -32,7 +32,7 @@ router.get(
   async function (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) {
     try {
       const { id } = req.params;
@@ -42,7 +42,7 @@ router.get(
     } catch (err) {
       return next(err);
     }
-  }
+  },
 );
 
 /** Create new event, return event */
@@ -54,8 +54,9 @@ router.post(
   async function (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) {
+    console.log(req.body.eventData);
     try {
       const validator = jsonschema.validate(req.body.eventData, eventNewSchema);
 
@@ -73,7 +74,7 @@ router.post(
     } catch (err) {
       return next(err);
     }
-  }
+  },
 );
 
 /** Update event, returning event */
@@ -86,12 +87,12 @@ router.patch(
   async function (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) {
     try {
       const validator = jsonschema.validate(
         req.body.updateData,
-        eventUpdateSchema
+        eventUpdateSchema,
       );
       if (!validator.valid) {
         const errs = validator.errors.map((e) => e.stack);
@@ -105,7 +106,7 @@ router.patch(
     } catch (err) {
       return next(err);
     }
-  }
+  },
 );
 
 /** Delete event, returning {message: "Deleted"} */
@@ -118,13 +119,13 @@ router.delete(
   async function (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) {
     const { id } = req.params;
     await Event.remove(+id);
 
     return res.json({ message: "event deleted" });
-  }
+  },
 );
 
 export { router };

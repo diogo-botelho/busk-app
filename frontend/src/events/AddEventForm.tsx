@@ -74,8 +74,8 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   function handleChange(
     evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>,
   ) {
-    console.log(evt);
     const { name, value } = evt.target;
+    console.log(formData);
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 

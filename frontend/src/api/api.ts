@@ -89,6 +89,7 @@ class BuskApi {
     buskerName: string,
     eventData: EventDataInterface,
   ) {
+    console.log("API Create", eventData);
     const res = await this.request(
       "events/create",
       { userId, buskerName, eventData },

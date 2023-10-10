@@ -85,18 +85,9 @@ export function EventDetail() {
 
     //Delete lines 86-99 when event model starts accepting timestamps
     const eventDetails = {
-      buskerId: 1,
       title: formData.title,
       type: formData.type,
       coordinates: formData.coordinates || event.coordinates,
-      // ? {
-      //     lat: Object.values(newCoordinates)[0],
-      //     lng: Object.values(newCoordinates)[1],
-      //   }
-      // : {
-      //     lat: Object.values(event.coordinates)[0],
-      //     lng: Object.values(event.coordinates)[1],
-      //   },
     };
 
     const eventId = event.id;

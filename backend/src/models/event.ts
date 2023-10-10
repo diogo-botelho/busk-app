@@ -16,7 +16,7 @@ export class Event {
   static async getAll() {
     const result = await db.query(
       `SELECT id, busker_id AS "buskerId", title, type, coordinates
-          FROM events`
+          FROM events`,
     );
 
     return result.rows;
@@ -35,7 +35,7 @@ export class Event {
         FROM events
         JOIN buskers on buskers.id = events.busker_id
         WHERE events.id = $1`,
-      [id]
+      [id],
     );
 
     const event = result.rows[0];
@@ -52,7 +52,7 @@ export class Event {
       `SELECT id
             FROM events
             WHERE busker_id = $1`,
-      [buskerId]
+      [buskerId],
     );
 
     let eventIds = [];
@@ -69,17 +69,17 @@ export class Event {
       throw new BadRequestError("Invalid Data.");
     }
 
-    const { buskerId, title, type } = eventData;
+    const { buskerId, title, type, date, startTime, endTime } = eventData;
 
     if (title.length === 0) throw new BadRequestError("Empty Title.");
 
     const coordinates = JSON.stringify(eventData.coordinates);
 
     const result = await db.query(
-      `INSERT INTO events (busker_id, title, type, coordinates)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, busker_id as "buskerId", title, type, coordinates`,
-      [buskerId, title, type, coordinates]
+      `INSERT INTO events (busker_id, title, type, date, start_time, end_time, coordinates)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, busker_id AS "buskerId", title, type, date, start_time AS "startTime", end_time AS "endTime", coordinates`,
+      [buskerId, title, type, date, startTime, endTime, coordinates],
     );
 
     const event = result.rows[0];
@@ -129,7 +129,7 @@ export class Event {
             FROM events
             WHERE id = $1
             RETURNING id`,
-      [id]
+      [id],
     );
 
     const event = result.rows[0];

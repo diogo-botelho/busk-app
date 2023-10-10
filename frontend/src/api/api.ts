@@ -43,22 +43,22 @@ class BuskApi {
 
   /** User API Routes */
 
-  /** Get the current user. Takes email.
-   * Returns user object {userId, email, firstName, lastName, phone}
+  /** Get the current user. Takes username.
+   * Returns user object {userId, username, firstName, lastName, phone, email}
    */
-  static async getCurrentUser(id: number) {
-    let res = await this.request(`users/${id}`);
+  static async getCurrentUser(username: string) {
+    let res = await this.request(`users/${username}`);
     return res;
   }
 
-  /** Log in a user. Takes an object {email, password}. Returns token */
+  /** Log in a user. Takes an object {username, password}. Returns token */
   static async login(loginData: LoginFormData) {
     const res = await this.request("auth/login", loginData, "post");
     return res.token;
   }
 
   /** Signup a new user.
-   *  Takes an object { email, password, firstName, lastName, phone }.
+   *  Takes an object { username, password, firstName, lastName, phone, email }.
    *  Returns token */
   static async signup(signupData: SignupFormData) {
     const res = await this.request("auth/signup", signupData, "post");
@@ -87,12 +87,12 @@ class BuskApi {
   static async createEvent(
     userId: number,
     buskerName: string,
-    eventData: EventDataInterface
+    eventData: EventDataInterface,
   ) {
     const res = await this.request(
       "events/create",
       { userId, buskerName, eventData },
-      "post"
+      "post",
     );
     return res.event;
   }
@@ -104,12 +104,12 @@ class BuskApi {
     eventId: number,
     userId: number,
     buskerName: string,
-    updateData: EventDataInterface
+    updateData: EventDataInterface,
   ) {
     const res = await this.request(
       `events/${eventId}`,
       { userId, buskerName, updateData },
-      "patch"
+      "patch",
     );
 
     return res.event;
@@ -121,12 +121,12 @@ class BuskApi {
   static async removeEvent(
     eventId: number,
     userId: number,
-    buskerName: string
+    buskerName: string,
   ) {
     const res = await this.request(
       `events/${eventId}`,
       { userId, buskerName },
-      "delete"
+      "delete",
     );
 
     return res;

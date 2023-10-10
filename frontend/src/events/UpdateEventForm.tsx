@@ -14,7 +14,6 @@ import {
   NewCoordinatesContext,
   NewCoordinatesContextInterface,
 } from "../map/NewCoordinatesContext";
-import { UserContext } from "../users/UserContext";
 
 interface UpdateEventFormParams {
   event: Event;
@@ -42,7 +41,6 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   const { newCoordinates } = useContext<NewCoordinatesContextInterface>(
     NewCoordinatesContext,
   );
-  const currentUser = useContext(UserContext);
   const [formData, setFormData] = useState<EventFormData>({
     title: event.title,
     type: event.type,
@@ -77,11 +75,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    if (!currentUser) {
-      console.log("Please log in to update the event.");
-    } else {
-      updateEvent(event, currentUser.id, formData);
-    }
+    updateEvent(event, formData);
   }
 
   /** Update form data field */

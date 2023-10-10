@@ -66,7 +66,7 @@ function SignupForm({ signup }: SignupFormParams) {
 
   /** Update form data field */
   function handleChange(
-    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>,
   ) {
     const { name } = evt.target;
 

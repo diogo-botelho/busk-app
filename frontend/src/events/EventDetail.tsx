@@ -105,9 +105,16 @@ export function EventDetail() {
       //Uncomment line 106 event model starts accepting timestamps
       //const updatedEvent = await BuskApi.updateEvent(eventId, formData);
       //Comment line 108 event model starts accepting timestamps
-      const updatedEvent = await BuskApi.updateEvent(eventId, eventDetails);
-      setEvent((previousData) => updatedEvent);
-      setErrors([]);
+      if (currentUser) {
+        const updatedEvent = await BuskApi.updateEvent(
+          eventId,
+          currentUser.id,
+          event.buskerName, // TODO: revisit the logic of this
+          eventDetails,
+        );
+        setEvent((previousData) => updatedEvent);
+        setErrors([]);
+      }
     } catch (err) {
       if (Array.isArray(err)) {
         setErrors(err);

@@ -149,9 +149,15 @@ function EventList() {
       try {
         //Uncomment when event model starts accepting timestamps
         //const newEvent = await BuskApi.createEvent(formData);
-        const newEvent = await BuskApi.createEvent(eventDetails);
-        setEvents((previousData) => [...previousData, newEvent]);
-        setErrors([]);
+        if (currentUser) {
+          const newEvent = await BuskApi.createEvent(
+            currentUser.id,
+            currentUser.buskerNames[0], // TODO: need to check the logic
+            eventDetails,
+          );
+          setEvents((previousData) => [...previousData, newEvent]);
+          setErrors([]);
+        }
       } catch (err) {
         if (Array.isArray(err)) {
           setErrors(err);

@@ -8,8 +8,6 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { UserContext } from "../users/UserContext";
-
 import { EventFormData } from "../interfaces/EventFormData";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
 
@@ -33,7 +31,6 @@ interface AddEventFormParams {
  * EventList -> AddEventForm
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
-  const currentUser = useContext(UserContext);
   const { newCoordinates } = useContext(NewCoordinatesContext);
 
   const [formData, setFormData] = useState<EventFormData>({

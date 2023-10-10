@@ -88,7 +88,6 @@ router.patch(
     res: express.Response,
     next: express.NextFunction,
   ) {
-    console.log(req.body.updateData);
     try {
       const validator = jsonschema.validate(
         req.body.updateData,

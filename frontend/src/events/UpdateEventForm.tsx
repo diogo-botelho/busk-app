@@ -44,9 +44,9 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
   const [formData, setFormData] = useState<EventFormData>({
     title: event.title,
     type: event.type,
-    date: "event.date",
-    startTime: "event.startTime",
-    endTime: "event.endTime",
+    date: event.date,
+    startTime: event.startTime,
+    endTime: event.endTime,
     coordinates: newCoordinates,
   });
 
@@ -143,7 +143,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                 id="startTime"
                 type="time"
                 name="startTime"
-                placeholder="Time"
+                value={formData.startTime}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -155,7 +155,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                 id="endTime"
                 type="time"
                 name="endTime"
-                placeholder="Time"
+                value={formData.endTime}
                 onChange={handleChange}
               />
             </Form.Group>

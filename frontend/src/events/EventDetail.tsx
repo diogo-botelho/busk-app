@@ -87,6 +87,9 @@ export function EventDetail() {
     const eventDetails = {
       title: formData.title,
       type: formData.type,
+      date: formData.date,
+      startTime: formData.startTime,
+      endTime: formData.endTime,
       coordinates: formData.coordinates || event.coordinates,
     };
 

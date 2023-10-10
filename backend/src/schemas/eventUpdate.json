@@ -17,6 +17,15 @@
         "lat": {"type" : "number"},
         "lng": {"type" : "number"}
       }
+    },
+    "date": {
+      "type": "string"
+    },
+    "startTime": {
+      "type": "string"
+    },
+    "endTime": {
+      "type": "string"
     }
   },
   "additionalProperties": false,

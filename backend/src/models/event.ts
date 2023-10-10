@@ -65,13 +65,25 @@ export class Event {
 
   /** create an event: returns { id, bukserId, title, type } */
   static async create(eventData: EventData) {
-    if (Object.keys(eventData).length < 4) {
+    if (Object.keys(eventData).length < 7) {
       throw new BadRequestError("Invalid Data.");
     }
 
     const { buskerId, title, type, date, startTime, endTime } = eventData;
 
-    if (title.length === 0) throw new BadRequestError("Empty Title.");
+    const requiredFields: (keyof EventData)[] = [
+      "title",
+      "date",
+      "startTime",
+      "endTime",
+    ];
+    for (const field of requiredFields) {
+      if (!eventData[field]) {
+        throw new BadRequestError(
+          `Empty ${field.charAt(0).toUpperCase() + field.slice(1)}.`,
+        );
+      }
+    }
 
     const coordinates = JSON.stringify(eventData.coordinates);
 

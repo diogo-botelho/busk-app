@@ -25,6 +25,9 @@ describe("create", function () {
     buskerId: 0,
     title: "Test title",
     type: "Test type",
+    date: "2023-10-12",
+    startTime: "01:16",
+    endTime: "02:16",
     coordinates: { lat: 1, lng: 1 },
   };
 
@@ -69,6 +72,36 @@ describe("create", function () {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
+  test("bad request with empty date", async function () {
+    newEvent.title = "Test title";
+    newEvent.date = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+  test("bad request with empty startTime", async function () {
+    newEvent.date = "2023-10-12";
+    newEvent.startTime = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+  test("bad request with empty endTime", async function () {
+    newEvent.startTime = "01:16";
+    newEvent.endTime = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
 });
 
 // /************************************** getAll */
@@ -78,6 +111,9 @@ describe("getAll", function () {
     buskerId: 0,
     title: "Test title",
     type: "Test type",
+    date: "2023-10-12",
+    startTime: "02:16",
+    endTime: "03:16",
     coordinates: { lat: 1, lng: 1 },
   };
 
@@ -184,7 +220,7 @@ describe("remove", function () {
   test("works", async function () {
     await Event.remove(testEventIds[0]);
     const res = await db.query(
-      `SELECT * FROM events WHERE busker_id=${testBuskerIds[0]}`
+      `SELECT * FROM events WHERE busker_id=${testBuskerIds[0]}`,
     );
     expect(res.rows.length).toEqual(0);
   });

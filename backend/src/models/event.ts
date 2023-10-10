@@ -8,6 +8,13 @@ import { sqlForPartialUpdate } from "../helpers/sql";
 import { EventData } from "../interfaces/EventData";
 import { Busker } from "./busker";
 
+const requiredFields: (keyof EventData)[] = [
+  "title",
+  "date",
+  "startTime",
+  "endTime",
+];
+
 export class Event {
   /** Get all events
    *
@@ -31,6 +38,9 @@ export class Event {
               buskers.busker_name as "buskerName",
               title,
               type,
+              date,
+              start_time AS "startTime",
+              end_time AS "endTime",
               coordinates
         FROM events
         JOIN buskers on buskers.id = events.busker_id
@@ -71,17 +81,10 @@ export class Event {
 
     const { buskerId, title, type, date, startTime, endTime } = eventData;
 
-    const requiredFields: (keyof EventData)[] = [
-      "title",
-      "date",
-      "startTime",
-      "endTime",
-    ];
     for (const field of requiredFields) {
-      if (!eventData[field]) {
-        throw new BadRequestError(
-          `Empty ${field.charAt(0).toUpperCase() + field.slice(1)}.`,
-        );
+      const value = eventData[field];
+      if (typeof value === "string" && value.length === 0) {
+        throw new BadRequestError(`Empty ${field}.`);
       }
     }
 
@@ -104,7 +107,16 @@ export class Event {
 
     const { setCols, values } = sqlForPartialUpdate(data, {
       buskerId: "busker_id",
+      startTime: "start_time",
+      endTime: "end_time",
     });
+
+    for (const field of requiredFields) {
+      const value = data[field];
+      if (typeof value === "string" && value.length === 0) {
+        throw new BadRequestError(`Empty ${field}.`);
+      }
+    }
 
     const eventVarIdx = "$" + (values.length + 1);
 
@@ -116,12 +128,18 @@ export class Event {
                         busker_id, 
                         title, 
                         type, 
+                        date,
+                        start_time,
+                        end_time,
                         coordinates)
             SELECT  updated_event.id, 
                     busker_id AS "buskerId", 
                     busker_name AS "buskerName",
                     title, 
                     type, 
+                    date,
+                    start_time AS "startTime",
+                    end_time AS "endTime",
                     coordinates
             FROM updated_event
             JOIN buskers ON buskers.id = updated_event.busker_id`;

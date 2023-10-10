@@ -140,6 +140,9 @@ describe("get", function () {
       buskerName: testBuskerNames[0],
       title: "e1",
       type: "E1",
+      date: "2023-10-10",
+      endTime: "14:00",
+      startTime: "13:00",
       coordinates: { lat: 0, lng: 0 },
     });
   });
@@ -161,6 +164,9 @@ describe("update", function () {
     buskerId: 0,
     title: "newTitle",
     type: "NewType",
+    date: "2023-10-11",
+    startTime: "00:00",
+    endTime: "10:00",
     coordinates: { lat: 45, lng: 45 },
   };
 
@@ -185,6 +191,7 @@ describe("update", function () {
   test("works with partial data", async function () {
     updateData2["buskerId"] = testBuskerIds[0];
     const oldEvent = await Event.getById(testEventIds[0]);
+    console.log(oldEvent);
     let event = await Event.update(testEventIds[0], updateData2);
     expect(oldEvent).not.toEqual(event);
     expect(event).toEqual({

@@ -183,6 +183,9 @@ export function EventDetail() {
               <Card.Body>
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.type}</Card.Text>
+                <Card.Text>{event.date}</Card.Text>
+                <Card.Text>{event.startTime}</Card.Text>
+                <Card.Text>{event.endTime}</Card.Text>
                 {currentUser &&
                 currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
                   <Container>

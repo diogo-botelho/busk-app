@@ -22,7 +22,7 @@ export class Event {
    */
   static async getAll() {
     const result = await db.query(
-      `SELECT id, busker_id AS "buskerId", title, type, coordinates
+      `SELECT id, busker_id AS "buskerId", title, type, date, start_time AS "startTime", end_time AS "endTime", coordinates
           FROM events`,
     );
 

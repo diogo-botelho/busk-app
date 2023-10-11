@@ -17,9 +17,12 @@ VALUES  ('diogo@email.com',
 INSERT INTO buskers (user_id, busker_name, category, description)
 VALUES (1, 'Saxiogo', 'musician', 'Diogo plays saxophone in the park.');
 
-INSERT INTO events (busker_id, title, type,coordinates)
+INSERT INTO events (busker_id, title, type, date, start_time, end_time, coordinates)
 VALUES (1,
         'Diogo rocks in Central Park', 
         'concert',
+        '2023-10-11',
+        '04:34',
+        '20:34',
         '{"lat":40.77848305406739,"lng":-73.96902361328482}');
 

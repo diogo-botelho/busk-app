@@ -8,6 +8,13 @@ import { sqlForPartialUpdate } from "../helpers/sql";
 import { EventData } from "../interfaces/EventData";
 import { Busker } from "./busker";
 
+const requiredFields: (keyof EventData)[] = [
+  "title",
+  "date",
+  "startTime",
+  "endTime",
+];
+
 export class Event {
   /** Get all events
    *
@@ -15,8 +22,8 @@ export class Event {
    */
   static async getAll() {
     const result = await db.query(
-      `SELECT id, busker_id AS "buskerId", title, type, coordinates
-          FROM events`
+      `SELECT id, busker_id AS "buskerId", title, type, date, start_time AS "startTime", end_time AS "endTime", coordinates
+          FROM events`,
     );
 
     return result.rows;
@@ -31,11 +38,14 @@ export class Event {
               buskers.busker_name as "buskerName",
               title,
               type,
+              date,
+              start_time AS "startTime",
+              end_time AS "endTime",
               coordinates
         FROM events
         JOIN buskers on buskers.id = events.busker_id
         WHERE events.id = $1`,
-      [id]
+      [id],
     );
 
     const event = result.rows[0];
@@ -52,7 +62,7 @@ export class Event {
       `SELECT id
             FROM events
             WHERE busker_id = $1`,
-      [buskerId]
+      [buskerId],
     );
 
     let eventIds = [];
@@ -65,21 +75,26 @@ export class Event {
 
   /** create an event: returns { id, bukserId, title, type } */
   static async create(eventData: EventData) {
-    if (Object.keys(eventData).length < 4) {
+    if (Object.keys(eventData).length < 7) {
       throw new BadRequestError("Invalid Data.");
     }
 
-    const { buskerId, title, type } = eventData;
+    const { buskerId, title, type, date, startTime, endTime } = eventData;
 
-    if (title.length === 0) throw new BadRequestError("Empty Title.");
+    for (const field of requiredFields) {
+      const value = eventData[field];
+      if (typeof value === "string" && value.length === 0) {
+        throw new BadRequestError(`Empty ${field}.`);
+      }
+    }
 
     const coordinates = JSON.stringify(eventData.coordinates);
 
     const result = await db.query(
-      `INSERT INTO events (busker_id, title, type, coordinates)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, busker_id as "buskerId", title, type, coordinates`,
-      [buskerId, title, type, coordinates]
+      `INSERT INTO events (busker_id, title, type, date, start_time, end_time, coordinates)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, busker_id AS "buskerId", title, type, date, start_time AS "startTime", end_time AS "endTime", coordinates`,
+      [buskerId, title, type, date, startTime, endTime, coordinates],
     );
 
     const event = result.rows[0];
@@ -92,7 +107,16 @@ export class Event {
 
     const { setCols, values } = sqlForPartialUpdate(data, {
       buskerId: "busker_id",
+      startTime: "start_time",
+      endTime: "end_time",
     });
+
+    for (const field of requiredFields) {
+      const value = data[field];
+      if (typeof value === "string" && value.length === 0) {
+        throw new BadRequestError(`Empty ${field}.`);
+      }
+    }
 
     const eventVarIdx = "$" + (values.length + 1);
 
@@ -104,12 +128,18 @@ export class Event {
                         busker_id, 
                         title, 
                         type, 
+                        date,
+                        start_time,
+                        end_time,
                         coordinates)
             SELECT  updated_event.id, 
                     busker_id AS "buskerId", 
                     busker_name AS "buskerName",
                     title, 
                     type, 
+                    date,
+                    start_time AS "startTime",
+                    end_time AS "endTime",
                     coordinates
             FROM updated_event
             JOIN buskers ON buskers.id = updated_event.busker_id`;
@@ -129,7 +159,7 @@ export class Event {
             FROM events
             WHERE id = $1
             RETURNING id`,
-      [id]
+      [id],
     );
 
     const event = result.rows[0];

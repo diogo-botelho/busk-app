@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState, useContext } from "react";
+import { ChangeEvent, FormEvent, useState, useContext, useEffect } from "react";
 import {
   Button,
   Container,
@@ -8,17 +8,16 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
 import { Event } from "../interfaces/Event";
-import { UserContext } from "../users/UserContext";
+import {
+  NewCoordinatesContext,
+  NewCoordinatesContextInterface,
+} from "../map/NewCoordinatesContext";
 
 interface UpdateEventFormParams {
   event: Event;
-  updateEvent: (
-    event: Event,
-    userId: number,
-    formData: UpdateEventFormData
-  ) => void;
+  updateEvent: (event: Event, formData: EventFormData) => void;
 }
 
 /**Update Event form.
@@ -39,11 +38,36 @@ interface UpdateEventFormParams {
  * */
 
 export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
-  const currentUser = useContext(UserContext);
-  const [formData, setFormData] = useState<UpdateEventFormData>({
+  const { newCoordinates } = useContext<NewCoordinatesContextInterface>(
+    NewCoordinatesContext,
+  );
+  const [formData, setFormData] = useState<EventFormData>({
     title: event.title,
     type: event.type,
+    date: event.date,
+    startTime: event.startTime,
+    endTime: event.endTime,
+    coordinates: newCoordinates,
   });
+
+  /** Handle newCoordinates change. Adds newCoordinates to formData. */
+  useEffect(
+    function updateFormCoordinates() {
+      async function updateCoordinatesOnClick() {
+        try {
+          setFormData((prevData) => ({
+            ...prevData,
+            coordinates: newCoordinates,
+          }));
+        } catch (err) {
+          // setErrors(["Error"]);
+          console.log("error");
+        }
+      }
+      updateCoordinatesOnClick();
+    },
+    [newCoordinates],
+  );
 
   /** Handle form submit.
    *
@@ -51,16 +75,12 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    if (!currentUser) {
-      console.log("Please log in to update the event.");
-    } else {
-      updateEvent(event, currentUser.id, formData);
-    }
+    updateEvent(event, formData);
   }
 
   /** Update form data field */
   function handleChange(
-    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>
+    evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>,
   ) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -71,7 +91,7 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
       <h5>Select a location on the map</h5>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
-          <Col xs={8} className="">
+          <Col xs={6} className="">
             <Form.Group className="">
               <FloatingLabel label="Title" className="mb-3">
                 <Form.Control
@@ -83,6 +103,8 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                 />
               </FloatingLabel>
             </Form.Group>
+          </Col>
+          <Col xs={6} className="">
             <Form.Group className="">
               <FloatingLabel label="Type">
                 <Form.Select
@@ -91,17 +113,57 @@ export function UpdateEventForm({ event, updateEvent }: UpdateEventFormParams) {
                   value={formData.type}
                   onChange={handleChange}
                 >
+                  <option>""</option>
                   <option>concert</option>
                   <option>dance</option>
                   <option>something else</option>
                 </Form.Select>
               </FloatingLabel>
             </Form.Group>
-            <Button type="submit" className="btn-primary mt-2">
-              Submit
-            </Button>
           </Col>
         </Row>
+        <Row>
+          <Col xs={4} className="">
+            <Form.Group>
+              <Form.Label>Date</Form.Label>
+              <Form.Control
+                id="date"
+                type="date"
+                name="date"
+                placeholder="Date"
+                value={formData.date}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={4} className="">
+            <Form.Group>
+              <Form.Label>Start</Form.Label>
+              <Form.Control
+                id="startTime"
+                type="time"
+                name="startTime"
+                value={formData.startTime}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={4} className="">
+            <Form.Group>
+              <Form.Label>End</Form.Label>
+              <Form.Control
+                id="endTime"
+                type="time"
+                name="endTime"
+                value={formData.endTime}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Button type="submit" className="btn-primary mt-2">
+          Submit
+        </Button>
       </Form>
     </Container>
   );

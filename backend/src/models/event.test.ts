@@ -25,6 +25,9 @@ describe("create", function () {
     buskerId: 0,
     title: "Test title",
     type: "Test type",
+    date: "2023-10-12",
+    startTime: "01:16",
+    endTime: "02:16",
     coordinates: { lat: 1, lng: 1 },
   };
 
@@ -69,6 +72,36 @@ describe("create", function () {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
+  test("bad request with empty date", async function () {
+    newEvent.title = "Test title";
+    newEvent.date = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+  test("bad request with empty startTime", async function () {
+    newEvent.date = "2023-10-12";
+    newEvent.startTime = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+  test("bad request with empty endTime", async function () {
+    newEvent.startTime = "01:16";
+    newEvent.endTime = "";
+    try {
+      await Event.create(newEvent);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
 });
 
 // /************************************** getAll */
@@ -78,6 +111,9 @@ describe("getAll", function () {
     buskerId: 0,
     title: "Test title",
     type: "Test type",
+    date: "2023-10-12",
+    startTime: "02:16",
+    endTime: "03:16",
     coordinates: { lat: 1, lng: 1 },
   };
 
@@ -104,6 +140,9 @@ describe("get", function () {
       buskerName: testBuskerNames[0],
       title: "e1",
       type: "E1",
+      date: "2023-10-10",
+      endTime: "14:00",
+      startTime: "13:00",
       coordinates: { lat: 0, lng: 0 },
     });
   });
@@ -125,6 +164,9 @@ describe("update", function () {
     buskerId: 0,
     title: "newTitle",
     type: "NewType",
+    date: "2023-10-11",
+    startTime: "00:00",
+    endTime: "10:00",
     coordinates: { lat: 45, lng: 45 },
   };
 
@@ -159,6 +201,17 @@ describe("update", function () {
     });
   });
 
+  test("bad request with empty title", async function () {
+    updateData2.title = "";
+    try {
+      await Event.update(testEventIds[0], updateData2);
+      fail();
+    } catch (err) {
+      console.log(err);
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
   test("not found if no such event", async function () {
     try {
       await Event.update(0, {
@@ -184,7 +237,7 @@ describe("remove", function () {
   test("works", async function () {
     await Event.remove(testEventIds[0]);
     const res = await db.query(
-      `SELECT * FROM events WHERE busker_id=${testBuskerIds[0]}`
+      `SELECT * FROM events WHERE busker_id=${testBuskerIds[0]}`,
     );
     expect(res.rows.length).toEqual(0);
   });

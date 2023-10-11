@@ -33,6 +33,9 @@ describe("GET /events", function () {
         buskerId: testBuskerIds[0],
         title: "test event",
         type: "test type",
+        date: "2023-10-10",
+        startTime: "13:00",
+        endTime: "14:00",
         coordinates: { lat: 0, lng: 0 },
       },
     ]);
@@ -42,7 +45,7 @@ describe("GET /events", function () {
 /************************************** GET /events/:id */
 
 describe("GET /events/:id", function () {
-  test("unauth for anon", async function () {
+  test("works for anon", async function () {
     const resp = await request(app).get(`/events/${testEventIds[0]}`);
     expect(resp.body).toEqual({
       event: {
@@ -51,12 +54,15 @@ describe("GET /events/:id", function () {
         buskerName: testBuskerNames[0],
         title: "test event",
         type: "test type",
+        date: "2023-10-10",
+        startTime: "13:00",
+        endTime: "14:00",
         coordinates: { lat: 0, lng: 0 },
       },
     });
   });
 
-  test("not found if user not found", async function () {
+  test("not found if event not found", async function () {
     const resp = await request(app).get(`/events/0`);
     expect(resp.statusCode).toEqual(404);
   });
@@ -75,6 +81,9 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: { lat: 1, lng: 1 },
         },
       })
@@ -86,6 +95,9 @@ describe("POST /events", function () {
         buskerId: testBuskerIds[0],
         title: "test event title",
         type: "test event type",
+        date: "2023-10-10",
+        startTime: "03:00",
+        endTime: "04:00",
         coordinates: { lat: 1, lng: 1 },
       },
     });
@@ -101,6 +113,9 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: { lat: 1, lng: 1 },
         },
       })
@@ -112,6 +127,9 @@ describe("POST /events", function () {
         buskerId: testBuskerIds[0],
         title: "test event title",
         type: "test event type",
+        date: "2023-10-10",
+        startTime: "03:00",
+        endTime: "04:00",
         coordinates: { lat: 1, lng: 1 },
       },
     });
@@ -232,6 +250,9 @@ describe("PATCH /events/:id", () => {
         buskerName: testBuskerNames[0],
         title: "New title",
         type: "test type",
+        date: "2023-10-10",
+        startTime: "13:00",
+        endTime: "14:00",
         coordinates: { lat: 0, lng: 0 },
       },
     });
@@ -255,6 +276,9 @@ describe("PATCH /events/:id", () => {
         buskerName: testBuskerNames[0],
         title: "New title",
         type: "test type",
+        date: "2023-10-10",
+        startTime: "13:00",
+        endTime: "14:00",
         coordinates: { lat: 0, lng: 0 },
       },
     });

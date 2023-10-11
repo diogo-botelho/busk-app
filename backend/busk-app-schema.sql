@@ -25,5 +25,9 @@ CREATE TABLE events(
   busker_id INTEGER NOT NULL REFERENCES buskers ON DELETE CASCADE,
   title TEXT NOT NULL,
   type TEXT NOT NULL,
-  coordinates JSON NOT NULL
+  date TEXT NOT NULL,
+  start_time TEXT NOT NULL,
+  end_time TEXT NOT NULL,
+  coordinates JSON NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
 );

@@ -7,7 +7,7 @@ import { LoadingMessage } from "../common/LoadingMessage";
 import ErrorMessage from "../common/ErrorMessage";
 import { AddEventForm } from "./AddEventForm";
 import { EventCard } from "./EventCard";
-import { AddEventFormData } from "../interfaces/AddEventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
 import { Event } from "../interfaces/Event";
 import { Map } from "../map/Map";
 import {
@@ -70,7 +70,7 @@ function EventList() {
       }
       getEventsfromApi();
     },
-    [needsEvents]
+    [needsEvents],
   );
 
   /** Determines what to render depending on whether there's a currentUser and
@@ -136,31 +136,31 @@ function EventList() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function submitEvent(
-    userId: number,
-    buskerName: string,
-    formData: AddEventFormData
-  ) {
-    if (!newCoordinates) {
+  async function submitEvent(formData: EventFormData) {
+    if (!formData.coordinates) {
       setErrors(["Please select a location"]);
     } else {
       const eventDetails = {
         buskerId: 1,
         title: formData.title,
         type: formData.type,
-        coordinates: {
-          lat: Object.values(newCoordinates)[0],
-          lng: Object.values(newCoordinates)[1],
-        },
+        date: formData.date,
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+        coordinates: formData.coordinates,
       };
       try {
-        const newEvent = await BuskApi.createEvent(
-          userId,
-          buskerName,
-          eventDetails
-        );
-        setEvents((previousData) => [...previousData, newEvent]);
-        setErrors([]);
+        //Uncomment when event model starts accepting timestamps
+        //const newEvent = await BuskApi.createEvent(formData);
+        if (currentUser) {
+          const newEvent = await BuskApi.createEvent(
+            currentUser.id,
+            currentUser.buskerNames[0], // TODO: need to check the logic
+            eventDetails,
+          );
+          setEvents((previousData) => [...previousData, newEvent]);
+          setErrors([]);
+        }
       } catch (err) {
         if (Array.isArray(err)) {
           setErrors(err);

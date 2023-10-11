@@ -6,7 +6,7 @@ import BuskApi from "../api/api";
 import ErrorMessage from "../common/ErrorMessage";
 import { LoadingMessage } from "../common/LoadingMessage";
 import { Event } from "../interfaces/Event";
-import { UpdateEventFormData } from "../interfaces/UpdateEventFormData";
+import { EventFormData } from "../interfaces/EventFormData";
 import { UpdateEventForm } from "./UpdateEventForm";
 import { Map } from "../map/Map";
 import {
@@ -69,7 +69,7 @@ export function EventDetail() {
       }
       getEvent();
     },
-    [id]
+    [id],
   );
 
   /** Handles updating event.
@@ -79,36 +79,36 @@ export function EventDetail() {
    *
    * If any error occurs, updates errors state with errors.
    */
-  async function updateEvent(
-    event: Event,
-    userId: number,
-    formData: UpdateEventFormData
-  ) {
-    const eventData = {
+  async function updateEvent(event: Event, formData: EventFormData) {
+    //Uncomment line 84 event model starts accepting timestamps
+    // formData["coordinates"] = formData.coordinates || event.coordinates;
+
+    //Delete lines 86-99 when event model starts accepting timestamps
+    const eventDetails = {
       title: formData.title,
       type: formData.type,
-      coordinates: newCoordinates
-        ? {
-            lat: Object.values(newCoordinates)[0],
-            lng: Object.values(newCoordinates)[1],
-          }
-        : {
-            lat: Object.values(event.coordinates)[0],
-            lng: Object.values(event.coordinates)[1],
-          },
+      date: formData.date,
+      startTime: formData.startTime,
+      endTime: formData.endTime,
+      coordinates: formData.coordinates || event.coordinates,
     };
 
     const eventId = event.id;
 
     try {
-      const updatedEvent = await BuskApi.updateEvent(
-        eventId,
-        userId,
-        "Saxiogo",
-        eventData
-      );
-      setEvent((previousData) => updatedEvent);
-      setErrors([]);
+      //Uncomment line 106 event model starts accepting timestamps
+      //const updatedEvent = await BuskApi.updateEvent(eventId, formData);
+      //Comment line 108 event model starts accepting timestamps
+      if (currentUser) {
+        const updatedEvent = await BuskApi.updateEvent(
+          eventId,
+          currentUser.id,
+          event.buskerName, // TODO: revisit the logic of this
+          eventDetails,
+        );
+        setEvent((previousData) => updatedEvent);
+        setErrors([]);
+      }
     } catch (err) {
       if (Array.isArray(err)) {
         setErrors(err);
@@ -183,6 +183,9 @@ export function EventDetail() {
               <Card.Body>
                 <Card.Title>{event.title}</Card.Title>
                 <Card.Text>{event.type}</Card.Text>
+                <Card.Text>{event.date}</Card.Text>
+                <Card.Text>{event.startTime}</Card.Text>
+                <Card.Text>{event.endTime}</Card.Text>
                 {currentUser &&
                 currentUser?.buskerNames.indexOf(event.buskerName) >= 0 ? (
                   <Container>

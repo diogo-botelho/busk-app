@@ -19,13 +19,17 @@ interface EventCardParamsInterface {
  */
 
 export function EventCard({ event }: EventCardParamsInterface) {
-  const { title, type } = event;
+  const { title, type, date, startTime, endTime } = event;
+  console.log("event card", event);
 
   return (
     <Card className="mb-3">
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         <Card.Text>{type}</Card.Text>
+        <Card.Text>{date}</Card.Text>
+        <Card.Text>{startTime}</Card.Text>
+        <Card.Text>{endTime}</Card.Text>
       </Card.Body>
     </Card>
   );

@@ -19,7 +19,7 @@ import {
 export function authenticateJWT(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) {
   try {
     const authHeader = req.headers && req.headers.authorization;
@@ -41,7 +41,7 @@ export function authenticateJWT(
 export function ensureLoggedIn(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) {
   try {
     if (!res.locals.user) {
@@ -61,7 +61,7 @@ export function ensureLoggedIn(
 export function ensureAdmin(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) {
   try {
     if (!res.locals.user || !res.locals.user.isAdmin) {
@@ -82,7 +82,7 @@ export function ensureAdmin(
 export function ensureCorrectUserOrAdmin(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) {
   try {
     const user = res.locals.user;
@@ -109,7 +109,7 @@ export function ensureCorrectUserOrAdmin(
 export async function ensureUserOwnsBuskerAccount(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) {
   try {
     await createResLocalsBuskers(req.body.userId, res);
@@ -137,7 +137,7 @@ export async function ensureUserOwnsBuskerAccount(
 export async function ensureBuskerOwnsEvent(
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) {
   try {
     await createResLocalsEvents(req.body.buskerName, res);

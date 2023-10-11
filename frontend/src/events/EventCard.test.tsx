@@ -8,6 +8,9 @@ const demoEvent = {
   buskerName: "demoBusker",
   title: "demo title",
   type: "demo type",
+  date: "2023-1-1",
+  startTime: "00:00",
+  endTime: "01:00",
   coordinates: { lat: 1, lng: 1 },
 };
 

@@ -33,6 +33,9 @@ describe("GET /events", function () {
         buskerId: testBuskerIds[0],
         title: "test event",
         type: "test type",
+        date: "2023-10-10",
+        startTime: "13:00",
+        endTime: "14:00",
         coordinates: { lat: 0, lng: 0 },
       },
     ]);

@@ -37,6 +37,7 @@ describe("create", function () {
     let event = await Event.create(newEvent);
     expect(event).toEqual({
       ...newEvent,
+      date: "Thu, Oct 12, 2023",
       buskerId: testBuskerIds[0],
       id: testEventIds[0] + 1,
     });

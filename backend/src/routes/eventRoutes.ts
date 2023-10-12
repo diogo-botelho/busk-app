@@ -71,6 +71,10 @@ router.post(
 
       eventDetails.date = dateConverter(eventDetails.date);
 
+      if (eventDetails.date === "Invalid Date") {
+        throw new BadRequestError("Invalid date format, please use YYYY-MM-DD");
+      }
+
       const event = await Event.create(eventDetails);
 
       return res.status(201).json({ event });
@@ -102,8 +106,20 @@ router.patch(
         throw new BadRequestError(...errs);
       }
       const { id } = req.params;
+      const { updateData } = req.body;
 
-      const event = await Event.update(+id, req.body.updateData);
+      if (!updateData) return res.status(204).json("No content");
+
+      if (updateData && updateData.date) {
+        updateData.date = dateConverter(updateData.date);
+        if (updateData.date === "Invalid Date") {
+          throw new BadRequestError(
+            "Invalid date format, please use YYYY-MM-DD",
+          );
+        }
+      }
+
+      const event = await Event.update(+id, updateData);
 
       return res.status(201).json({ event });
     } catch (err) {

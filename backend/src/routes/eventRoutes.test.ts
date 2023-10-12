@@ -146,6 +146,9 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: { lat: 1, lng: 1 },
         },
       })
@@ -163,6 +166,9 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: { lat: 1, lng: 1 },
         },
       });
@@ -178,6 +184,9 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: { lat: 1, lng: 1 },
         },
       })
@@ -194,6 +203,9 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: { lat: 1, lng: 1 },
         },
       })
@@ -212,7 +224,7 @@ describe("POST /events", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  test("bad request with invalid data", async function () {
+  test("bad request with invalid coordinates", async function () {
     const resp = await request(app)
       .post(`/events/create`)
       .send({
@@ -222,11 +234,36 @@ describe("POST /events", function () {
           buskerId: testBuskerIds[0],
           title: "test event title",
           type: "test event type",
+          date: "2023-10-10",
+          startTime: "03:00",
+          endTime: "04:00",
           coordinates: "not coordinates",
         },
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(400);
+  });
+  test("bad request with invalid date", async function () {
+    const resp = await request(app)
+      .post(`/events/create`)
+      .send({
+        userId: testUserIds[0],
+        buskerName: testBuskerNames[0],
+        eventData: {
+          buskerId: testBuskerIds[0],
+          title: "test event title",
+          type: "test event type",
+          date: "not correct format",
+          startTime: "03:00",
+          endTime: "04:00",
+          coordinates: { lat: 1, lng: 1 },
+        },
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(400);
+    expect(resp.body.error.message).toEqual(
+      "Invalid date format, please use YYYY-MM-DD",
+    );
   });
 });
 
@@ -267,6 +304,7 @@ describe("PATCH /events/:id", () => {
         buskerName: testBuskerNames[0],
         updateData: {
           title: "New title",
+          date: "2023-10-11",
         },
       })
       .set("authorization", `Bearer ${u1Token}`);
@@ -277,7 +315,7 @@ describe("PATCH /events/:id", () => {
         buskerName: testBuskerNames[0],
         title: "New title",
         type: "test type",
-        date: "Tue, Oct 10, 2023",
+        date: "Wed, Oct 11, 2023",
         startTime: "13:00",
         endTime: "14:00",
         coordinates: { lat: 0, lng: 0 },
@@ -356,7 +394,8 @@ describe("PATCH /events/:id", () => {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("bad request if missing updateData", async function () {
+  test("status 204 if missing updateData", async function () {
+    // not neccessarily an error, per this discussion https://stackoverflow.com/a/50611069
     const resp = await request(app)
       .patch(`/events/${testEventIds[0]}`)
       .send({
@@ -364,7 +403,24 @@ describe("PATCH /events/:id", () => {
         buskerName: testBuskerNames[0],
       })
       .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(204);
+  });
+
+  test("bad request if invalid date", async function () {
+    const resp = await request(app)
+      .patch(`/events/${testEventIds[0]}`)
+      .send({
+        userId: testUserIds[0],
+        buskerName: testBuskerNames[0],
+        updateData: {
+          date: "not a valid date",
+        },
+      })
+      .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
+    expect(resp.body.error.message).toEqual(
+      "Invalid date format, please use YYYY-MM-DD",
+    );
   });
 
   test("bad request with invalid data", async function () {

@@ -22,6 +22,6 @@ export default function dateConverter(date: string) {
     day: "numeric",
     timeZone: "UTC",
   };
-  console.log(day, parts[2], utcDate, utcDate.toLocaleString("en-US", options));
+
   return utcDate.toLocaleString("en-US", options);
 }

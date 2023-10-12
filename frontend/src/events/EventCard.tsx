@@ -20,7 +20,6 @@ interface EventCardParamsInterface {
 
 export function EventCard({ event }: EventCardParamsInterface) {
   const { title, type, date, startTime, endTime, buskerName } = event;
-  console.log("event card", event);
 
   return (
     <Card className="mb-3">

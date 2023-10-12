@@ -6,7 +6,6 @@ import db from "../db";
 import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
 import { EventData } from "../interfaces/EventData";
-import { Busker } from "./busker";
 
 const requiredFields: (keyof EventData)[] = [
   "title",
@@ -22,8 +21,17 @@ export class Event {
    */
   static async getAll() {
     const result = await db.query(
-      `SELECT id, busker_id AS "buskerId", title, type, date, start_time AS "startTime", end_time AS "endTime", coordinates
-          FROM events`,
+      `SELECT events.id, 
+              busker_id AS "buskerId",
+              buskers.busker_name as "buskerName",
+              title,
+              type,
+              date,
+              start_time AS "startTime",
+              end_time AS "endTime",
+              coordinates
+        FROM events
+        JOIN buskers on buskers.id = events.busker_id`,
     );
 
     return result.rows;
@@ -47,7 +55,6 @@ export class Event {
         WHERE events.id = $1`,
       [id],
     );
-
     const event = result.rows[0];
 
     if (!event) throw new NotFoundError(`No such event: ${id}`);

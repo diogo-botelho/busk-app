@@ -51,7 +51,7 @@ export async function commonBeforeAll() {
   const resultEvents = await db.query(
     `
     INSERT INTO events(busker_id, title, type, date, start_time, end_time, coordinates)
-    VALUES ($1, 'e1', 'E1', '2023-10-10', '13:00', '14:00', '{"lat":0,"lng":0}')
+    VALUES ($1, 'e1', 'E1', 'Tue, Oct 10, 2023', '13:00', '14:00', '{"lat":0,"lng":0}')
     RETURNING id`,
     [testBuskerIds[0]],
   );

@@ -21,7 +21,7 @@ INSERT INTO events (busker_id, title, type, date, start_time, end_time, coordina
 VALUES (1,
         'Diogo rocks in Central Park', 
         'concert',
-        '2023-10-11',
+        'Tue, Oct 10, 2023',
         '04:34',
         '20:34',
         '{"lat":40.77848305406739,"lng":-73.96902361328482}');

@@ -7,13 +7,6 @@ import { BadRequestError, NotFoundError } from "../expressError";
 import { sqlForPartialUpdate } from "../helpers/sql";
 import { EventData } from "../interfaces/EventData";
 
-interface DateFormatOptions {
-  weekday: "short" | "long" | "narrow";
-  year: "numeric" | "2-digit";
-  month: "numeric" | "2-digit" | "long" | "short" | "narrow";
-  day: "numeric" | "2-digit";
-}
-
 const requiredFields: (keyof EventData)[] = [
   "title",
   "date",
@@ -102,29 +95,13 @@ export class Event {
       }
     }
 
-    const parts = date.split("-");
-    const year = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1; // Months are 0-based (0 = January, 11 = December)
-    const day = parseInt(parts[2], 10) + 1;
-
-    const utcDate = new Date(Date.UTC(year, month, day));
-
-    // Request a weekday along with a long date
-    const options: DateFormatOptions = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    let convertedDate = utcDate.toLocaleString("en-US", options);
-
     const coordinates = JSON.stringify(eventData.coordinates);
 
     const result = await db.query(
       `INSERT INTO events (busker_id, title, type, date, start_time, end_time, coordinates)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id, busker_id AS "buskerId", title, type, date, start_time AS "startTime", end_time AS "endTime", coordinates`,
-      [buskerId, title, type, convertedDate, startTime, endTime, coordinates],
+      [buskerId, title, type, date, startTime, endTime, coordinates],
     );
 
     const event = result.rows[0];

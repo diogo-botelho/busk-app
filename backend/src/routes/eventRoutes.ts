@@ -10,6 +10,7 @@ import {
   ensureUserOwnsBuskerAccount,
   ensureBuskerOwnsEvent,
 } from "../middleware/auth";
+import dateConverter from "../helpers/dateConverter";
 
 const router = express.Router();
 
@@ -66,7 +67,10 @@ router.post(
             : "eventData is not defined.";
         throw new BadRequestError(...errs);
       }
-      const eventDetails = req.body.eventData;
+      let eventDetails = req.body.eventData;
+
+      eventDetails.date = dateConverter(eventDetails.date);
+
       const event = await Event.create(eventDetails);
 
       return res.status(201).json({ event });

@@ -3,13 +3,14 @@ interface DateFormatOptions {
   year: "numeric" | "2-digit";
   month: "numeric" | "2-digit" | "long" | "short" | "narrow";
   day: "numeric" | "2-digit";
+  timeZone: "UTC";
 }
 
 export default function dateConverter(date: string) {
   const parts = date.split("-");
   const year = parseInt(parts[0], 10);
   const month = parseInt(parts[1], 10) - 1; // Months are 0-based (0 = January, 11 = December)
-  const day = parseInt(parts[2], 10) + 1;
+  const day = parseInt(parts[2], 10);
 
   const utcDate = new Date(Date.UTC(year, month, day));
 
@@ -19,6 +20,8 @@ export default function dateConverter(date: string) {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "UTC",
   };
+  console.log(day, parts[2], utcDate, utcDate.toLocaleString("en-US", options));
   return utcDate.toLocaleString("en-US", options);
 }

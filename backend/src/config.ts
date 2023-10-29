@@ -2,7 +2,6 @@ export const PORT = +process.env.PORT || 3001;
 
 export function getDatabaseUri() {
   const dbUser = process.env.DATABASE_USER || "postgres";
-  // console.log({"ENV":process.env});
   const dbPass = process.env.DATABASE_PASS
     ? encodeURI(process.env.DATABASE_PASS)
     : "password";

@@ -2,6 +2,7 @@ export const PORT = +process.env.PORT || 3001;
 
 export function getDatabaseUri() {
   const dbUser = process.env.DATABASE_USER || "postgres";
+  // console.log({"ENV":process.env});
   const dbPass = process.env.DATABASE_PASS
     ? encodeURI(process.env.DATABASE_PASS)
     : "password";
@@ -16,13 +17,6 @@ export function getDatabaseUri() {
     `postgresql://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}`
   );
 
-  // return process.env.NODE_ENV === "test"
-  //   ? // ? "postgresql://diogobotelho:password@localhost/busk_app_test"
-  //     // : process.env.DATABASE_URL ||
-  //     //     "postgresql://diogobotelho:password@localhost/busk_app";
-  //     "busk_app_test"
-  //   : process.env.DATABASE_URL ||
-  //       "busk_app";
 }
 
 export const SECRET_KEY = process.env.SECRET_KEY || "secret key";

@@ -29,12 +29,12 @@ export class Busker {
        AND busker_name = $2
        AND category=$3
        `,
-      [userId, buskerName, category]
+      [userId, buskerName, category],
     );
 
     if (duplicateCheck.rows[0]) {
       throw new BadRequestError(
-        `Please select a different buskerName or category.`
+        `Please select a different buskerName or category.`,
       );
     }
 
@@ -46,7 +46,7 @@ export class Busker {
         description)
       VALUES ($1, $2, $3, $4)
       RETURNING id, user_id AS "userId", busker_name AS "buskerName", category, description`,
-      [userId, buskerName, category, description]
+      [userId, buskerName, category, description],
     );
 
     const busker = result.rows[0];
@@ -67,7 +67,7 @@ export class Busker {
               category,
               description
             FROM buskers
-             ORDER BY id`
+             ORDER BY id`,
     );
     return result.rows;
   }
@@ -86,7 +86,7 @@ export class Busker {
               description
             FROM buskers
             WHERE busker_name = $1`,
-      [buskerName]
+      [buskerName],
     );
     const busker = result.rows[0];
 
@@ -95,14 +95,26 @@ export class Busker {
     return busker;
   }
 
+  static async getBuskerIdByUserId(userId: number) {
+    const result = await db.query(
+      `SELECT id AS "buskerId"
+            FROM buskers
+            WHERE user_id = $1`,
+      [userId],
+    );
+
+    const buskerId = result.rows[0] ? result.rows[0].buskerId : undefined;
+
+    return buskerId;
+  }
+
   static async getAllBuskerNamesByUserId(userId: number) {
     const result = await db.query(
       `SELECT busker_name AS "buskerName"
             FROM buskers
             WHERE user_id = $1`,
-      [userId]
+      [userId],
     );
-
     let buskerNames = [];
     for (const busker of result.rows) {
       buskerNames.push(busker.buskerName);
@@ -127,7 +139,7 @@ export class Busker {
 
   static async update(
     buskerName: string,
-    data: BuskerData
+    data: BuskerData,
   ): Promise<BuskerData> {
     if (!data) throw new BadRequestError("Invalid Data.");
 
@@ -162,7 +174,7 @@ export class Busker {
             FROM buskers
             WHERE busker_name = $1
             RETURNING id`,
-      [buskerName]
+      [buskerName],
     );
 
     const busker = result.rows[0];

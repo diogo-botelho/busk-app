@@ -8,6 +8,7 @@ import {
   commonAfterEach,
   commonAfterAll,
   testUserIds,
+  testBuskerIds,
 } from "./_testCommon";
 
 import {
@@ -132,6 +133,7 @@ describe("get", function () {
       lastName: "u1L",
       phone: "111222333",
       buskerNames: ["u1BuskerName1", "u1BuskerName2"],
+      buskerId: testBuskerIds[0],
     });
   });
 

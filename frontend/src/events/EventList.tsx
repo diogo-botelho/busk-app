@@ -77,18 +77,23 @@ function EventList() {
    * if an event is being added.
    */
   function addEventSection() {
+    // We might reintroduce the lines below when we have more useful
+    // logic and features for users that are not buskers
+
     // If user is not logged in, show prompt to login/signup
-    if (!currentUser) {
-      return (
-        <div className="mt-auto">
-          <p>
-            Please <Link to="/login">login</Link> or{" "}
-            <Link to="/signup">signup</Link> to add an event.
-          </p>
-        </div>
-      );
-    }
+    // if (!currentUser) {
+    //   return (
+    //     <div className="mt-auto">
+    //       <p>
+    //         Please <Link to="/login">login</Link> or{" "}
+    //         <Link to="/signup">signup</Link> to add an event.
+    //       </p>
+    //     </div>
+    //   );
+    // }
     // If user is logged in, show button to add new event
+    
+    if (currentUser?.buskerId) {
     if (!isAddingEvent) {
       return (
         <Button
@@ -109,6 +114,7 @@ function EventList() {
         </Container>
       );
     }
+  }
   }
 
   /** Toggle Add Event Button
@@ -139,9 +145,10 @@ function EventList() {
   async function submitEvent(formData: EventFormData) {
     if (!formData.coordinates) {
       setErrors(["Please select a location"]);
-    } else {
+    }    
+    else {
       const eventDetails = {
-        buskerId: 1,
+        buskerId: currentUser?.buskerId,
         title: formData.title,
         type: formData.type,
         date: formData.date,

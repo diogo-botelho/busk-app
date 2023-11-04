@@ -131,7 +131,7 @@ export class User {
     if (!user) throw new NotFoundError(`No such user: ${id}`);
 
     user.buskerNames = await Busker.getAllBuskerNamesByUserId(id);
-
+    user.buskerId = await Busker.getBuskerIdByUserId(id);
     return user;
   }
 

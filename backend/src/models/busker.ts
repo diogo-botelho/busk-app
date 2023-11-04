@@ -95,6 +95,17 @@ export class Busker {
     return busker;
   }
 
+
+  static async getBuskerIdByUserId(userId: number) {
+    const result = await db.query(
+      `SELECT id AS "buskerId"
+            FROM buskers
+            WHERE user_id = $1`,
+      [userId]
+    );
+    return result.rows[0].buskerId;
+  }
+
   static async getAllBuskerNamesByUserId(userId: number) {
     const result = await db.query(
       `SELECT busker_name AS "buskerName"
@@ -102,7 +113,6 @@ export class Busker {
             WHERE user_id = $1`,
       [userId]
     );
-
     let buskerNames = [];
     for (const busker of result.rows) {
       buskerNames.push(busker.buskerName);

@@ -9,6 +9,7 @@ export interface UserContextType {
   lastName: string;
   phone: string;
   buskerNames: string[];
+  buskerId: number;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(

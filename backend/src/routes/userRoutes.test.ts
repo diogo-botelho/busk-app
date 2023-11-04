@@ -10,6 +10,7 @@ import {
   commonAfterAll,
   testUserIds,
   testBuskerNames,
+  testBuskerIds,
   u1Token,
   u2Token,
   adminToken,
@@ -188,6 +189,7 @@ describe("GET /users/:id", function () {
       lastName: "u1L",
       phone: "111222333",
       buskerNames: testBuskerNames,
+      buskerId: testBuskerIds[0],
     });
   });
 
@@ -202,6 +204,7 @@ describe("GET /users/:id", function () {
       lastName: "u1L",
       phone: "111222333",
       buskerNames: testBuskerNames,
+      buskerId: testBuskerIds[0],
     });
   });
 

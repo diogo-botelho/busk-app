@@ -153,7 +153,11 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
             </Form.Group>
           </Col>
         </Row>
-        <Button type="submit" className="btn-primary mt-2">
+        <Button
+          type="submit"
+          disabled={formData.coordinates ? false : true}
+          className="btn-primary mt-2"
+        >
           Submit
         </Button>
       </Form>

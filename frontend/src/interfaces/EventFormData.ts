@@ -8,3 +8,7 @@ export interface EventFormData {
   endTime: string;
   coordinates: NewCoordinatesContextInterface["newCoordinates"];
 }
+
+export interface EventFormErrors {
+  [key: string]: string;
+}

@@ -91,11 +91,22 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
   ) {
     const { name, value } = evt.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    if (!!errors[name]) {
+      const updatedErrors = { ...errors };
+      delete updatedErrors[name];
+      setErrors({
+        ...updatedErrors,
+      });
+    }
   }
 
   return (
     <Container className="AddEventForm">
       <h5>Select a location on the map</h5>
+      <Form.Control.Feedback type="invalid">
+        {errors?.coordinates}
+      </Form.Control.Feedback>
       <Form onSubmit={handleSubmit}>
         <Row className="justify-content-center">
           <Col xs={12}>
@@ -185,7 +196,7 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
         </Row>
         <Button
           type="submit"
-          disabled={formData.coordinates ? false : true}
+          disabled={Object.keys(errors).length === 0 ? false : true}
           className="btn-primary mt-2"
         >
           Submit

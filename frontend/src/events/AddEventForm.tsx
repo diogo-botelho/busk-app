@@ -8,12 +8,21 @@ import {
   FloatingLabel,
 } from "react-bootstrap";
 
-import { EventFormData } from "../interfaces/EventFormData";
+import { EventFormData, EventFormErrors } from "../interfaces/EventFormData";
 import { NewCoordinatesContext } from "../map/NewCoordinatesContext";
+import findFormErrors from "../helpers/findFormErrors";
 
 interface AddEventFormParams {
   submitEvent: (formData: EventFormData) => void;
 }
+
+const DEFAULT_FORM_VALUES = {
+  title: "",
+  type: "",
+  date: "",
+  startTime: "",
+  endTime: "",
+};
 
 /**Add Event Form.
  *
@@ -32,15 +41,11 @@ interface AddEventFormParams {
  */
 export function AddEventForm({ submitEvent }: AddEventFormParams) {
   const { newCoordinates } = useContext(NewCoordinatesContext);
-
   const [formData, setFormData] = useState<EventFormData>({
-    title: "",
-    type: "",
-    date: "",
-    startTime: "",
-    endTime: "",
+    ...DEFAULT_FORM_VALUES,
     coordinates: newCoordinates,
   });
+  const [errors, setErrors] = useState<EventFormErrors>({});
 
   /** Handle newCoordinates change. Adds newCoordinates to formData. */
   useEffect(
@@ -61,15 +66,25 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
     [newCoordinates],
   );
 
-  /** Handle form submit:
-   *
-   * Calls submitEvent func prop.
-   */
+  // /** Handle form submit:
+  //  *
+  //  * Calls submitEvent func prop.
+  //  */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
-    submitEvent(formData);
+    const newErrors = findFormErrors(formData);
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        ...newErrors,
+      }));
+    } else {
+      submitEvent(formData);
+    }
   }
 
+  console.log("err", errors);
   /** Update form data field */
   function handleChange(
     evt: ChangeEvent<HTMLInputElement & HTMLSelectElement>,
@@ -94,6 +109,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                   placeholder="Title"
                 />
               </FloatingLabel>
+              <Form.Control.Feedback type="invalid">
+                {errors?.title}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12}>
@@ -111,6 +129,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                   <option>something else</option>
                 </Form.Select>
               </FloatingLabel>
+              <Form.Control.Feedback type="invalid">
+                {errors?.type}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -126,6 +147,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                 value={formData.date}
                 onChange={handleChange}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors?.date}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={6} className="">
@@ -138,6 +162,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                 placeholder="Time"
                 onChange={handleChange}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors?.startTime}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={6} className="">
@@ -150,6 +177,9 @@ export function AddEventForm({ submitEvent }: AddEventFormParams) {
                 placeholder="Time"
                 onChange={handleChange}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors?.endTime}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>

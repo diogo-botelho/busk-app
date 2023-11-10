@@ -12,6 +12,8 @@ export default function findFormErrors(eventData: EventFormData) {
     newErrors.startTime = "Please include a start time";
   if (!eventData.endTime || eventData.endTime === "")
     newErrors.endTime = "Please include a end time";
+  if (!eventData.coordinates)
+    newErrors.coordinates = "Please select a location";
 
   return newErrors;
 }

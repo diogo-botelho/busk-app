@@ -4,7 +4,7 @@
 /* 
 ** BUSK_APP
 */
-DROP DATABASE busk_app;
+DROP DATABASE IF EXISTS busk_app;
 CREATE DATABASE busk_app;
 \connect busk_app;
 
@@ -17,7 +17,7 @@ CREATE DATABASE busk_app;
 \echo 'Delete and recreate busk_app_test db?'
 \prompt 'Return for yes or control-C to cancel > ' foo
 
-DROP DATABASE busk_app_test;
+DROP DATABASE IF EXISTS busk_app_test;
 CREATE DATABASE busk_app_test;
 \connect busk_app_test;
 

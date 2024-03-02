@@ -1,12 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import {
-  Button,
-  Col,
-  Container,
-  FloatingLabel,
-  Form,
-  Row,
-} from "react-bootstrap";
+
+import { Button, TextInput, Box } from "@mantine/core";
+import { useForm } from "@mantine/form";
 
 import ErrorMessage from "../common/ErrorMessage";
 import { LoginFormData } from "../interfaces/LoginFormData";
@@ -40,12 +35,25 @@ function LoginForm({ login }: LoginFormParams) {
   });
   const [formErrors, setFormErrors] = useState<string[] | []>([]);
 
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: (value) => (value.length > 5 ? null : "Password is too short"),
+    },
+  });
+
   /** Handle form submit:
    *
    * Calls login func prop and, if not successful, sets errors.
    */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
+    console.log("submitting form")
     try {
       await login(formData);
     } catch (err) {
@@ -64,47 +72,41 @@ function LoginForm({ login }: LoginFormParams) {
   }
 
   return (
-    <Container className="">
+    <Box component="form" maw={400} mx="auto" onSubmit={form.onSubmit((values) => {
+      console.log(values)
+      handleSubmit
+      })}>
       <header className="p-3 mb-4 bg-light border rounded-3">
         <h1 className="text-center">Log In</h1>
       </header>
-      <Form onSubmit={handleSubmit}>
-        <Row className="justify-content-center">
-          <Col xs={6} className="">
-            <Form.Group className="">
-              <FloatingLabel label="Email" className="mb-3">
-                <Form.Control
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                />
-              </FloatingLabel>
-            </Form.Group>
-            <Form.Group className="">
-              <FloatingLabel label="Password">
-                <Form.Control
-                  className="form-control"
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                />
-              </FloatingLabel>
-            </Form.Group>
-            {formErrors.length > 0 && <ErrorMessage messages={formErrors} />}
+      
+        <TextInput
+          label="Email"
+          id="email"
+          name="email"
+          value={formData.email}
+          placeholder="Email"
+          {...form.getInputProps('email')}
+          
+        />
+        <TextInput
+          label="Password"
+          id="password"
+          name="password"
+          value={formData.password}
+          placeholder="Password"
+          type="password"
+          {...form.getInputProps('password')}
+          
+        />
 
-            <Button type="submit" className="btn-primary mt-2">
-              Submit
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </Container>
+        {formErrors.length > 0 && <ErrorMessage messages={formErrors} />}
+
+        <Button type="submit" className="btn-primary mt-2" variant="filled">
+          Submit
+        </Button>
+      
+    </Box>
   );
 }
 

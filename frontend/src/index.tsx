@@ -5,7 +5,16 @@ import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./index.css";
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import App from "./App";
+
+import { createTheme, MantineProvider } from '@mantine/core';
+
+const theme = createTheme({
+  /** Put your mantine theme override here */
+});
+
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,7 +22,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
+    <MantineProvider theme={theme}>
       <App />
+    </MantineProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

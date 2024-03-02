@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Container } from "@mantine/core";
 
 /** Loading message used by components that fetch API data.
  * 

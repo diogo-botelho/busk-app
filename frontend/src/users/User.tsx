@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
-import { Container } from "react-bootstrap";
+import { Container } from "@mantine/core";
 
 import "./User.css";
 import { UserContext } from "./UserContext";

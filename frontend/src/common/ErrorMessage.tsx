@@ -1,4 +1,4 @@
-import { Alert } from "react-bootstrap";
+import { Alert } from "@mantine/core";
 
 /** Presentational component for showing bootstrap-style alerts.
  *
@@ -11,8 +11,7 @@ interface ErrorMessageParams {
 
 function ErrorMessage({ messages }: ErrorMessageParams) {
   return (
-    <Alert variant="danger">
-      <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+    <Alert color="red" title="Oh snap! You got an error!">
       {messages.map((message, idx) => (
         <p key={idx}>{message}</p>
       ))}

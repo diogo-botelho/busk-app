@@ -17,6 +17,8 @@
 
 ## Introduction
 
+This app is still under development so features and appearance are subject to change! 
+
 Create events, see events, connect with your favorite buskers.
 
 ## Features
